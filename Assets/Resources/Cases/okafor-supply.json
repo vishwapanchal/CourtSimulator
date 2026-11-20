@@ -1,0 +1,180 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "okafor-supply",
+  "title": "State v. Tomas Okafor",
+  "summary": "A search warrant for stolen electronics turned up packaged drugs in a small locked drawer. The accused, a 19-year-old student, bought a one-way flight the next day.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case set in a fictional common-law jurisdiction. Names, events and rules are invented for instruction and are not legal advice.",
+  "defendant": {
+    "name": "Tomas Okafor",
+    "age": 19,
+    "background": "University student who has lived in the jurisdiction with his aunt for ten years. He holds dual citizenship, and his parents live abroad."
+  },
+  "charges": [
+    "Possession of a controlled drug with intent to supply"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Police obtained a warrant to search Flat 4B for \"stolen laptops and mobile phones\" after a burglary report." },
+    { "id": "F2", "text": "Officers found no electronics. In a locked bedside drawer measuring 20 by 10 centimetres they found 38 small bags of a controlled drug, worth about 1,100, and a list of names with amounts." },
+    { "id": "F3", "text": "The flat is shared by Okafor and two other students. The bedroom with the drawer is Okafor's." },
+    { "id": "F4", "text": "The day after the search, Okafor bought a one-way plane ticket to the country where his parents live, departing in nine days." },
+    { "id": "F5", "text": "Okafor has no previous convictions. Messages on his phone show an older man, \"K\", directing him where to deliver bags and threatening him when he was late." },
+    { "id": "F6", "text": "Okafor pleaded guilty on the morning of trial, after the evidence ruling." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-3",
+      "title": "38 bags of a controlled drug and a list of names",
+      "description": "Recovered from a locked bedside drawer in the accused's bedroom during the search of Flat 4B.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Found by officers executing a warrant that authorised a search for stolen laptops and mobile phones. The drawer was forced open. It measures 20 by 10 centimetres, too small to hold a laptop. The warrant did not mention drugs.",
+      "objection": "The defence says forcing open a drawer too small to hold the items named in the warrant went beyond the warrant's scope, so the search was unlawful and the exhibit should be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Okafor applies for bail. The prosecution opposes it, citing the one-way ticket.",
+      "submissions": {
+        "prosecution": "He bought a one-way ticket abroad the day after the search. He has family and citizenship there. The risk that he will abscond is obvious.",
+        "defence": "He has lived here with his aunt for ten years and is enrolled at university. He will surrender his passports, cancel the ticket and report daily, and his aunt offers a surety."
+      },
+      "factors": [
+        { "id": "ticket", "text": "One-way ticket abroad bought the day after the search." },
+        { "id": "roots", "text": "Ten years living with his aunt; enrolled at university." },
+        { "id": "passports", "text": "He offers to surrender both passports and report daily; his aunt offers a surety." },
+        { "id": "nationality", "text": "He holds dual citizenship, and his parents live abroad." },
+        { "id": "no_record", "text": "No previous convictions." },
+        { "id": "conditions_rule", "text": "Bail may be refused only if no combination of conditions can adequately manage the risk." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release without conditions", "quality": "unsound", "feedback": "The ticket is concrete evidence of a flight risk. Releasing him without any condition ignores it." },
+        { "id": "bail.grant_conditions", "label": "Release on passport surrender, reporting, residence and a surety", "quality": "sound", "feedback": "The flight risk is real but specific. Surrendering both passports, daily reporting and a surety from the aunt he has lived with for ten years manage it, so custody isn't necessary." },
+        { "id": "bail.deny", "label": "Refuse bail and remand in custody", "quality": "defensible", "feedback": "A judge could reasonably fear that he will abscond given the ticket, but the offered conditions address that risk directly." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. The one-way ticket bought the day after the search is a genuine flight risk, but he has ten years of roots here with his aunt and no record. Surrendering both passports, reporting daily, living with his aunt and her surety together manage that risk, so custody isn't needed.",
+          "cites": ["ticket", "roots", "passports", "no_record", "conditions_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.grant",
+          "confidence": "medium",
+          "rationale": "I would release Mr Okafor without conditions. He is 19, has no previous convictions, and has lived here with his aunt for ten years while studying. Someone this settled is unlikely to abscond, and conditions would disrupt his studies for no good reason.",
+          "cites": ["roots", "no_record"],
+          "flawExplanation": "The advice ignores the one-way ticket bought the day after the search (F4), the clearest evidence of a flight risk in the case."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Mr Okafor is a foreign national whose parents live abroad, and people with citizenship elsewhere can always leave. Those foreign ties mean no conditions can guarantee his attendance.",
+          "cites": ["nationality", "ticket"],
+          "flawExplanation": "Nationality and having family abroad are not reasons to refuse bail in themselves. The court must look at the actual evidence of risk and whether conditions can manage it, and here passport surrender and a surety can."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the drugs found in the drawer",
+      "prompt": "The prosecution tenders exhibit P-3. The defence applies to exclude it as the product of a search beyond the warrant's scope.",
+      "exhibitId": "P-3",
+      "submissions": {
+        "prosecution": "Officers were lawfully in the flat under a valid warrant. Once they were lawfully there, what they found is admissible.",
+        "defence": "The warrant authorised a search for laptops and phones. You cannot look for a laptop in a 20 by 10 centimetre drawer. Forcing that drawer went beyond the warrant."
+      },
+      "factors": [
+        { "id": "scope", "text": "The warrant named only stolen laptops and mobile phones." },
+        { "id": "drawer_size", "text": "The drawer was 20 by 10 centimetres and had to be forced open." },
+        { "id": "scope_rule", "text": "A warrant authorises a search only of places where the items it names could reasonably be found. Evidence obtained by searching beyond that is unlawfully obtained." },
+        { "id": "seriousness", "text": "Supplying drugs is a serious offence, and the exhibit is central to the prosecution." },
+        { "id": "lawful_entry", "text": "Officers entered the flat lawfully under the warrant." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the exhibit", "quality": "unsound", "feedback": "The drawer could not hold any item named in the warrant, so forcing it was outside the warrant's authority. Admitting the product of that search rewards the breach." },
+        { "id": "evidence.admit_limited", "label": "Admit with a limiting direction", "quality": "unsound", "feedback": "A direction to the jury does not address an unlawful search. The issue is whether the evidence should be used at all." },
+        { "id": "evidence.exclude", "label": "Exclude the exhibit", "quality": "sound", "feedback": "Forcing a drawer that could not contain a laptop or phone went beyond the warrant. The breach was deliberate rather than technical, so the evidence should be excluded despite the seriousness of the charge." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the exhibit. The warrant allowed a search for laptops and phones, and a forced 20 by 10 centimetre drawer is not somewhere those could be. Searching it went beyond the warrant's authority, and because the breach was deliberate rather than a technical slip, the evidence should not be used despite the seriousness of the charge.",
+          "cites": ["scope", "drawer_size", "scope_rule", "seriousness"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the exhibit. Officers entered Flat 4B lawfully under a valid warrant, and once police are lawfully on premises they may seize anything incriminating they come across. The drugs are central to a serious charge.",
+          "cites": ["lawful_entry", "seriousness"],
+          "flawExplanation": "Lawful entry does not authorise searching anywhere. A warrant covers only places where the named items could reasonably be found, and a drawer that is too small for a laptop or phone is outside its scope."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the exhibit. The warrant authorised a search for stolen electronics and controlled drugs, so searching the drawer was squarely within its scope. The evidence was lawfully obtained.",
+          "cites": ["scope", "lawful_entry"],
+          "flawExplanation": "The warrant named only stolen laptops and mobile phones (F1). It said nothing about drugs. The advice misreads the warrant."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Okafor pleaded guilty on the morning of trial. For this case, assume the court admitted the drugs into evidence. The sentencing range runs from a community order to five years' custody.",
+      "submissions": {
+        "prosecution": "This was street-level supply organised through a list of buyers. He pleaded only on the morning of trial.",
+        "defence": "He is 19, of good character, and the messages show he was a courier pressured and threatened by an older dealer. His role was lesser."
+      },
+      "factors": [
+        { "id": "quantity", "text": "38 small bags worth about 1,100: street-level quantity." },
+        { "id": "lesser_role", "text": "Messages show he acted under the direction and threats of an older man, \"K\"." },
+        { "id": "youth", "text": "Aged 19." },
+        { "id": "no_record", "text": "No previous convictions." },
+        { "id": "late_plea", "text": "Guilty plea on the morning of trial, which attracts only a small reduction." },
+        { "id": "buyers_list", "text": "A list of buyers' names and amounts suggests ongoing dealing." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Community order with drug rehabilitation and unpaid work", "quality": "defensible", "feedback": "His youth, lesser role and good character make this arguable, but ongoing supply to a list of buyers and a late plea point to a short custodial term." },
+        { "id": "sentence.custodial_lower", "label": "Custody at the lower end of the range", "quality": "sound", "feedback": "Supply to a buyers' list crosses the custody threshold, but his lesser role under pressure, his youth and his good character keep the term at the bottom of the range. The late plea earns only a small reduction." },
+        { "id": "sentence.custodial_upper", "label": "Custody toward the top of the range", "quality": "unsound", "feedback": "The upper range is for leading roles and larger quantities. A pressured 19-year-old courier is nowhere near it." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose custody at the lower end of the range. The buyers' list shows ongoing supply, which crosses the custody threshold, but the messages show he was a pressured courier for an older dealer, and he is 19 with no record. His plea came on the morning of trial, so it earns only a small reduction.",
+          "cites": ["buyers_list", "lesser_role", "youth", "no_record", "late_plea"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would impose a community order. His guilty plea earns the full one-third reduction, and applied to a short custodial starting point for a 19-year-old courier, that brings the sentence below the custody threshold.",
+          "cites": ["late_plea", "youth", "lesser_role"],
+          "flawExplanation": "The full one-third reduction is only for a plea at the first opportunity. A plea on the morning of trial earns a much smaller reduction, so the arithmetic that removes custody is wrong."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would sentence toward the top of the range. He kept 38 bags ready for sale with a list of buyers, which is organised, ongoing supply, and he pleaded only at the last moment. A long custodial term is needed to deter street dealing.",
+          "cites": ["quantity", "buyers_list", "late_plea"],
+          "flawExplanation": "The advice ignores his lesser role under the direction and threats of an older dealer (F5), and his youth, both of which substantially reduce culpability."
+        }
+      ]
+    }
+  ]
+}

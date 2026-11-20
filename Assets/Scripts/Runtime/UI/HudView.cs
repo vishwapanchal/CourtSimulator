@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CourtSim.Core.Decisions;
+using CourtSim.Core.Sessions;
 using CourtSim.Runtime.Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ namespace CourtSim.Runtime.UI
         private readonly List<Image> _progressPips = new List<Image>();
         private UIFactory _factory;
         private CanvasGroupFader _rootFader;
+        private Text _overline;
         private Text _nextRuling;
         private RectTransform _pipRow;
         private Image _crosshair;
@@ -102,6 +104,26 @@ namespace CourtSim.Runtime.UI
                 : "Every ruling in this session is recorded. In later phases I will walk you through where my advice helped and where it misled you.");
         }
 
+        /// <summary>Shows the case title and, when the session has it, the advice for the pending ruling.</summary>
+        public void SetSession(CaseSession session)
+        {
+            if (session == null)
+            {
+                return;
+            }
+
+            _overline.text = "CASE · " + session.Case.Title.ToUpperInvariant();
+            if (session.IsComplete)
+            {
+                _assistant.SetMessage("Every ruling in this case is recorded. Approach the bench to see the debrief, including where my advice was flawed.");
+                _assistant.SetFootnote(string.Empty);
+            }
+            else
+            {
+                _assistant.Present(session);
+            }
+        }
+
         private void Update()
         {
             if (_toastRemaining <= 0f)
@@ -124,7 +146,7 @@ namespace CourtSim.Runtime.UI
             UIFactory.FitContent(card.gameObject, false, true);
             _factory.AddOutline(card.rectTransform, theme.Border);
 
-            _factory.CreateText("Overline", card.rectTransform, "SESSION · PREVIEW CASE", TextStyle.Overline);
+            _overline = _factory.CreateText("Overline", card.rectTransform, "SESSION · PREVIEW CASE", TextStyle.Overline);
             _nextRuling = _factory.CreateText("NextRuling", card.rectTransform, string.Empty, TextStyle.Body);
             _pipRow = _factory.CreateRect("Progress", card.rectTransform);
             UIFactory.AddHorizontalLayout(_pipRow.gameObject, new RectOffset(0, 0, 2, 0), 6f);

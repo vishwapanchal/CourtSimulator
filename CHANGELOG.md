@@ -5,16 +5,60 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Planned: Phase 2 (case data and AI assistant)
-- Case file schema and loader producing `DecisionPointDefinition`s; 3–5 authored or SimCourt-derived cases.
-- Claude API client on `UnityWebRequest` (streaming, timeouts, retries, key from environment or untracked file).
-- Assistant advisor that produces correct and deliberately flawed suggestions from a defined flaw taxonomy.
-- Evidence viewer bound to case exhibits.
-
-### Planned: Phase 3 (logging and adaptation)
-- Decision log (ruling, assistant suggestion, accept/challenge, latency) persisted per session.
-- Adaptive difficulty policy in Core, driven by the log.
+### Planned: Phase 3 (adaptation and XR)
+- Adaptive difficulty policy in Core, driven by the decision log: picks the next case, the number of
+  flawed suggestions and the flaw kinds to emphasise.
 - XR Interaction Toolkit rig implementing `IPlayerInputSource`.
+- Migrate UI text from legacy `UI.Text` to TextMeshPro.
+
+## [0.2.0] - 2026-11-20
+
+Phase 2: case data, the AI assistant and decision logging.
+
+### Added
+- Case file format `courtsim.case/1` (`docs/CASE_FORMAT.md`) and `CaseFileReader`, which validates strictly
+  and reports every error with its JSON path. `CaseRepository` loads `Assets/Resources/Cases` and skips
+  invalid files with a logged error.
+- Three fictional cases: `hale-burglary` (difficulty 1), `raman-assault` (2) and `okafor-supply` (3), each
+  with graded options, debrief feedback, sound advice and flawed variants for every decision point.
+- Flaw taxonomy (`misstated_law`, `misread_fact`, `omitted_factor`, `improper_factor`) and `AdvicePlanner`,
+  which decides in game logic, never in the model, which decision points get flawed advice.
+- Advisors: `ScriptedAdvisor` (authored offline advice), `ClaudeAdvisor` (Claude writes the rationale for the
+  planned ruling and flaw; the reply is validated against the case) and `FallbackAdvisor` (offline advice on
+  any failure). See `docs/AI_ADVISOR.md`.
+- `ClaudeClient` over an injectable `IHttpTransport`: model `claude-opus-5-5`, API version `2026-10-21`,
+  explicit `output_config.effort` (default `medium`), JSON-schema output, server-side fallbacks, up to two
+  retries on 408/409/429/5xx and transport errors honouring `retry-after` and `x-should-retry`, a 90 s
+  timeout, and refusal and `max_tokens` handling. `UnityWebRequestTransport` implements the transport.
+- Decision log (`courtsim.log/1`, JSON Lines) with `session_start`, `decision` and `session_end` records:
+  ruling, grade, advice, Accept/Challenge stance, time to decide, outcome (`trusted_sound`, `overrode_sound`,
+  `misled_by_flaw`, `caught_flaw`, `no_advice`) and a session summary with the flaw detection rate. Written to
+  `<persistentDataPath>/logs/`. (Planned for Phase 3; delivered early.)
+- `CaseSession` and `Debrief` in Core; `CaseSessionController` in Runtime, added by the bootstrap, with
+  Inspector settings for case, flawed-advice count, seed, Claude model, effort, API base URL and logging.
+- UI bound to the session: submissions in the decision dialog, advice with Accept/Challenge on the
+  assistant card, the case exhibit in the evidence viewer, and an end-of-session debrief with restart.
+- `CourtSim.Core.Json`, a small strict JSON reader and writer.
+- MCP for Unity 10.3.0 (CoplayDev, MIT) as an Editor-only package, and `.mcp.json` for Claude Code.
+- `docs/CASE_FORMAT.md` and `docs/AI_ADVISOR.md`.
+
+### Changed
+- The decision flow runs on case files. Placeholder content is used only when no valid case loads.
+- Rulings are recorded through `CaseSession`, which writes the log. `DecisionSubmitted` is still published.
+- The Claude client sends single non-streaming requests rather than streaming as planned: replies are
+  short structured JSON.
+- `Packages/manifest.json` now includes a Git-hosted package, so Unity needs git on `PATH` to resolve it.
+
+### Security
+- The API key is read only from `ANTHROPIC_API_KEY` or `<persistentDataPath>/anthropic_api_key.txt`
+  (`ApiKeyLocator`). It is never stored under `Assets/`, included in builds or logged.
+- A key on a trainee machine, or in any shipped client, can be extracted. For deployments, set the
+  controller's API base URL to a proxy that holds the key and issues its own tokens to clients.
+
+### Known issues
+- MCP for Unity needs the Editor open on the project, and batch mode (`tools/unity.ps1`) can't run while it
+  is. Close the Editor before headless runs.
+- Token usage and the model that actually answered (after a server-side fallback) are not yet logged.
 
 ## [0.1.1] - 2026-11-20
 

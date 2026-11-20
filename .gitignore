@@ -44,7 +44,8 @@ crashlytics-build.properties
 /tools/**/obj/
 /tools/**/TestResults/
 
-# Secrets (API keys arrive in Phase 2; never commit them)
+# Secrets: never commit API keys. CourtSim reads ANTHROPIC_API_KEY or a key file in persistentDataPath.
 .env
 *.env
 **/Resources/ApiKeys*.json
+**/anthropic_api_key*

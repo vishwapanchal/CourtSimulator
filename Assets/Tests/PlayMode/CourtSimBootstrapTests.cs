@@ -28,6 +28,7 @@ namespace CourtSim.Runtime.Tests
             _bootstrap = new GameObject("Bootstrap").AddComponent<CourtSimBootstrap>();
             _input = new FakeInputSource();
             _bootstrap.UseInputSource(_input);
+            _bootstrap.Sessions.Configure(string.Empty, 1, 1, false, false); // offline advice, no log files
             yield return null; // UIManager.Start opens the main menu.
         }
 

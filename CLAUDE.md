@@ -15,5 +15,10 @@ evidence admissibility, then sentencing, assisted by an AI that is sometimes del
 - Unity-side code is verified headless with the `unity-batch` skill (`tools/unity.ps1`). Run it after any
   change under `Assets/`. Only report Unity code as working once it passes there. If an interactive Editor
   has the project open, batch mode can't run: say so rather than claiming verification.
+- Case files (`Assets/Resources/Cases`, `docs/CASE_FORMAT.md`) are ground truth for scoring. Validate every
+  change with `CaseFileReader`; tests load each case in `TestCases.ShippedCaseIds`. Game logic picks flaws; Claude only writes wording.
+- Never commit API keys or place them under `Assets/`. Keys come from `ANTHROPIC_API_KEY` or `ApiKeyLocator`'s key file.
+- MCP for Unity (`.mcp.json`) works only while the Editor GUI has the project open, which blocks batch mode.
+  Close the Editor before `tools/unity.ps1`; if MCP tools fail, say the Editor isn't open.
 - `CourtRoom.unity` is generated. Regenerate it (`tools/unity.ps1 -Task scene`) instead of hand-editing it, and commit it.
 - Git: short-lived `feature/*` branches, Conventional Commits, squash fix-ups, update `CHANGELOG.md`.

@@ -21,9 +21,19 @@ project remains MIT.
 
 ## Unity packages
 
-The packages in `Packages/manifest.json` are Unity Technologies packages distributed under the
-Unity Companion License (<https://unity.com/legal/licenses/unity-companion-license>). They are not
-vendored into this repository.
+Apart from MCP for Unity (below), the packages in `Packages/manifest.json` are Unity Technologies
+packages distributed under the Unity Companion License
+(<https://unity.com/legal/licenses/unity-companion-license>). They are not vendored into this repository.
+
+## Editor-only developer tooling (not shipped in player builds)
+
+| Package | License |
+| --- | --- |
+| [MCP for Unity](https://github.com/CoplayDev/unity-mcp) 10.3.0 by CoplayDev: the `com.coplaydev.unity-mcp` Editor package (referenced from Git in `Packages/manifest.json`, not vendored) and the `mcpforunityserver` Python server that `.mcp.json` runs through `uvx` | MIT |
+
+MCP for Unity lets Claude Code drive the Unity Editor during development. It is an Editor package, so it
+is excluded from player builds. `uv`, which runs the server, is installed per developer and is not part
+of the repository.
 
 ## Out-of-Unity test tooling (`tools/CoreVerification`, not shipped in builds)
 

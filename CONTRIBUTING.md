@@ -11,7 +11,25 @@
    with a comment. Repositories without a license file, and copyleft or ShareAlike ones
    (e.g. CC BY-SA), are reference-only.
 4. **Every new dependency needs a justification** in the PR description. Prefer built-in Unity features.
-5. **Never commit secrets.** API keys come from the environment or an untracked file.
+5. **Never commit secrets.** API keys come from `ANTHROPIC_API_KEY` or a file in the user's persistent
+   data folder (`ApiKeyLocator`), never from anything under `Assets/`.
+
+## Adding a case
+
+Read `docs/CASE_FORMAT.md` first.
+
+- [ ] Copy a shipped case to `Assets/Resources/Cases/<id>.json`. Use a unique kebab-case `id` that matches
+      the file name.
+- [ ] Keep it fictional, and include the standard `jurisdictionNote`.
+- [ ] Give each decision point one `sound` option, `feedback` on every option, factors on both sides, one
+      sound advice entry and at least one flawed variant (two of different kinds where you can).
+- [ ] Make every flaw detectable from the record, and point to it (`(F4)`) in `flawExplanation`.
+- [ ] Check field spelling (`defence`, `flawExplanation`): the reader ignores unknown fields.
+- [ ] Add the id to `TestCases.ShippedCaseIds` (`Assets/Tests/EditMode/TestCases.cs`) and update the
+      shipped-case count in `CaseFileReaderTests`.
+- [ ] The tests pass, and Play shows no `is invalid and was skipped` error in the Console.
+- [ ] Play the case through with **Flawed Advice Count** 3 and a few seeds, and read each debrief.
+- [ ] Commit the `.json` and its `.meta`, and note the case in `CHANGELOG.md`.
 
 ## Git workflow
 
@@ -48,7 +66,8 @@ pwsh tools/unity.ps1 -Task playmode            # one suite (editmode | playmode 
 
 The script finds the Editor version from `ProjectSettings/ProjectVersion.txt` (override with `-UnityExe`
 or `UNITY_EXE`). It writes logs, NUnit XML and the HTML coverage report to `Logs/batch/`. Batch mode
-refuses to open a project that an interactive Editor already has open.
+refuses to open a project that an interactive Editor already has open, including one left open for
+MCP for Unity.
 
 ### In Unity, interactively
 
@@ -71,3 +90,5 @@ the desktop target. VR targets arrive with the XR phase.
 - [ ] No new warnings in the Unity console
 - [ ] `CHANGELOG.md` updated; `NOTICES.md` updated if third-party material was added
 - [ ] UI changes use `UIFactory`/`UITheme` only, with screenshots attached
+- [ ] New or changed cases follow `docs/CASE_FORMAT.md` and load without errors
+- [ ] No API key or other secret in the diff

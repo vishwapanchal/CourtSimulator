@@ -1,23 +1,31 @@
+using CourtSim.Core.Advising;
+using CourtSim.Core.Logging;
+using CourtSim.Core.Sessions;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace CourtSim.Runtime.UI
 {
     /// <summary>
-    /// The AI assistant's card: badge, title, advisory tag, message, a standing caution and (for now
-    /// disabled) Accept/Challenge actions. Used by the HUD side panel and inside the decision dialog, so
-    /// the assistant always looks and reads the same wherever it appears.
+    /// The AI assistant's card: badge, title, advisory tag, message, a standing caution, Accept/Challenge
+    /// actions and a source footnote. Used by the HUD side panel and inside the decision dialog, so the
+    /// assistant always looks and reads the same wherever it appears.
     /// </summary>
     public sealed class AssistantCardView
     {
         public const string Caution = "Suggestions can be deliberately flawed. Test every one against the evidence and the law before relying on it.";
 
         private readonly Text _message;
+        private readonly Text _footnote;
+        private readonly RectTransform _actions;
 
-        private AssistantCardView(RectTransform root, Text message, Button accept, Button challenge)
+        private AssistantCardView(RectTransform root, Text message, Text footnote, RectTransform actions, Button accept, Button challenge)
         {
             Root = root;
             _message = message;
+            _footnote = footnote;
+            _actions = actions;
             AcceptButton = accept;
             ChallengeButton = challenge;
         }
@@ -28,8 +36,11 @@ namespace CourtSim.Runtime.UI
 
         public Button ChallengeButton { get; }
 
+        public string Message => _message.text;
+
         /// <param name="standalone">True when not inside a layout group; the card then sizes its own height.</param>
-        public static AssistantCardView Create(UIFactory factory, Transform parent, bool standalone)
+        /// <param name="onAccept">Accept action; when both actions are null the action row is hidden.</param>
+        public static AssistantCardView Create(UIFactory factory, Transform parent, bool standalone, UnityAction onAccept = null, UnityAction onChallenge = null)
         {
             UITheme theme = factory.Theme;
             Image card = factory.CreatePanel("AssistantCard", parent, theme.SurfaceRaised);
@@ -62,18 +73,89 @@ namespace CourtSim.Runtime.UI
 
             RectTransform actions = factory.CreateRect("Actions", card.rectTransform);
             UIFactory.AddHorizontalLayout(actions.gameObject, new RectOffset(0, 0, 4, 0), 10f);
-            Button accept = factory.CreateButton("Accept", actions, "Accept advice", ButtonVariant.Secondary, null, 170f);
-            Button challenge = factory.CreateButton("Challenge", actions, "Challenge it", ButtonVariant.Secondary, null, 170f);
+            Button accept = factory.CreateButton("Accept", actions, "Accept advice", ButtonVariant.Secondary, onAccept, 170f);
+            Button challenge = factory.CreateButton("Challenge", actions, "Challenge it", ButtonVariant.Secondary, onChallenge, 170f);
             UIFactory.SetInteractable(accept, false);
             UIFactory.SetInteractable(challenge, false);
-            factory.CreateText("Footnote", card.rectTransform, "Interactive advice arrives in Phase 2.", TextStyle.Caption);
+            actions.gameObject.SetActive(onAccept != null || onChallenge != null);
+            Text footnote = factory.CreateText("Footnote", card.rectTransform, string.Empty, TextStyle.Caption);
 
-            return new AssistantCardView(card.rectTransform, message, accept, challenge);
+            return new AssistantCardView(card.rectTransform, message, footnote, actions, accept, challenge);
         }
 
         public void SetMessage(string message)
         {
             _message.text = message;
+        }
+
+        public void SetFootnote(string footnote)
+        {
+            _footnote.text = footnote ?? string.Empty;
+            _footnote.gameObject.SetActive(!string.IsNullOrEmpty(footnote));
+        }
+
+        /// <summary>Shows the session's advice for the pending decision, with actions enabled only when it is ready.</summary>
+        public void Present(CaseSession session)
+        {
+            if (session == null || session.IsComplete)
+            {
+                SetActions(false, AdviceStance.None);
+                return;
+            }
+
+            SetMessage(AdviceText.Describe(session));
+            SetFootnote(AdviceText.Footnote(session));
+            SetActions(session.CurrentAdviceState == AdviceState.Ready, session.CurrentStance);
+        }
+
+        private void SetActions(bool enabled, AdviceStance stance)
+        {
+            if (!_actions.gameObject.activeSelf)
+            {
+                return;
+            }
+
+            UIFactory.SetInteractable(AcceptButton, enabled && stance != AdviceStance.Accepted);
+            UIFactory.SetInteractable(ChallengeButton, enabled && stance != AdviceStance.Challenged);
+            UIFactory.SetButtonLabel(AcceptButton, stance == AdviceStance.Accepted ? "Accepted" : "Accept advice");
+            UIFactory.SetButtonLabel(ChallengeButton, stance == AdviceStance.Challenged ? "Challenged" : "Challenge it");
+        }
+    }
+
+    /// <summary>Wording for the assistant's messages.</summary>
+    public static class AdviceText
+    {
+        public static string Describe(CaseSession session)
+        {
+            switch (session.CurrentAdviceState)
+            {
+                case AdviceState.Ready:
+                    Advice advice = session.CurrentAdvice;
+                    string label = session.CurrentPoint.Definition.FindOption(advice.RecommendedOptionId)?.Label ?? advice.RecommendedOptionId;
+                    return $"<b>Suggested ruling: {label}</b>\n{advice.Rationale}\n<i>Confidence: {AdviceConfidences.ToWireName(advice.Confidence)}</i>";
+                case AdviceState.Failed:
+                    return "I could not prepare advice for this ruling. Rule on the record and the submissions.";
+                default:
+                    return "I am reviewing the record for this ruling. My suggestion will appear here shortly.";
+            }
+        }
+
+        public static string Footnote(CaseSession session)
+        {
+            Advice advice = session.CurrentAdvice;
+            if (advice == null)
+            {
+                return string.Empty;
+            }
+
+            if (advice.Source == AdviceSource.Claude)
+            {
+                return "Written by Claude for this case.";
+            }
+
+            return session.AdviceErrorAt(session.CurrentIndex) != null
+                ? "Offline advice: the Claude API was unavailable."
+                : "Offline advice from the case file.";
         }
     }
 }

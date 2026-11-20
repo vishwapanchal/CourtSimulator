@@ -20,6 +20,7 @@ namespace CourtSim.Runtime.App
         [SerializeField] private CourtroomRoot _courtroom;
         [SerializeField] private FirstPersonController _player;
         [SerializeField] private UIManager _ui;
+        [SerializeField] private CaseSessionController _sessions;
         [Tooltip("Build the courtroom, player and UI at runtime if they are not assigned.")]
         [SerializeField] private bool _assembleMissingParts = true;
 
@@ -31,6 +32,8 @@ namespace CourtSim.Runtime.App
         public FirstPersonController Player => _player;
 
         public UIManager UI => _ui;
+
+        public CaseSessionController Sessions => _sessions;
 
         /// <summary>The input source shared by the player, the interaction probe and the UI.</summary>
         public IPlayerInputSource InputSource => _input;
@@ -51,6 +54,21 @@ namespace CourtSim.Runtime.App
             }
 
             UseInputSource(new LegacyPlayerInputSource());
+
+            if (_sessions == null)
+            {
+                _sessions = GetComponent<CaseSessionController>();
+            }
+
+            if (_sessions == null && _assembleMissingParts)
+            {
+                _sessions = gameObject.AddComponent<CaseSessionController>();
+            }
+
+            if (_sessions != null)
+            {
+                _sessions.Initialize(_ui);
+            }
         }
 
         /// <summary>

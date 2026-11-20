@@ -56,6 +56,7 @@ namespace CourtSim.EditorTools.Tests
             Assert.That(bootstrap.Player, Is.Not.Null);
             Assert.That(bootstrap.UI, Is.Not.Null);
             Assert.That(bootstrap.Courtroom.Find(FixtureKind.JudgeBench), Is.Not.Null);
+            Assert.That(bootstrap.GetComponent<CaseSessionController>(), Is.Not.Null);
         }
 
         [Test]

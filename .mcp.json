@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "unityMCP": {
+      "command": "uvx",
+      "args": ["--python", "3.12", "--from", "mcpforunityserver==10.3.0", "mcp-for-unity", "--transport", "stdio"]
+    }
+  }
+}

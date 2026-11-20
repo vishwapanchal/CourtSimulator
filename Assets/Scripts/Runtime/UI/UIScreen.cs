@@ -60,6 +60,15 @@ namespace CourtSim.Runtime.UI
             }
         }
 
+        /// <summary>Re-renders dynamic content while the screen is visible, e.g. when advice arrives.</summary>
+        internal void Refresh()
+        {
+            if (IsVisible)
+            {
+                OnShown();
+            }
+        }
+
         /// <summary>Creates the screen's hierarchy under <paramref name="root"/> (stretched to the canvas).</summary>
         protected abstract void BuildContent(RectTransform root);
 

@@ -94,6 +94,7 @@ namespace CourtSim.EditorTools
             FirstPersonController player = PlayerFactory.Create(courtroom.SpawnPosition, courtroom.SpawnYaw);
             UIManager ui = UIManager.Create();
             var bootstrap = new GameObject("CourtSimBootstrap").AddComponent<CourtSimBootstrap>();
+            bootstrap.gameObject.AddComponent<CaseSessionController>();
             bootstrap.Configure(courtroom, player, ui);
 
             EditorAssetUtil.EnsureFolder(Path.GetDirectoryName(scenePath).Replace('\\', '/'));

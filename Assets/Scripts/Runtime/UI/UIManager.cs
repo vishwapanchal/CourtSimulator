@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using CourtSim.Core.Decisions;
 using CourtSim.Core.Events;
 using CourtSim.Core.Interaction;
+using CourtSim.Core.Logging;
+using CourtSim.Core.Sessions;
 using CourtSim.Core.UI;
 using CourtSim.Runtime.App;
 using CourtSim.Runtime.Common;
@@ -39,6 +41,7 @@ namespace CourtSim.Runtime.UI
         private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
         private IPlayerInputSource _input;
         private DecisionSequence _decisions;
+        private CaseSession _session;
         private UISpriteCache _sprites;
         private UIFactory _factory;
         private HudView _hud;
@@ -71,6 +74,11 @@ namespace CourtSim.Runtime.UI
         {
             get
             {
+                if (_session != null)
+                {
+                    return _session.Decisions;
+                }
+
                 if (_decisions == null)
                 {
                     _decisions = DecisionSequence.CreateStandardPlaceholder();
@@ -78,6 +86,43 @@ namespace CourtSim.Runtime.UI
 
                 return _decisions;
             }
+        }
+
+        /// <summary>The case session being played, or null when the decision flow runs on placeholder content.</summary>
+        public CaseSession Session => _session;
+
+        /// <summary>Raised when the trainee asks for a new session; <see cref="App.CaseSessionController"/> starts one.</summary>
+        public event Action RestartRequested;
+
+        /// <summary>Presents <paramref name="session"/>: decisions, advice, exhibits and the debrief come from it.</summary>
+        public void AttachSession(CaseSession session)
+        {
+            if (_session != null)
+            {
+                _session.AdviceChanged -= OnSessionAdviceChanged;
+            }
+
+            _session = session;
+            if (_session != null)
+            {
+                _session.AdviceChanged += OnSessionAdviceChanged;
+            }
+
+            RefreshDecisionViews();
+            RefreshOpenScreen();
+        }
+
+        /// <summary>Records the trainee's Accept/Challenge reaction to the pending advice.</summary>
+        public void SetAdviceStance(AdviceStance stance)
+        {
+            if (_session == null || _session.CurrentAdvice == null)
+            {
+                return;
+            }
+
+            _session.SetStance(stance);
+            ShowToast(stance == AdviceStance.Accepted ? "Advice accepted. Now make your ruling." : "Advice challenged. Now make your ruling.");
+            RefreshOpenScreen();
         }
 
         /// <summary>Creates a new UI root in the active scene.</summary>
@@ -156,7 +201,7 @@ namespace CourtSim.Runtime.UI
                 return false;
             }
 
-            DecisionRecord record = Decisions.Record(optionId);
+            DecisionRecord record = _session != null ? _session.Submit(optionId).Record : Decisions.Record(optionId);
             GameServices.Events.Publish(new DecisionSubmitted(record, option.Label));
             RefreshDecisionViews();
             ShowToast($"Ruling recorded: {option.Label}");
@@ -166,9 +211,17 @@ namespace CourtSim.Runtime.UI
 
         public void RestartSession()
         {
-            Decisions.Reset();
-            RefreshDecisionViews();
-            ShowToast("New session started");
+            if (RestartRequested != null)
+            {
+                RestartRequested.Invoke();
+            }
+            else
+            {
+                Decisions.Reset();
+                RefreshDecisionViews();
+            }
+
+            ShowToast(_session != null ? $"New session: {_session.Case.Title}" : "New session started");
         }
 
         public void QuitApplication()
@@ -248,6 +301,11 @@ namespace CourtSim.Runtime.UI
         private void OnDestroy()
         {
             _stack.TopChanged -= OnTopChanged;
+            if (_session != null)
+            {
+                _session.AdviceChanged -= OnSessionAdviceChanged;
+            }
+
             _sprites?.Dispose();
             _sprites = null;
             if (_ownsTheme)
@@ -340,7 +398,31 @@ namespace CourtSim.Runtime.UI
             if (_hud != null)
             {
                 _hud.SetDecisionProgress(Decisions);
+                _hud.SetSession(_session);
             }
+        }
+
+        private void RefreshOpenScreen()
+        {
+            if (_screens.TryGetValue(_stack.Top, out UIScreen screen))
+            {
+                screen.Refresh();
+            }
+        }
+
+        private void OnSessionAdviceChanged(int index)
+        {
+            if (_session == null || index != _session.CurrentIndex)
+            {
+                return;
+            }
+
+            if (_hud != null)
+            {
+                _hud.SetSession(_session);
+            }
+
+            RefreshOpenScreen();
         }
 
         private void OnInteractionRequested(InteractionRequested evt)

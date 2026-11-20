@@ -5,14 +5,18 @@ The trainee presides as judge and makes three rulings (**bail**, **admissibility
 **sentencing**) while an AI assistant offers advice that is sometimes deliberately wrong. Later phases
 log every ruling and adapt case difficulty to the trainee's performance.
 
-> **Status: Phase 1, environment preview.** A navigable courtroom, the full UI system and the
-> decision flow run on placeholder content. Case data, the Claude-powered assistant and decision
-> logging arrive in Phases 2–3. See `CHANGELOG.md`.
+> **Status: Phase 2, case data and AI assistant.** Three fictional cases drive the decision flow.
+> Every ruling is graded against the case file and logged, the assistant's advice comes from the case
+> file or from Claude, and a debrief at the end reveals which suggestions were flawed. Adaptive
+> difficulty and the VR rig arrive in Phase 3. See `CHANGELOG.md`.
 
 ## Requirements
 
 - **Unity 2022.3 LTS** (project file pins 2022.3.62f3; any newer 2022.3 patch works). Built-in render pipeline.
 - Optional, to run core tests without Unity: **.NET SDK 8.0+**.
+- Optional, for Claude-written advice: an **Anthropic API key** (see below).
+- Optional, for MCP for Unity: **git** on `PATH` (Unity fetches the package from GitHub) and
+  **uv** (`winget install --id astral-sh.uv`).
 - Keep the checkout **outside OneDrive/Dropbox/iCloud** (e.g. `C:\dev\CourtSim`). Sync clients lock
   and rewrite files in `Library/` and corrupt the import cache.
 
@@ -33,7 +37,43 @@ it with **CourtSim → Generate CourtRoom Scene** or `tools/unity.ps1 -Task scen
 | Pause / back | `Esc` |
 
 Walk through the gate in the bar. Look at the **judge's bench** and press `E` to make each ruling in
-turn, or examine the **evidence display** on the left wall.
+turn, or examine the **evidence display** on the left wall. The assistant card suggests a ruling at each
+step; **Accept** or **Challenge** it, then rule. After the third ruling the dialog shows the debrief. Each
+new session plays the next case, from easiest to hardest.
+
+## Claude-written advice (optional)
+
+Without an API key the assistant uses the advice authored in the case file. To have Claude write it,
+set `ANTHROPIC_API_KEY` for your user, or put the key alone in
+`%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\anthropic_api_key.txt`, then restart the Editor.
+The assistant card then reads "Written by Claude for this case." Any API failure falls back to the
+offline advice.
+
+Never commit a key or put it under `Assets/`. A key on a trainee's machine can be read by anyone who uses
+it, so for deployments point the controller's **Api Base Url** at a proxy that holds the key.
+`docs/AI_ADVISOR.md` covers the request, the fallback rules and the proxy setup.
+
+## Decision logs
+
+Each session writes a JSON Lines log (schema `courtsim.log/1`) to
+`%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\logs\` (`Application.persistentDataPath/logs`
+on other platforms). The format is in `docs/AI_ADVISOR.md`.
+
+## MCP for Unity (Claude Code tooling)
+
+The project includes [MCP for Unity](https://github.com/CoplayDev/unity-mcp) as an Editor package, and
+`.mcp.json` registers its server for Claude Code. One-time setup:
+
+1. Install uv: `winget install --id astral-sh.uv`. The first run of `uvx` downloads Python 3.12 and
+   `mcpforunityserver` 10.3.0. (Python is pinned to 3.12 because uv's default lacked `pyyaml` wheels.)
+2. Open the project in the Unity Editor and **leave it open**. The bridge runs only while the Editor GUI
+   has the project open.
+3. Start Claude Code in `C:\dev\CourtSim`. It picks up `.mcp.json` (server `unityMCP`); approve it when
+   asked.
+4. In Unity, open **Window → MCP for Unity** and confirm the bridge is running.
+
+Batch tooling (`tools/unity.ps1`) cannot run while the Editor has the project open. Close the Editor
+before a headless run, and reopen it to use MCP again.
 
 ## Tests
 
@@ -43,25 +83,31 @@ turn, or examine the **evidence display** on the left wall.
 | Everything in Unity, headless: compile, regenerate scene, EditMode + PlayMode, coverage gate 80% | `pwsh tools/unity.ps1 -Coverage` | Yes (installed, no GUI) |
 | Same suites interactively | Window → General → Test Runner | Yes |
 
-`tools/unity.ps1` runs Unity in batch mode, so close any Editor that has this project open first.
+`tools/unity.ps1` runs Unity in batch mode, so close any Editor that has this project open first
+(including one left open for MCP for Unity).
 Current line coverage is **94%** across all CourtSim assemblies in Unity, and **95%** for Core under .NET.
 
 ## Repository layout
 
 ```
 Assets/
-  Scripts/Core/      CourtSim.Core: pure C#, no UnityEngine (events, layout, decisions, math)
-  Scripts/Runtime/   CourtSim.Runtime: bootstrap, courtroom builder, player, interaction, UI
+  Scripts/Core/      CourtSim.Core: pure C#, no UnityEngine (events, layout, decisions, cases,
+                     advice, Claude client, logging, sessions, JSON)
+  Scripts/Runtime/   CourtSim.Runtime: bootstrap, session controller, case loading, HTTP transport,
+                     courtroom builder, player, interaction, UI
   Scripts/Editor/    CourtSim.Editor: scene generator, material assets
+  Resources/Cases/   Case files (courtsim.case/1 JSON)
   Tests/EditMode/    Core unit tests (also run by tools/verify-core.ps1)
   Tests/PlayMode/    Runtime integration tests (builder, UI flow, player, bootstrap)
   Tests/Editor/      Editor tooling tests (scene generator)
   Scenes/ Materials/ Generated by CourtSim → Generate CourtRoom Scene (committed)
-docs/                Architecture, style guide, Phase 0 audit
+docs/                Architecture, case format, AI advisor, style guide, Phase 0 audit
 tools/               verify-core.ps1 (core under .NET) and unity.ps1 (headless Unity driver)
+.mcp.json            MCP for Unity server for Claude Code
 ```
 
-Read `docs/ARCHITECTURE.md` for how the pieces fit, and `CONTRIBUTING.md` before making changes.
+Read `docs/ARCHITECTURE.md` for how the pieces fit, `docs/CASE_FORMAT.md` before writing a case, and
+`CONTRIBUTING.md` before making changes.
 
 ## License
 
