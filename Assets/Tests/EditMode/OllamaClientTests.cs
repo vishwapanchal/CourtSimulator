@@ -31,10 +31,10 @@ namespace CourtSim.Core.Tests
             var options = new OllamaClientOptions();
 
             Assert.That(options.BaseUrl, Is.EqualTo("http://127.0.0.1:11434"));
-            Assert.That(options.Model, Is.EqualTo("qwen3.5:0.8b"));
+            Assert.That(options.Model, Is.EqualTo("qwen3.5:9b"));
             Assert.That(options.Timeout, Is.EqualTo(TimeSpan.FromSeconds(180)));
             Assert.That(options.Temperature, Is.EqualTo(0.3));
-            Assert.That(options.ContextTokens, Is.EqualTo(8192));
+            Assert.That(options.ContextTokens, Is.EqualTo(4096));
             Assert.That(options.KeepAlive, Is.EqualTo("15m"));
             Assert.That(Client().Options, Is.Not.Null);
         }

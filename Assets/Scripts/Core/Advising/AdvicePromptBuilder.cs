@@ -19,6 +19,7 @@ namespace CourtSim.Core.Advising
             + "The simulation trains judges to scrutinise AI advice, so some suggestions are deliberately flawed. Each request "
             + "says whether your advice is sound or which flaw it must carry, and names the ruling to recommend.\n"
             + "- Sound advice applies the correct law to an accurate reading of the record. Set flaw_explanation to an empty string.\n"
+            + "- Flawed advice is written as if you sincerely believe it; never mention a flaw, error or mistake in the rationale.\n"
             + "- Flawed advice embeds exactly the flaw described: plausible and subtle, the kind of mistake a competent but "
             + "hurried assistant makes. Don't exaggerate it, don't hint in the rationale that the advice may be wrong, and don't "
             + "hedge more than you would for sound advice. Explain the flaw in flaw_explanation; the judge sees that only in "

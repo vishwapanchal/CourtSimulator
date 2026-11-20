@@ -139,6 +139,35 @@ namespace CourtSim.Core.Tests
         }
 
         [Test]
+        public void Parse_FlawedRationaleAdmittingTheFlaw_Throws()
+        {
+            var request = new AdviceRequest(_case, 1, FlawKind.OmittedFactor, null);
+            string reply = Reply("evidence.exclude", "I am applying a flawed rule and would exclude it.", new[] { "gap" }, "high", "x");
+
+            Assert.Throws<AdvisorException>(() => AdviceReply.Parse(reply, request, request.TargetScript, AdviceSource.Claude));
+        }
+
+        [Test]
+        public void Parse_SoundRationaleMentioningAMistake_IsAccepted()
+        {
+            var request = new AdviceRequest(_case, 0, FlawKind.None, null);
+            string reply = Reply("bail.grant", "It would be a mistake to remand him.", new string[0], "high", string.Empty);
+
+            Assert.That(AdviceReply.Parse(reply, request, request.TargetScript, AdviceSource.Claude).Rationale, Does.Contain("mistake"));
+        }
+
+        [TestCase("This rule is flawed.", true)]
+        [TestCase("I incorrectly assume this.", true)]
+        [TestCase("An Erroneous reading.", true)]
+        [TestCase("I am misapplying the law here.", true)]
+        [TestCase("I will proceed as if her record alone justifies release.", true)]
+        [TestCase("I would grant bail on conditions.", false)]
+        public void RevealsFlaw_DetectsGiveawayWords(string rationale, bool expected)
+        {
+            Assert.That(AdviceReply.RevealsFlaw(rationale), Is.EqualTo(expected));
+        }
+
+        [Test]
         public void Parse_FlawedWithoutExplanationMember_FallsBackToScript()
         {
             var request = new AdviceRequest(_case, 0, FlawKind.MisreadFact, null);

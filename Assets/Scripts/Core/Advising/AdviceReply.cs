@@ -32,6 +32,13 @@ namespace CourtSim.Core.Advising
                 throw new AdvisorException("The model's reply had no rationale.");
             }
 
+            // Small models sometimes give the game away ("I am applying a flawed rule"). Such advice would teach
+            // nothing, so it is rejected and the authored advice is used instead.
+            if (target.Flaw != FlawKind.None && RevealsFlaw(rationale))
+            {
+                throw new AdvisorException("The model's flawed rationale openly admits the flaw.");
+            }
+
             // Keep only factor ids that exist at this decision point, without duplicates.
             var cited = new List<string>();
             JsonValue citedJson = reply.Get("cited_factor_ids");
@@ -64,6 +71,21 @@ namespace CourtSim.Core.Advising
             }
 
             return new Advice(request.Point.Kind, recommended, rationale.Trim(), cited, confidence, target.Flaw, explanation.Trim(), source);
+        }
+
+        /// <summary>True if the rationale names its own flaw, e.g. "flawed", "I am misapplying" or "incorrectly".</summary>
+        public static bool RevealsFlaw(string rationale)
+        {
+            string text = rationale.ToLowerInvariant();
+            foreach (string giveaway in new[] { "flaw", "mistake", "incorrect", "erroneous", "misappl", "misstat", "misread", "wrongly", "proceed as if", "deliberately wrong" })
+            {
+                if (text.Contains(giveaway))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

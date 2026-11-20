@@ -12,9 +12,9 @@ namespace CourtSim.Core.Ollama
     {
         public const string DefaultBaseUrl = "http://127.0.0.1:11434";
 
-        /// <summary>Qwen 3.5 0.8B (~1.3 GB): replies in a second or two on a laptop GPU. Larger tags such as
-        /// "qwen3.5:4b" or "qwen3.5:9b" write better reasoning if speed matters less.</summary>
-        public const string DefaultModel = "qwen3.5:0.8b";
+        /// <summary>Qwen 3.5 9B (4-bit, 5.6 GB with a 4k context) is the strongest model that fits fully in an 8 GB
+        /// GPU: ~30 s first load, then ~3 s per advice. Use "qwen3.5:0.8b" on machines without such a GPU.</summary>
+        public const string DefaultModel = "qwen3.5:9b";
 
         public string BaseUrl { get; set; } = DefaultBaseUrl;
 
@@ -26,8 +26,8 @@ namespace CourtSim.Core.Ollama
         /// <summary>Low temperature keeps advice focused on the record; a little variety avoids identical wording.</summary>
         public double Temperature { get; set; } = 0.3;
 
-        /// <summary>Context window in tokens. The case brief is well under 3,000 tokens.</summary>
-        public int ContextTokens { get; set; } = 8192;
+        /// <summary>Context window in tokens. The brief plus reply stay under 2,000 tokens; 4,096 keeps a 9B model fully in 8 GB of VRAM.</summary>
+        public int ContextTokens { get; set; } = 4096;
 
         /// <summary>How long Ollama keeps the model loaded between requests, so later advice is fast.</summary>
         public string KeepAlive { get; set; } = "15m";
