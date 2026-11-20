@@ -10,7 +10,7 @@ namespace CourtSim.Core.Advising
     /// <summary>Everything an advisor needs to produce advice for one decision point.</summary>
     public sealed class AdviceRequest
     {
-        public AdviceRequest(CaseFile caseFile, int pointIndex, FlawKind flaw, IReadOnlyList<DecisionRecord> priorRulings)
+        public AdviceRequest(CaseFile caseFile, int pointIndex, FlawKind flaw, IReadOnlyList<DecisionRecord> priorRulings, ExplanationDetail detail = ExplanationDetail.Standard)
         {
             Case = caseFile ?? throw new ArgumentNullException(nameof(caseFile));
             if (pointIndex < 0 || pointIndex >= caseFile.DecisionPoints.Count)
@@ -21,7 +21,11 @@ namespace CourtSim.Core.Advising
             PointIndex = pointIndex;
             Flaw = flaw;
             PriorRulings = priorRulings ?? Array.Empty<DecisionRecord>();
+            Detail = detail;
         }
+
+        /// <summary>How much the advice should explain itself; raised by the adaptive controller.</summary>
+        public ExplanationDetail Detail { get; }
 
         public CaseFile Case { get; }
 

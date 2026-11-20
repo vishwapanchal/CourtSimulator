@@ -40,6 +40,7 @@ namespace CourtSim.Runtime.Tests
             _bootstrap = new GameObject("Bootstrap").AddComponent<CourtSimBootstrap>();
             _bootstrap.UseInputSource(new FakeInputSource());
             Controller.Configure(CaseId, 1, 42, false, true);
+            Controller.UseTrainee("test-" + Guid.NewGuid().ToString("N")); // never touch a real trainee's state
             yield return null; // Start(): the controller starts the first session, the UI builds.
             TrackLog();
         }
@@ -47,6 +48,12 @@ namespace CourtSim.Runtime.Tests
         [TearDown]
         public void TearDown()
         {
+            if (_bootstrap != null && Controller != null)
+            {
+                _logFiles.Add(Controller.TraineeFilePath);
+                Controller.Configure(string.Empty, 0, 0, false, false); // stop OnDestroy re-saving state
+            }
+
             if (_bootstrap != null)
             {
                 DestroyIfAlive(_bootstrap.Player);
@@ -142,12 +149,17 @@ namespace CourtSim.Runtime.Tests
             }
 
             List<JsonValue> records = ReadLog(Controller.LogFilePath);
-            for (int i = 1; i <= 3; i++)
+            var decisions = records.FindAll(r => r.GetString("type") == "decision");
+            Assert.That(decisions.Count, Is.EqualTo(3));
+            foreach (JsonValue decision in decisions)
             {
-                Assert.That(records[i].Get("advice").GetString("flaw"), Is.Not.EqualTo("none"));
-                Assert.That(records[i].GetString("outcome"), Is.EqualTo("misled_by_flaw"));
+                Assert.That(decision.Get("advice").GetString("flaw"), Is.Not.EqualTo("none"));
+                Assert.That(decision.GetString("outcome"), Is.EqualTo("misled_by_flaw"));
             }
 
+            // Two flawed suggestions accepted in a row fires the first adaptive rule.
+            Assert.That(records.Exists(r => r.GetString("type") == "adaptation"), Is.True);
+            Assert.That(Controller.Adaptation.Subtlety, Is.GreaterThanOrEqualTo(1));
             Assert.That(Session.Summary.TimesMisled, Is.EqualTo(3));
             Assert.That(Debrief.Headline(Session.Summary), Does.Contain("caught 0 of 3"));
         }

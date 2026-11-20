@@ -114,6 +114,12 @@ namespace CourtSim.Core.Advising
                 brief.Append("The specific flaw to embed: ").Append(target.FlawExplanation).Append('\n');
             }
 
+            if (request.Detail == ExplanationDetail.Detailed)
+            {
+                // The trainee has been rejecting sound advice, so this time the reasoning is spelled out step by step.
+                brief.Append("Explanation: detailed. Use four to six sentences (up to 160 words) and explain how each factor you cite supports the ruling, describing every factor in plain words, never by its id.\n");
+            }
+
             brief.Append("</instructions>");
             return brief.ToString();
         }

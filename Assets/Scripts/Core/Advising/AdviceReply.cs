@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CourtSim.Core.Cases;
+using CourtSim.Core.Decisions;
 using CourtSim.Core.Json;
 
 namespace CourtSim.Core.Advising
@@ -39,6 +40,13 @@ namespace CourtSim.Core.Advising
                 throw new AdvisorException("The model's flawed rationale openly admits the flaw.");
             }
 
+            // Trainees should read plain language, not internal ids such as "bail.grant" or "early_plea".
+            string leakedId = FindLeakedId(rationale, request);
+            if (leakedId != null)
+            {
+                throw new AdvisorException($"The model's rationale contains the internal id '{leakedId}'.");
+            }
+
             // Keep only factor ids that exist at this decision point, without duplicates.
             var cited = new List<string>();
             JsonValue citedJson = reply.Get("cited_factor_ids");
@@ -71,6 +79,34 @@ namespace CourtSim.Core.Advising
             }
 
             return new Advice(request.Point.Kind, recommended, rationale.Trim(), cited, confidence, target.Flaw, explanation.Trim(), source);
+        }
+
+        /// <summary>
+        /// The first option or factor id written in the rationale, or null. Only ids with "." or "_" are checked,
+        /// because plain-word ids like "ties" are ordinary English.
+        /// </summary>
+        public static string FindLeakedId(string rationale, AdviceRequest request)
+        {
+            var ids = new List<string>();
+            foreach (DecisionOption option in request.Point.Definition.Options)
+            {
+                ids.Add(option.Id);
+            }
+
+            foreach (CaseFactor factor in request.Point.Factors)
+            {
+                ids.Add(factor.Id);
+            }
+
+            foreach (string id in ids)
+            {
+                if ((id.Contains(".") || id.Contains("_")) && rationale.Contains(id))
+                {
+                    return id;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>True if the rationale names its own flaw, e.g. "flawed", "I am misapplying" or "incorrectly".</summary>

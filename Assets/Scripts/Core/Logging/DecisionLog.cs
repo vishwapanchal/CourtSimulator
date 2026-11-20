@@ -84,6 +84,22 @@ namespace CourtSim.Core.Logging
             }
         }
 
+        /// <summary>Reverse of <see cref="Outcome"/>, for reading saved trainee state.</summary>
+        public static bool TryParseOutcome(string name, out AdviceOutcome outcome)
+        {
+            foreach (AdviceOutcome candidate in new[] { AdviceOutcome.NoAdvice, AdviceOutcome.TrustedSound, AdviceOutcome.OverrodeSound, AdviceOutcome.MisledByFlaw, AdviceOutcome.CaughtFlaw })
+            {
+                if (Outcome(candidate) == name)
+                {
+                    outcome = candidate;
+                    return true;
+                }
+            }
+
+            outcome = AdviceOutcome.NoAdvice;
+            return false;
+        }
+
         public static string Source(AdviceSource source)
         {
             switch (source)

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CourtSim.Core.Adaptive;
 using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Claude;
+using CourtSim.Core.Json;
 using CourtSim.Core.Logging;
 using CourtSim.Core.Ollama;
 using CourtSim.Core.Sessions;
@@ -57,7 +59,13 @@ namespace CourtSim.Runtime.App
         [SerializeField] private string _apiBaseUrl = string.Empty;
 
         [Header("Logging")]
+        [Tooltip("Also saves the trainee's adaptive difficulty between sessions.")]
         [SerializeField] private bool _writeLogFile = true;
+
+        [Header("Adaptive difficulty")]
+        [Tooltip("Whose difficulty state to load and save. One file per trainee in persistentDataPath/trainees.")]
+        [SerializeField] private string _traineeId = "default";
+        [SerializeField] private bool _adaptive = true;
 
         private readonly MemoryLogSink _memoryLog = new MemoryLogSink();
         private IReadOnlyList<CaseFile> _cases = Array.Empty<CaseFile>();
@@ -65,6 +73,7 @@ namespace CourtSim.Runtime.App
         private CaseSession _session;
         private FallbackAdvisor _fallbackAdvisor;
         private int _caseCursor = -1;
+        private AdaptiveController _adaptation;
         private IAdvisor _advisorOverride;
 
         public CaseSession Session => _session;
@@ -78,6 +87,11 @@ namespace CourtSim.Runtime.App
         public string AdvisorLabel { get; private set; }
 
         public static string LogDirectory => Path.Combine(Application.persistentDataPath, "logs");
+
+        /// <summary>The trainee's adaptive difficulty state (loaded on the first session), or null if adaptation is off.</summary>
+        public AdaptiveController Adaptation => _adaptation;
+
+        private string TraineeFile => Path.Combine(Application.persistentDataPath, "trainees", (string.IsNullOrWhiteSpace(_traineeId) ? "default" : _traineeId.Trim()) + ".json");
 
         public event Action<CaseSession> SessionStarted;
 
@@ -116,6 +130,16 @@ namespace CourtSim.Runtime.App
             _useModel = useModel;
             _writeLogFile = writeLogFile;
         }
+
+        /// <summary>Selects whose adaptive state is loaded and saved. Call before the first session.</summary>
+        public void UseTrainee(string traineeId)
+        {
+            _traineeId = traineeId;
+            _adaptation = null;
+        }
+
+        /// <summary>Where this trainee's adaptive state is saved.</summary>
+        public string TraineeFilePath => TraineeFile;
 
         /// <summary>Chooses the language model used when <c>useModel</c> is on.</summary>
         public void UseBackend(AdvisorBackend backend)
@@ -168,6 +192,14 @@ namespace CourtSim.Runtime.App
                 };
             }
 
+            if (_adaptive)
+            {
+                _adaptation = _adaptation ?? LoadAdaptation();
+                _session.UseAdaptation(_adaptation, random);
+                _session.Adapted += OnAdapted;
+                _session.Completed += _ => SaveAdaptation();
+            }
+
             _session.Start();
             if (_ui != null)
             {
@@ -186,8 +218,56 @@ namespace CourtSim.Runtime.App
             }
         }
 
+        private void OnAdapted(string note)
+        {
+            Debug.Log("[adaptive] " + note);
+            if (_ui != null)
+            {
+                _ui.ShowToast(note);
+            }
+
+            SaveAdaptation();
+        }
+
+        // Trainee state is a small JSON file; it is only written when file logging is on, so tests leave no files.
+        private AdaptiveController LoadAdaptation()
+        {
+            try
+            {
+                if (_writeLogFile && File.Exists(TraineeFile) && JsonReader.TryParse(File.ReadAllText(TraineeFile), out JsonValue json, out _))
+                {
+                    return AdaptiveController.FromJson(json);
+                }
+            }
+            catch (IOException ex)
+            {
+                Debug.LogWarning("Could not read trainee state; starting fresh. " + ex.Message);
+            }
+
+            return new AdaptiveController();
+        }
+
+        private void SaveAdaptation()
+        {
+            if (!_writeLogFile || _adaptation == null)
+            {
+                return;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(TraineeFile));
+                File.WriteAllText(TraineeFile, _adaptation.ToJson().ToJson());
+            }
+            catch (IOException ex)
+            {
+                Debug.LogWarning("Could not save trainee state. " + ex.Message);
+            }
+        }
+
         private void OnDestroy()
         {
+            SaveAdaptation();
             _session?.Cancel();
             if (_ui != null)
             {

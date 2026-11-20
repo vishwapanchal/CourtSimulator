@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CourtSim.Core.Adaptive;
 using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Decisions;
@@ -32,6 +33,7 @@ namespace CourtSim.Core.Sessions
         private readonly Advice[] _advice;
         private readonly AdviceState[] _adviceStates;
         private readonly string[] _adviceErrors;
+        private readonly ExplanationDetail[] _details;
         private readonly Task<Advice>[] _adviceTasks;
         private readonly List<DecisionLogEntry> _entries = new List<DecisionLogEntry>();
         private readonly CancellationTokenSource _cancellation = new CancellationTokenSource();
@@ -39,6 +41,8 @@ namespace CourtSim.Core.Sessions
         private DateTime _pointStartedAt;
         private DateTime? _presentedAt;
         private bool _started;
+        private AdaptiveController _adaptive;
+        private Random _random = new Random();
 
         /// <param name="advisorLabel">Recorded in the log, e.g. "claude-opus-5-5" or "scripted".</param>
         public CaseSession(CaseFile caseFile, AdvicePlan plan, IAdvisor advisor, IDecisionLogSink sink, string advisorLabel = "scripted", Func<DateTime> clock = null, string sessionId = null)
@@ -56,11 +60,15 @@ namespace CourtSim.Core.Sessions
             _advice = new Advice[count];
             _adviceStates = new AdviceState[count];
             _adviceErrors = new string[count];
+            _details = new ExplanationDetail[count];
             _adviceTasks = new Task<Advice>[count];
         }
 
         /// <summary>Raised (on the caller's synchronization context) when advice for a decision point changes state.</summary>
         public event Action<int> AdviceChanged;
+
+        /// <summary>Raised with a plain-language note when the adaptive controller changes difficulty.</summary>
+        public event Action<string> Adapted;
 
         /// <summary>Raised once, after the last ruling is logged.</summary>
         public event Action<SessionSummary> Completed;
@@ -91,6 +99,25 @@ namespace CourtSim.Core.Sessions
 
         public SessionSummary Summary => SessionSummary.From(_entries);
 
+        /// <summary>
+        /// Lets <paramref name="controller"/> choose each flaw kind and explanation detail, and feeds it every
+        /// ruling. Call before <see cref="Start"/>. The plan still decides <em>which</em> points are flawed.
+        /// </summary>
+        public void UseAdaptation(AdaptiveController controller, Random random = null)
+        {
+            _adaptive = controller;
+            _random = random ?? _random;
+        }
+
+        /// <summary>The trainee's adaptive state, or null if adaptation is off.</summary>
+        public AdaptiveController Adaptation => _adaptive;
+
+        /// <summary>The explanation detail used for decision point <paramref name="index"/>.</summary>
+        public ExplanationDetail DetailAt(int index)
+        {
+            return index >= 0 && index < _details.Length ? _details[index] : ExplanationDetail.Standard;
+        }
+
         /// <summary>Logs the session start and begins fetching advice for the first decision point.</summary>
         public void Start()
         {
@@ -104,7 +131,9 @@ namespace CourtSim.Core.Sessions
             var plan = new List<string>();
             for (int i = 0; i < Plan.Count; i++)
             {
-                plan.Add(FlawKinds.ToWireName(Plan.FlawAt(i)));
+                // With adaptation on, the controller picks the kind when the advice is requested; each decision record has it.
+                FlawKind planned = Plan.FlawAt(i);
+                plan.Add(_adaptive != null && planned != FlawKind.None ? "flawed" : FlawKinds.ToWireName(planned));
             }
 
             _sink.Write(JsonValue.NewObject()
@@ -181,7 +210,28 @@ namespace CourtSim.Core.Sessions
                 now,
                 adviceError);
             _entries.Add(entry);
-            _sink.Write(entry.ToJson());
+            JsonValue logRecord = entry.ToJson();
+            if (advice != null)
+            {
+                logRecord.Get("advice").Set("detail", _details[index] == ExplanationDetail.Detailed ? "detailed" : "standard");
+            }
+
+            _sink.Write(logRecord);
+
+            // The adaptive controller learns from every ruling and may change the difficulty for what follows.
+            string adaptation = _adaptive?.Record(entry.Outcome);
+            if (adaptation != null)
+            {
+                _sink.Write(JsonValue.NewObject()
+                    .Set("type", "adaptation")
+                    .Set("schema", LogNames.Schema)
+                    .Set("sessionId", SessionId)
+                    .Set("afterIndex", index)
+                    .Set("note", adaptation)
+                    .Set("state", _adaptive.ToJson())
+                    .Set("timestampUtc", LogNames.Timestamp(now)));
+                Adapted?.Invoke(adaptation);
+            }
 
             _stance = AdviceStance.None;
             _presentedAt = null;
@@ -235,7 +285,15 @@ namespace CourtSim.Core.Sessions
 
         private async Task<Advice> LoadAdviceAsync(int index, CancellationToken cancellationToken)
         {
-            var request = new AdviceRequest(Case, index, Plan.FlawAt(index), new List<DecisionRecord>(Decisions.Records));
+            FlawKind flaw = Plan.FlawAt(index);
+            if (_adaptive != null && flaw != FlawKind.None)
+            {
+                // The plan says this point is flawed; the controller picks how subtle the flaw is.
+                flaw = _adaptive.ChooseFlaw(Case.DecisionPoints[index].AvailableFlaws(), _random);
+            }
+
+            _details[index] = _adaptive != null ? _adaptive.TakeExplanationDetail() : ExplanationDetail.Standard;
+            var request = new AdviceRequest(Case, index, flaw, new List<DecisionRecord>(Decisions.Records), _details[index]);
             try
             {
                 Advice advice = await _advisor.GetAdviceAsync(request, cancellationToken);

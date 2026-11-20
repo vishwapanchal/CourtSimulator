@@ -26,6 +26,16 @@ namespace CourtSim.Core.Advising
         ImproperFactor,
     }
 
+    /// <summary>How fully a suggestion explains its reasoning.</summary>
+    public enum ExplanationDetail
+    {
+        /// <summary>Two to four sentences.</summary>
+        Standard,
+
+        /// <summary>Walks through every factor relied on; used after a trainee rejects sound advice twice running.</summary>
+        Detailed,
+    }
+
     public enum AdviceConfidence
     {
         Low,

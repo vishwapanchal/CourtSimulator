@@ -28,12 +28,28 @@ namespace CourtSim.Core.Advising
             return new Advice(
                 request.Point.Kind,
                 script.RecommendedOptionId,
-                script.Rationale,
+                request.Detail == ExplanationDetail.Detailed ? WithFactors(script, request) : script.Rationale,
                 script.CitedFactorIds,
                 script.Confidence,
                 script.Flaw,
                 script.FlawExplanation,
                 AdviceSource.Scripted);
+        }
+
+        // Detailed explanations spell out each factor the advice relies on, in plain words.
+        private static string WithFactors(AdviceScript script, AdviceRequest request)
+        {
+            var text = new System.Text.StringBuilder(script.Rationale).Append("\n\nWhat I relied on:");
+            foreach (string id in script.CitedFactorIds)
+            {
+                CaseFactor factor = request.Point.FindFactor(id);
+                if (factor != null)
+                {
+                    text.Append("\n- ").Append(factor.Text);
+                }
+            }
+
+            return text.ToString();
         }
     }
 }

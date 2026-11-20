@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using CourtSim.Core.Adaptive;
 using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Claude;
@@ -22,15 +24,24 @@ namespace CourtSim.EditorTools
     /// <remarks>
     /// Run with <c>tools/unity.ps1 -Task live</c>. Arguments: <c>-liveBackend local|claude</c> (default local,
     /// the Ollama model), <c>-liveModel name</c>, <c>-liveCase id</c>, <c>-liveFlawed n</c>, <c>-liveSeed n</c>,
-    /// <c>-liveChoices follow,reject,sound</c> (one per decision point: follow the advice, pick anything but
+    /// <c>-liveCases a,b</c> with <c>-liveFlawed n,m</c> (several cases, one shared trainee), <c>-liveAdaptive on|off</c>,
+    /// <c>-liveChoices follow,reject,sound</c> (one per decision point across all cases: follow the advice, pick anything but
     /// the advice, or pick the authored sound option) and <c>-liveOut folder</c>.
     /// </remarks>
     public static class LiveSessionRunner
     {
-        private static readonly TimeSpan Deadline = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan Deadline = TimeSpan.FromMinutes(15);
 
+        private static readonly List<CaseFile> Cases = new List<CaseFile>();
+        private static int[] _flawedPerCase;
+        private static int _caseIndex;
+        private static int _decisionCount;
+        private static string _model;
+        private static System.Random _random;
+        private static AdaptiveController _adaptation;
         private static CaseSession _session;
         private static IAdvisor _advisor;
+        private static IAdvisor _primary;
         private static AdviceSource _expectedSource;
         private static string[] _choices;
         private static string _outFolder;
@@ -54,44 +65,67 @@ namespace CourtSim.EditorTools
 
         private static void Begin()
         {
-            string caseId = Argument("-liveCase", "hale-burglary");
-            int flawed = int.Parse(Argument("-liveFlawed", "1"));
-            int seed = int.Parse(Argument("-liveSeed", "11"));
+            // -liveCases a,b plays several cases in a row with one shared adaptive controller (one trainee).
+            string[] caseIds = Argument("-liveCases", Argument("-liveCase", "hale-burglary")).Split(',');
+            string[] flawed = Argument("-liveFlawed", "1").Split(',');
+            _random = new System.Random(int.Parse(Argument("-liveSeed", "11")));
             _choices = Argument("-liveChoices", "sound,sound,sound").Split(',');
             _outFolder = Argument("-liveOut", Path.Combine("Logs", "batch", "live"));
             Directory.CreateDirectory(_outFolder);
 
-            CaseFile caseFile = null;
-            foreach (CaseFile candidate in CaseRepository.LoadAll())
+            IReadOnlyList<CaseFile> all = CaseRepository.LoadAll();
+            _flawedPerCase = new int[caseIds.Length];
+            for (int i = 0; i < caseIds.Length; i++)
             {
-                if (candidate.Id == caseId)
+                CaseFile match = null;
+                foreach (CaseFile candidate in all)
                 {
-                    caseFile = candidate;
+                    if (candidate.Id == caseIds[i].Trim())
+                    {
+                        match = candidate;
+                    }
                 }
+
+                Cases.Add(match ?? throw new InvalidOperationException($"Case '{caseIds[i]}' not found."));
+                _flawedPerCase[i] = int.Parse(flawed[Math.Min(i, flawed.Length - 1)]);
             }
 
-            if (caseFile == null)
-            {
-                throw new InvalidOperationException($"Case '{caseId}' not found.");
-            }
+            _model = CreateAdvisor(Argument("-liveBackend", "local"), Argument("-liveModel", null));
+            ((FallbackAdvisor)_advisor).PrimaryFailed += error => _session?.NoteAdvisorFallback(_session.CurrentIndex, error.Message);
+            _adaptation = Argument("-liveAdaptive", "on") == "off" ? null : new AdaptiveController();
+            _transcript = new StringBuilder();
+            _transcript.Append("# Live session\n\nModel: `").Append(_model).Append("`, adaptive difficulty: ")
+                .Append(_adaptation != null ? "on" : "off").Append(", started ").Append(DateTime.UtcNow.ToString("u")).Append("\n\n");
+            _startedAt = DateTime.UtcNow;
+            StartCase(0);
+        }
 
-            string model = CreateAdvisor(Argument("-liveBackend", "local"), Argument("-liveModel", null));
-            AdvicePlan plan = AdvicePlanner.Create(caseFile, flawed, new System.Random(seed));
+        private static void StartCase(int index)
+        {
+            _caseIndex = index;
+            CaseFile caseFile = Cases[index];
+            AdvicePlan plan = AdvicePlanner.Create(caseFile, _flawedPerCase[index], _random);
             string logPath = Path.Combine(_outFolder, $"live-{caseFile.Id}.jsonl");
             if (File.Exists(logPath))
             {
                 File.Delete(logPath);
             }
 
-            _session = new CaseSession(caseFile, plan, _advisor, new JsonLinesFileSink(logPath), model);
-            _transcript = new StringBuilder();
-            _transcript.Append("# Live session: ").Append(caseFile.Title).Append("\n\n");
-            _transcript.Append("Model: `").Append(model).Append("`, flawed points planned: ").Append(plan.FlawedCount)
-                .Append(", started ").Append(DateTime.UtcNow.ToString("u")).Append("\n\n");
-            _startedAt = DateTime.UtcNow;
+            _session = new CaseSession(caseFile, plan, _advisor, new JsonLinesFileSink(logPath), _model);
+            if (_adaptation != null)
+            {
+                _session.UseAdaptation(_adaptation, _random);
+                _session.Adapted += note =>
+                {
+                    _transcript.Append("> **Adaptation fired:** ").Append(note).Append(" State: `").Append(_adaptation.ToJson().ToJson()).Append("`\n\n");
+                    Debug.Log("[live] ADAPTATION: " + note);
+                };
+            }
+
+            _transcript.Append("# Case ").Append(index + 1).Append(": ").Append(caseFile.Title).Append("\n\nFlawed points planned: ").Append(plan.FlawedCount).Append("\n\n");
             _session.Start();
             _pending = _session.RequestAdvice(0);
-            Debug.Log($"[live] Session started on {caseFile.Id}; waiting for advice 1 of {caseFile.DecisionPoints.Count}.");
+            Debug.Log($"[live] Case {index + 1} of {Cases.Count} started: {caseFile.Id}.");
         }
 
         private static void Tick()
@@ -109,44 +143,57 @@ namespace CourtSim.EditorTools
 
             int index = _session.CurrentIndex;
             Advice advice = _session.CurrentAdvice;
-            if (advice == null || advice.Source != _expectedSource)
+            if (advice == null)
             {
-                Finish(false, $"Decision {index + 1}: no live advice ({_session.AdviceErrorAt(index) ?? "unknown error"}).");
+                Finish(false, $"Decision {index + 1}: no advice ({_session.AdviceErrorAt(index) ?? "unknown error"}).");
                 return;
             }
 
+            // Like the game, a reply the model got wrong falls back to the authored advice; the transcript says so.
+            string source = advice.Source == _expectedSource ? "model output" : "authored fallback: " + _session.AdviceErrorAt(index);
+
             CaseDecisionPoint point = _session.CurrentPoint;
-            string choice = index < _choices.Length ? _choices[index].Trim() : "sound";
+            string choice = _decisionCount < _choices.Length ? _choices[_decisionCount].Trim() : "sound";
+            _decisionCount++;
             string optionId = Choose(point, advice, choice);
 
             _transcript.Append("## ").Append(index + 1).Append(". ").Append(point.Definition.Title).Append("\n\n");
-            _transcript.Append("- Planned flaw: `").Append(FlawKinds.ToWireName(advice.Flaw)).Append("`\n");
+            _transcript.Append("- Planned flaw: `").Append(FlawKinds.ToWireName(advice.Flaw)).Append("`, explanation detail: `")
+                .Append(_session.DetailAt(index) == ExplanationDetail.Detailed ? "detailed" : "standard").Append("`\n");
             _transcript.Append("- Model recommended: **").Append(Label(point, advice.RecommendedOptionId)).Append("** (confidence ")
                 .Append(AdviceConfidences.ToWireName(advice.Confidence)).Append(")\n");
-            _transcript.Append("- Rationale (model output): ").Append(advice.Rationale).Append('\n');
+            _transcript.Append("- Rationale (").Append(source).Append("): ").Append(advice.Rationale.Replace("\n", " ")).Append('\n');
             if (advice.IsFlawed)
             {
                 _transcript.Append("- Flaw explanation (debrief only): ").Append(advice.FlawExplanation).Append('\n');
             }
 
-            _transcript.Append("- Response: ").Append(DescribeLastResponse()).Append('\n');
+            if (advice.Source == _expectedSource)
+            {
+                _transcript.Append("- Response: ").Append(DescribeLastResponse()).Append('\n');
+            }
 
             DecisionLogEntry entry = _session.Submit(optionId);
             _transcript.Append("- Choice policy `").Append(choice).Append("` → ruled **").Append(Label(point, optionId)).Append("** (")
                 .Append(LogNames.Quality(entry.Quality)).Append("), outcome `").Append(LogNames.Outcome(entry.Outcome)).Append("`\n\n");
-            Debug.Log($"[live] Decision {index + 1}: advice {advice.RecommendedOptionId} ({FlawKinds.ToWireName(advice.Flaw)}), ruled {optionId} → {LogNames.Outcome(entry.Outcome)}");
+            Debug.Log($"[live] Decision {_decisionCount}: advice {advice.RecommendedOptionId} ({FlawKinds.ToWireName(advice.Flaw)}, {(_session.DetailAt(index) == ExplanationDetail.Detailed ? "detailed" : "standard")}), ruled {optionId} → {LogNames.Outcome(entry.Outcome)}");
 
             if (_session.IsComplete)
             {
                 _transcript.Append("## Debrief\n\n").Append(Debrief.Headline(_session.Summary)).Append("\n\n```json\n")
-                    .Append(_session.Summary.ToJson().ToJson()).Append("\n```\n");
+                    .Append(_session.Summary.ToJson().ToJson()).Append("\n```\n\n");
+                if (_caseIndex + 1 < Cases.Count)
+                {
+                    StartCase(_caseIndex + 1);
+                    return;
+                }
+
                 Finish(true, null);
                 return;
             }
 
             _pending = _session.RequestAdvice(_session.CurrentIndex);
         }
-
         /// <summary>Builds the advisor for the chosen backend and returns the model name.</summary>
         private static string CreateAdvisor(string backend, string model)
         {
@@ -159,26 +206,28 @@ namespace CourtSim.EditorTools
                 }
 
                 var claude = new ClaudeClientOptions { ApiKey = apiKey, Model = model ?? ClaudeClientOptions.DefaultModel };
-                _advisor = new ClaudeAdvisor(new ClaudeClient(claude, new UnityWebRequestTransport()));
+                _primary = new ClaudeAdvisor(new ClaudeClient(claude, new UnityWebRequestTransport()));
+                _advisor = new FallbackAdvisor(_primary, new ScriptedAdvisor());
                 _expectedSource = AdviceSource.Claude;
                 return claude.Model;
             }
 
             var local = new OllamaClientOptions { Model = model ?? OllamaClientOptions.DefaultModel };
-            _advisor = new LocalModelAdvisor(new OllamaClient(local, new UnityWebRequestTransport()));
+            _primary = new LocalModelAdvisor(new OllamaClient(local, new UnityWebRequestTransport()));
+            _advisor = new FallbackAdvisor(_primary, new ScriptedAdvisor());
             _expectedSource = AdviceSource.LocalModel;
             return local.Model;
         }
 
         private static string DescribeLastResponse()
         {
-            if (_advisor is ClaudeAdvisor claude && claude.LastResponse != null)
+            if (_primary is ClaudeAdvisor claude && claude.LastResponse != null)
             {
                 ClaudeMessageResponse r = claude.LastResponse;
                 return $"model `{r.Model}`, request id `{r.RequestId}`, tokens in/out {r.InputTokens}/{r.OutputTokens}";
             }
 
-            if (_advisor is LocalModelAdvisor local && local.LastResponse != null)
+            if (_primary is LocalModelAdvisor local && local.LastResponse != null)
             {
                 OllamaChatResponse r = local.LastResponse;
                 return $"model `{r.Model}` (local), tokens in/out {r.PromptTokens}/{r.OutputTokens}, {r.TotalSeconds:F1} s";
