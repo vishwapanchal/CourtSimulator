@@ -1,0 +1,30 @@
+# Normalise text to LF in the repository.
+* text=auto eol=lf
+
+# Unity YAML: let Smart Merge (UnityYAMLMerge) resolve conflicts. Configure once per clone:
+#   git config merge.unityyamlmerge.name "Unity SmartMerge"
+#   git config merge.unityyamlmerge.driver "'<UnityEditor>/Data/Tools/UnityYAMLMerge' merge -p %O %B %A %A"
+*.unity      merge=unityyamlmerge eol=lf
+*.prefab     merge=unityyamlmerge eol=lf
+*.asset      merge=unityyamlmerge eol=lf
+*.mat        merge=unityyamlmerge eol=lf
+*.anim       merge=unityyamlmerge eol=lf
+*.controller merge=unityyamlmerge eol=lf
+*.meta       merge=unityyamlmerge eol=lf
+
+# Binary assets. Move these to Git LFS when the project starts importing real art.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.tga  binary
+*.psd  binary
+*.fbx  binary
+*.obj  binary
+*.blend binary
+*.wav  binary
+*.mp3  binary
+*.ogg  binary
+*.m4a  binary
+*.ttf  binary
+*.otf  binary
+*.dll  binary
