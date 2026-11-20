@@ -1,0 +1,16 @@
+{
+    "name": "CourtSim.Runtime",
+    "rootNamespace": "CourtSim.Runtime",
+    "references": [
+        "CourtSim.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
