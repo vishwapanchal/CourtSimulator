@@ -26,6 +26,9 @@ namespace CourtSim.Runtime.Player
             body.stepOffset = 0.3f;
             body.skinWidth = 0.03f;
             body.slopeLimit = 45f;
+            // The default (0.001 m) silently drops per-frame moves at high frame rates: at 2,400 fps a
+            // 1 m/s walk is 0.0004 m per frame, so the player would never move.
+            body.minMoveDistance = 0f;
 
             // The camera must exist before the controller so its Awake can find the pivot.
             Transform pivot = UnityObjectUtil.CreateChild("CameraPivot", player.transform);

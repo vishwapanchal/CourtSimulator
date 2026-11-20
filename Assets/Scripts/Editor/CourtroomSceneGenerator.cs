@@ -60,8 +60,17 @@ namespace CourtSim.EditorTools
             EditorApplication.Exit(ok ? 0 : 1);
         }
 
-        /// <summary>Builds and saves the scene. Returns false (and logs why) if the layout is invalid.</summary>
+        /// <summary>Builds and saves the CourtRoom scene and puts it first in the build settings.</summary>
         public static bool Generate()
+        {
+            return Generate(ScenePath, true);
+        }
+
+        /// <summary>
+        /// Builds the scene into a new, single open scene and saves it to <paramref name="scenePath"/>.
+        /// Returns false (and logs why) if the layout is invalid or the scene cannot be saved.
+        /// </summary>
+        public static bool Generate(string scenePath, bool addToBuildSettings)
         {
             CourtroomLayout layout = CourtroomLayout.CreateDefault();
             IReadOnlyList<string> errors = layout.Validate();
@@ -87,16 +96,20 @@ namespace CourtSim.EditorTools
             var bootstrap = new GameObject("CourtSimBootstrap").AddComponent<CourtSimBootstrap>();
             bootstrap.Configure(courtroom, player, ui);
 
-            EditorAssetUtil.EnsureFolder(Path.GetDirectoryName(ScenePath).Replace('\\', '/'));
-            if (!EditorSceneManager.SaveScene(scene, ScenePath))
+            EditorAssetUtil.EnsureFolder(Path.GetDirectoryName(scenePath).Replace('\\', '/'));
+            if (!EditorSceneManager.SaveScene(scene, scenePath))
             {
-                Debug.LogError($"Failed to save {ScenePath}.");
+                Debug.LogError($"Failed to save {scenePath}.");
                 return false;
             }
 
             AssetDatabase.SaveAssets();
-            AddToBuildSettings(ScenePath);
-            Debug.Log($"Generated {ScenePath} with {courtroom.Fixtures.Count} fixtures.");
+            if (addToBuildSettings)
+            {
+                AddToBuildSettings(scenePath);
+            }
+
+            Debug.Log($"Generated {scenePath} with {courtroom.Fixtures.Count} fixtures.");
             return true;
         }
 

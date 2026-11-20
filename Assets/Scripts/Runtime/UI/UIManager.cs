@@ -88,7 +88,10 @@ namespace CourtSim.Runtime.UI
             return go.AddComponent<UIManager>();
         }
 
-        /// <summary>Supplies shared dependencies. Call before the first frame; later calls are ignored for built UI.</summary>
+        /// <summary>
+        /// Supplies shared dependencies. Call before the first frame: a later call switches input handling, but
+        /// screens that are already built keep the key labels of the previous source.
+        /// </summary>
         public void Initialize(IPlayerInputSource input, DecisionSequence decisions = null)
         {
             _input = input ?? throw new ArgumentNullException(nameof(input));

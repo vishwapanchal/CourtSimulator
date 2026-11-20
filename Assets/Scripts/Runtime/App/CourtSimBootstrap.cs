@@ -24,12 +24,16 @@ namespace CourtSim.Runtime.App
         [SerializeField] private bool _assembleMissingParts = true;
 
         private RuntimeMaterialProvider _runtimeMaterials;
+        private IPlayerInputSource _input;
 
         public CourtroomRoot Courtroom => _courtroom;
 
         public FirstPersonController Player => _player;
 
         public UIManager UI => _ui;
+
+        /// <summary>The input source shared by the player, the interaction probe and the UI.</summary>
+        public IPlayerInputSource InputSource => _input;
 
         /// <summary>Assigns scene references. Used by the editor scene generator.</summary>
         public void Configure(CourtroomRoot courtroom, FirstPersonController player, UIManager ui)
@@ -46,7 +50,16 @@ namespace CourtSim.Runtime.App
                 AssembleMissingParts();
             }
 
-            var input = new LegacyPlayerInputSource();
+            UseInputSource(new LegacyPlayerInputSource());
+        }
+
+        /// <summary>
+        /// Routes all gameplay and UI input through <paramref name="input"/>. Call it to swap devices at
+        /// runtime (e.g. an XR rig) or to drive the scene from tests.
+        /// </summary>
+        public void UseInputSource(IPlayerInputSource input)
+        {
+            _input = input ?? throw new System.ArgumentNullException(nameof(input));
             if (_player != null)
             {
                 _player.Initialize(input);
