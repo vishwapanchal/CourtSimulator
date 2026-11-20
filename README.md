@@ -6,15 +6,17 @@ The trainee presides as judge and makes three rulings (**bail**, **admissibility
 log every ruling and adapt case difficulty to the trainee's performance.
 
 > **Status: Phase 2, case data and AI assistant.** Three fictional cases drive the decision flow.
-> Every ruling is graded against the case file and logged, the assistant's advice comes from the case
-> file or from Claude, and a debrief at the end reveals which suggestions were flawed. Adaptive
+> Every ruling is graded against the case file and logged, the assistant's advice is written by a local
+> model (Ollama) by default, optionally by Claude, or taken from the case file offline, and a debrief at the end reveals which suggestions were flawed. Adaptive
 > difficulty and the VR rig arrive in Phase 3. See `CHANGELOG.md`.
 
 ## Requirements
 
 - **Unity 2022.3 LTS** (project file pins 2022.3.62f3; any newer 2022.3 patch works). Built-in render pipeline.
 - Optional, to run core tests without Unity: **.NET SDK 8.0+**.
-- Optional, for Claude-written advice: an **Anthropic API key** (see below).
+- Optional, for model-written advice: **Ollama** with `qwen3.5:0.8b` (free, local, the default; see below).
+  Without it the assistant uses the offline advice from the case file.
+- Optional, for Claude-written advice instead: an **Anthropic API key**.
 - Optional, for MCP for Unity: **git** on `PATH` (Unity fetches the package from GitHub) and
   **uv** (`winget install --id astral-sh.uv`).
 - Keep the checkout **outside OneDrive/Dropbox/iCloud** (e.g. `C:\dev\CourtSim`). Sync clients lock
@@ -41,17 +43,29 @@ turn, or examine the **evidence display** on the left wall. The assistant card s
 step; **Accept** or **Challenge** it, then rule. After the third ruling the dialog shows the debrief. Each
 new session plays the next case, from easiest to hardest.
 
-## Claude-written advice (optional)
+## AI-written advice
 
-Without an API key the assistant uses the advice authored in the case file. To have Claude write it,
-set `ANTHROPIC_API_KEY` for your user, or put the key alone in
-`%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\anthropic_api_key.txt`, then restart the Editor.
-The assistant card then reads "Written by Claude for this case." Any API failure falls back to the
-offline advice.
+By default a small model running on your machine writes the advice. No key, no internet, no cost:
+
+1. Install Ollama: `winget install Ollama.Ollama`. It runs in the background on port 11434.
+2. Pull the model once: `ollama pull qwen3.5:0.8b` (about 1.3 GB download, about 625 MB of VRAM).
+3. Press **Play**. The assistant card reads "Written by a local AI model for this case."
+
+The first request takes about a minute while the model loads; after that advice arrives in about two
+seconds on a laptop GPU. If Ollama isn't running, the card shows the offline advice authored in the case
+file. Larger tags such as `qwen3.5:4b` or `qwen3.5:9b` write better reasoning; set one in the Case Session
+Controller's **Local Model** field after pulling it. Untick **Use Model** to always use the offline advice.
+
+### Claude (optional)
+
+Set **Backend** to `Claude` on the Case Session Controller, then set `ANTHROPIC_API_KEY` for your user, or
+put the key alone in `%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\anthropic_api_key.txt`, and
+restart the Editor. The assistant card then reads "Written by Claude for this case." Without a key, or on
+any API failure, it falls back to the offline advice.
 
 Never commit a key or put it under `Assets/`. A key on a trainee's machine can be read by anyone who uses
 it, so for deployments point the controller's **Api Base Url** at a proxy that holds the key.
-`docs/AI_ADVISOR.md` covers the request, the fallback rules and the proxy setup.
+`docs/AI_ADVISOR.md` covers both backends, model choice, the fallback rules and the proxy setup.
 
 ## Decision logs
 
@@ -92,7 +106,8 @@ Current line coverage is **94%** across all CourtSim assemblies in Unity, and **
 ```
 Assets/
   Scripts/Core/      CourtSim.Core: pure C#, no UnityEngine (events, layout, decisions, cases,
-                     advice, Claude client, logging, sessions, JSON)
+                     advice, Ollama and Claude clients, HTTP abstraction, logging,
+                     sessions, JSON)
   Scripts/Runtime/   CourtSim.Runtime: bootstrap, session controller, case loading, HTTP transport,
                      courtroom builder, player, interaction, UI
   Scripts/Editor/    CourtSim.Editor: scene generator, material assets

@@ -2,10 +2,11 @@
 
 At each decision point the assistant card suggests a ruling. Some suggestions are deliberately flawed,
 and the debrief reveals which ones and why. This page covers how flaws are chosen, how advice is
-produced (offline from the case file, or written by Claude), what is sent to the Claude API, how
-failures are handled, and the decision log format.
+produced (offline from the case file, or written by a language model: a local model in Ollama by
+default, or Claude), what each backend is sent, how failures are handled, and the decision log format.
 
-Code: `Assets/Scripts/Core/Advising/`, `Assets/Scripts/Core/Claude/`, `Assets/Scripts/Core/Logging/`,
+Code: `Assets/Scripts/Core/Advising/`, `Assets/Scripts/Core/Ollama/`, `Assets/Scripts/Core/Claude/`,
+`Assets/Scripts/Core/Http/`, `Assets/Scripts/Core/Logging/`,
 `Assets/Scripts/Core/Sessions/`, and the Unity glue in `Assets/Scripts/Runtime/Advising/` and
 `Assets/Scripts/Runtime/App/CaseSessionController.cs`. Case authoring: `docs/CASE_FORMAT.md`.
 
@@ -44,21 +45,118 @@ on authored ground truth: option grades and flaw explanations from the case file
 
 | Class | Role |
 | --- | --- |
-| `ScriptedAdvisor` | Offline. Returns the authored entry verbatim (rationale, cites, confidence, flaw explanation). Instant, deterministic and free. Used when no API key is found, in tests, and as the fallback. |
-| `ClaudeAdvisor` | Asks Claude to write the rationale for the planned ruling and flaw, then validates the reply against the case. |
-| `FallbackAdvisor` | Tries `ClaudeAdvisor`; on any failure other than cancellation, answers with `ScriptedAdvisor` for the same plan. |
+| `ScriptedAdvisor` | Offline. Returns the authored entry verbatim (rationale, cites, confidence, flaw explanation). Instant, deterministic and free. Used when **Use Model** is off, when Claude is selected without a key, in tests, and as the fallback. |
+| `LocalModelAdvisor` | Asks a local model in Ollama (default `qwen3.5:0.8b`) to write the rationale for the planned ruling and flaw. No key, no internet, no cost. |
+| `ClaudeAdvisor` | Asks Claude to write the rationale for the planned ruling and flaw. |
+| `FallbackAdvisor` | Tries the model advisor; on any failure other than cancellation, answers with `ScriptedAdvisor` for the same plan. |
+
+Both model advisors send the same system prompt, brief and schema (`AdvicePromptBuilder`) and validate
+the reply with the same code (`AdviceReply.Parse`), so they obey identical rules.
 
 `CaseSessionController.CreateAdvisor` picks one per session:
 
 1. An advisor set with `UseAdvisor(...)` (tests, custom backends). Logged as `"custom"`.
-2. **Use Claude** ticked and `ApiKeyLocator.Find()` returns a key: `FallbackAdvisor(ClaudeAdvisor, ScriptedAdvisor)`.
+2. **Use Model** off: `ScriptedAdvisor`. Logged as `"scripted"`.
+3. **Backend** `LocalModel` (the default): `FallbackAdvisor(LocalModelAdvisor, ScriptedAdvisor)`. Logged as
+   the model tag, e.g. `"qwen3.5:0.8b"`. If Ollama isn't running, each request fails fast and the offline
+   advice is shown.
+4. **Backend** `Claude` and `ApiKeyLocator.Find()` returns a key: `FallbackAdvisor(ClaudeAdvisor, ScriptedAdvisor)`.
    Logged as the model id, e.g. `"claude-opus-5-5"`.
-3. Otherwise `ScriptedAdvisor`. Logged as `"scripted"`.
+5. **Backend** `Claude` without a key: a Unity warning, then `ScriptedAdvisor`. Logged as `"scripted"`.
 
-The assistant card's footnote shows where the current advice came from: "Written by Claude for this
-case.", "Offline advice from the case file." or "Offline advice: the Claude API was unavailable."
+The assistant card's footnote shows where the current advice came from: "Written by a local AI model for
+this case.", "Written by Claude for this case.", "Offline advice from the case file." or "Offline advice:
+the AI model was unavailable."
 
-## Request
+## Backends
+
+| | Local model (default) | Claude (optional) |
+| --- | --- | --- |
+| Runs | On this machine, in Ollama | Anthropic's API, over the internet |
+| Needs | Ollama and a pulled model | An API key (or a proxy token) |
+| Cost | Free | Per token |
+| Reasoning quality | Basic with the 0.8B default; better with larger tags | Strong |
+| Controller fields | **Local Model**, **Ollama Url** | **Model**, **Effort**, **Api Base Url** |
+
+### Local model (Ollama)
+
+`OllamaClient` (`Core/Ollama/OllamaClient.cs`) sends one `/api/chat` call per decision point over the same
+`IHttpTransport` as Claude (`Core/Http/`). No headers beyond `content-type`, no key.
+
+```http
+POST http://127.0.0.1:11434/api/chat
+content-type: application/json
+```
+
+Body, for the same bail point as the [Claude request](#claude-request) (long strings shortened with `...`):
+
+```json
+{
+  "model": "qwen3.5:0.8b",
+  "messages": [
+    { "role": "system", "content": "You are the AI judicial assistant in CourtSim, a training simulation for trainee judges. ..." },
+    { "role": "user", "content": "<case>\nTitle: State v. Marcus Hale\n...\n</instructions>" }
+  ],
+  "stream": false,
+  "think": false,
+  "keep_alive": "15m",
+  "options": { "temperature": 0.3, "num_ctx": 8192 },
+  "format": { "type": "object", "properties": { "recommended_option_id": { "type": "string", "enum": ["bail.deny"] }, "...": "..." } }
+}
+```
+
+`format` is the same JSON schema Claude receives in `output_config.format.schema`. `think: false` turns
+off the model's thinking mode, which only adds delay for short advice. The reply text is read from
+`message.content`.
+
+| Setting | Value | Where to change it |
+| --- | --- | --- |
+| Model | `qwen3.5:0.8b` | Controller **Local Model** field (`OllamaClientOptions.Model`) |
+| Base URL | `http://127.0.0.1:11434` | Controller **Ollama Url** field |
+| Timeout | 180 s (the first request also loads the model) | `OllamaClientOptions.Timeout` |
+| `temperature` | 0.3 | `OllamaClientOptions.Temperature` |
+| `num_ctx` | 8192 tokens (the brief is well under 3,000) | `OllamaClientOptions.ContextTokens` |
+| `keep_alive` | `15m`, so later requests skip the model load | `OllamaClientOptions.KeepAlive` |
+
+**Errors.** `OllamaClient` raises `OllamaException` (with `StatusCode` when there was a response). There
+are no retries; `FallbackAdvisor` serves the offline advice instead.
+
+| Cause | Message |
+| --- | --- |
+| No response (Ollama not running, wrong URL, timeout) | `Could not reach Ollama at <url>. Is it running? (...)` |
+| Error status. 404 usually means the model isn't pulled. | `Ollama returned an error: <error>.`, plus ` Run: ollama pull <model>` on 404 |
+| Body is not a JSON object | `Ollama returned a body that is not a JSON object.` |
+| `done_reason: "length"` | `The local model's reply was cut off before it finished.` |
+| Blank `message.content` | `The local model returned an empty reply.` |
+
+A reply that parses but fails validation (wrong option, no rationale) raises `AdvisorException`, as for
+Claude.
+
+**Performance.** Measured on an RTX 5050 Laptop GPU (8 GB) with Ollama 0.40.16 and `qwen3.5:0.8b`: the
+first request takes about 60 s because it loads the model; after that each piece of advice takes about
+2 s, running 100% on the GPU (about 625 MB of VRAM). Prefetching (see [Cost and latency](#cost-and-latency))
+hides most of the first load. A live run of `hale-burglary` got valid JSON for all three decision points.
+
+**Model choice.** Any Ollama tag that supports structured output works; set it in **Local Model** and
+`ollama pull` it first.
+
+| Tag | Download | Speed | Trade-off |
+| --- | --- | --- | --- |
+| `qwen3.5:0.8b` (default) | ~1.3 GB, ~625 MB VRAM | ~2 s per advice | Fast and runs almost anywhere. Rationales can run long, and it sometimes misstates a fact or contradicts the planned flaw. The ruling and flaw are still enforced by validation and the plan. |
+| `qwen3.5:4b` | Larger | Slower | Noticeably better reasoning; a good middle ground on a mid-range GPU. |
+| `qwen3.5:9b` | ~6 GB of VRAM | Slowest | Best reasoning of the three; fits an 8 GB GPU. |
+
+The system prompt asks for a rationale under 90 words with no option or factor ids in it, which helps the
+small model most.
+
+### Claude
+
+Optional. Select **Backend** `Claude` and provide a key; see [Claude request](#claude-request),
+[Enabling Claude advice](#enabling-claude-advice) and [API key handling](#api-key-handling). The system
+prompt, brief, output schema and validation below apply to both backends; the retry policy, cost and key
+sections are Claude only.
+
+## Claude request
 
 `ClaudeClient` (`Core/Claude/ClaudeClient.cs`) sends one Messages API call per decision point over an
 injectable `IHttpTransport`. In Unity that is `UnityWebRequestTransport`, which works on every Unity
@@ -126,7 +224,9 @@ actually answered.
 The system prompt is the constant `AdvicePromptBuilder.SystemPrompt`. It tells the model that the cases
 are fictional, sets the voice (first person, two to four sentences, tied to the record), explains that
 some advice is deliberately flawed, and tells it to embed exactly the described flaw without hinting at
-it, to recommend exactly the given option, and to cite only the listed factors.
+it, to recommend exactly the given option, and to cite only the listed factors. It also asks for a
+rationale under 90 words that names rulings and facts in plain words, never by option or factor id.
+Both backends get the same system prompt and brief.
 
 The user message is the brief from `AdvicePromptBuilder.BuildBrief`:
 
@@ -168,13 +268,13 @@ The specific flaw to embed: The record shows the opposite: Hale paid his only fi
 - From the second point on, an `<earlier_rulings>` block lists the trainee's previous rulings by
   decision-point title and option label.
 - For sound advice the instructions say `Advice type: sound.` The authored rationale is never sent;
-  Claude writes its own wording for the same ruling and flaw.
+  the model writes its own wording for the same ruling and flaw.
 
 ## Output schema and validation
 
-The reply must be one JSON object:
+The reply must be one JSON object, from either backend:
 
-| Field | Schema | What `ClaudeAdvisor.Parse` does with it |
+| Field | Schema | What `AdviceReply.Parse` does with it |
 | --- | --- | --- |
 | `recommended_option_id` | string, `enum` of the single planned option | Must equal the planned option, or the reply is rejected. |
 | `rationale` | string | Must be non-blank, or the reply is rejected. Trimmed. Shown to the trainee. |
@@ -187,6 +287,7 @@ raises `AdvisorException`, and `FallbackAdvisor` serves the authored advice inst
 
 ## Failures, retries and fallback
 
+Local model errors are listed under [Local model (Ollama)](#local-model-ollama); they are not retried.
 `ClaudeClient` raises `ClaudeException` with a `Kind`:
 
 | Kind | Cause | Retried |
@@ -212,14 +313,17 @@ raises `AdvisorException`, and `FallbackAdvisor` serves the authored advice inst
 **Fallback**
 
 Any other failure, including a reply rejected by validation, makes `FallbackAdvisor` answer with the
-authored advice for the same planned flaw. The controller records the reason on the session
-(`Claude unavailable, used offline advice: <message>`), which goes into that decision's `adviceError`, and
-logs a Unity warning. The session never stalls on the network.
+authored advice for the same planned flaw, whichever backend failed. The controller records the reason on
+the session (`AI model unavailable, used offline advice: <message>`), which goes into that decision's
+`adviceError`, and logs a Unity warning. The session never stalls on the network or on Ollama.
 
 While advice is pending, the card says "I am reviewing the record for this ruling." The trainee can
 still rule; that ruling is logged with outcome `no_advice`.
 
 ## Cost and latency
+
+Prefetching applies to both backends. The local model is free; its latency is under
+[Local model (Ollama)](#local-model-ollama). The rest of this section is about Claude.
 
 - **One request per decision point**: three per session, plus any retries. Requests are not streamed or
   batched.
@@ -240,9 +344,27 @@ still rule; that ruling is logged with outcome `no_advice`.
   fallback is billed according to Anthropic's fallback rules.
 - Token usage and the answering model are not yet written to the decision log.
 
+## Enabling local advice (default)
+
+1. Install Ollama: `winget install Ollama.Ollama` (or the installer from ollama.com). It installs per
+   user and runs in the background on port 11434.
+2. Pull the model once: `ollama pull qwen3.5:0.8b` (about 1.3 GB).
+3. Press Play. **Use Model** is on and **Backend** is `LocalModel` by default. The assistant card footnote
+   reads "Written by a local AI model for this case.", and the log's `session_start` record shows
+   `"advisor":"qwen3.5:0.8b"`.
+
+No key is needed. If Ollama isn't running or the model isn't pulled, the card shows the offline advice and
+the Unity console says why. To use only the offline advice, untick **Use Model**.
+
+Ollama and the model are installed by each user; neither is in the repository or in builds.
+
+To try it headless: `tools/unity.ps1 -Task live` plays one case against the local model and writes
+`Logs/batch/live/live-transcript.md`. Pass runner options with `-LiveArgs`, e.g.
+`-LiveArgs '-liveModel qwen3.5:4b'` or `-LiveArgs '-liveBackend claude'` (needs `ANTHROPIC_API_KEY`).
+
 ## Enabling Claude advice
 
-Without a key, sessions use the offline advice. To enable Claude:
+Claude is optional. To use it:
 
 1. Get an Anthropic API key.
 2. Make it available by **one** of:
@@ -257,17 +379,19 @@ Without a key, sessions use the offline advice. To enable Claude:
      is ignored.
 
    The environment variable wins if both are set. An unreadable file is treated as no key.
-3. Leave **Use Claude** ticked on the Case Session Controller (it is on by default). The bootstrap adds a
-   controller with default settings if the scene has none.
+3. On the Case Session Controller, leave **Use Model** ticked and set **Backend** to `Claude`. The
+   bootstrap adds a controller with default settings (local backend) if the scene has none, so add one to
+   the scene to change it.
 4. Press Play. The assistant card footnote reads "Written by Claude for this case.", and the log's
    `session_start` record shows `"advisor":"claude-opus-5-5"`.
 
-To turn it off, untick **Use Claude** or remove the key.
+With **Backend** `Claude` and no key, the controller logs a warning and uses the offline advice. To switch
+back, set **Backend** to `LocalModel`.
 
 ## API key handling
 
 `ApiKeyLocator` (`Runtime/Advising/ApiKeyLocator.cs`) reads the key from the environment variable, then the
-key file, and nothing else. The key never enters the project or a build.
+key file, and nothing else. The key never enters the project or a build. The local backend uses no key.
 
 - **Never commit a key**, and never put one under `Assets/`. Everything under `Assets/` is tracked by git,
   and anything under `Assets/Resources/` is packed into player builds.
@@ -318,7 +442,7 @@ one `session_end`.
 | Field | Meaning |
 | --- | --- |
 | `caseTitle`, `difficulty` | From the case file. |
-| `advisor` | The requested model id when Claude is enabled (even if every request later falls back), `scripted` without a key, `custom` for an override. |
+| `advisor` | The requested model: the Ollama tag (e.g. `qwen3.5:0.8b`) or Claude model id, even if every request later falls back. `scripted` when **Use Model** is off or Claude has no key, `custom` for an override. |
 | `plan` | The planned flaw per decision point, in order. |
 
 ### `decision`
@@ -329,10 +453,10 @@ Advice written by Claude and followed (the trainee was misled):
 {"type":"decision","schema":"courtsim.log/1","sessionId":"3f2a9c1e7b4d4e0f9a6b2c8d1e5f7a90","caseId":"hale-burglary","timestampUtc":"2026-11-20T09:16:03.851Z","index":0,"kind":"bail","optionId":"bail.deny","quality":"unsound","secondsToDecide":41.37,"stance":"accepted","outcome":"misled_by_flaw","advice":{"recommendedOptionId":"bail.deny","flaw":"misread_fact","confidence":"medium","source":"claude","followed":true}}
 ```
 
-Offline advice after a Claude failure:
+Offline advice after a model failure (here Claude; a local failure reads e.g. `... Could not reach Ollama at http://127.0.0.1:11434. Is it running? ...`):
 
 ```json
-{"type":"decision","schema":"courtsim.log/1","sessionId":"3f2a9c1e7b4d4e0f9a6b2c8d1e5f7a90","caseId":"hale-burglary","timestampUtc":"2026-11-20T09:17:06.901Z","index":1,"kind":"evidence_admissibility","optionId":"evidence.admit","quality":"sound","secondsToDecide":63.05,"stance":"none","outcome":"trusted_sound","advice":{"recommendedOptionId":"evidence.admit","flaw":"none","confidence":"high","source":"scripted","followed":true},"adviceError":"Claude unavailable, used offline advice: Claude API returned HTTP 529 (overloaded_error): Overloaded"}
+{"type":"decision","schema":"courtsim.log/1","sessionId":"3f2a9c1e7b4d4e0f9a6b2c8d1e5f7a90","caseId":"hale-burglary","timestampUtc":"2026-11-20T09:17:06.901Z","index":1,"kind":"evidence_admissibility","optionId":"evidence.admit","quality":"sound","secondsToDecide":63.05,"stance":"none","outcome":"trusted_sound","advice":{"recommendedOptionId":"evidence.admit","flaw":"none","confidence":"high","source":"scripted","followed":true},"adviceError":"AI model unavailable, used offline advice: Claude API returned HTTP 529 (overloaded_error): Overloaded"}
 ```
 
 A ruling made before advice was ready:
@@ -349,7 +473,7 @@ A ruling made before advice was ready:
 | `secondsToDecide` | From when the decision dialog was first shown for this point (or, if it never was, from the previous ruling or the session start) to the ruling. Rounded to 0.01 s. |
 | `stance` | The trainee's last Accept/Challenge click before ruling: `accepted`, `challenged` or `none`. Always `none` when no advice was shown. |
 | `outcome` | How the ruling relates to the advice; see below. |
-| `advice` | `null` when no advice was ready. Otherwise `recommendedOptionId`, `flaw`, `confidence`, `source` (`claude` or `scripted`) and `followed` (ruling equals the recommendation). |
+| `advice` | `null` when no advice was ready. Otherwise `recommendedOptionId`, `flaw`, `confidence`, `source` (`local`, `claude` or `scripted`) and `followed` (ruling equals the recommendation). |
 | `adviceError` | Present only when set: why advice was missing, failed, was cancelled, or came from the fallback. |
 
 ### Outcomes

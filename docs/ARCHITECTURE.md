@@ -19,7 +19,8 @@
 ├─────────────────────────────────────────────────────────────┤
 │ CourtSim.Core     (pure C#, noEngineReferences, unit-tested)│
 │   Events/ Navigation/ UI/ Courtroom/ Decisions/ Interaction/│
-│   Json/ Cases/ Advising/ Claude/ Logging/ Sessions/         │
+│   Json/ Cases/ Advising/ Http/ Ollama/ Claude/ Logging/     │
+│   Sessions/                                                 │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -32,8 +33,10 @@ Dependencies point downward only. `CourtSim.Core` compiles without Unity, and
 | --- | --- |
 | `Json` | `JsonValue` and `JsonReader`: a minimal strict RFC 8259 reader and writer (insertion-ordered objects, nesting limit 64). Unity's `JsonUtility` can't represent case files or API payloads, and Core takes no third-party dependency. |
 | `Cases` | `CaseFile` and its parts (facts, exhibits, decision points, factors, option grades, authored advice), and `CaseFileReader`, which validates strictly and reports every error with a JSON path. Format: `docs/CASE_FORMAT.md`. |
-| `Advising` | The `FlawKind` taxonomy, `Advice`, `AdvicePlan` and `AdvicePlanner` (which points get flawed advice), `IAdvisor` and `AdviceRequest`, and the advisors `ScriptedAdvisor`, `ClaudeAdvisor` and `FallbackAdvisor`. `AdvicePromptBuilder` holds the system prompt, the brief and the output schema. See `docs/AI_ADVISOR.md`. |
-| `Claude` | `ClaudeClient` (Messages API request, retries, refusal and truncation handling), its options and exceptions, and the `IHttpTransport` abstraction with `HttpRequestData` and `HttpResponseData`. |
+| `Advising` | The `FlawKind` taxonomy, `Advice`, `AdvicePlan` and `AdvicePlanner` (which points get flawed advice), `IAdvisor` and `AdviceRequest`, and the advisors `ScriptedAdvisor`, `LocalModelAdvisor`, `ClaudeAdvisor` and `FallbackAdvisor`. `AdvicePromptBuilder` holds the system prompt, the brief and the output schema; `AdviceReply` validates a model's reply the same way for both model advisors. See `docs/AI_ADVISOR.md`. |
+| `Http` | The `IHttpTransport` abstraction with `HttpRequestData` and `HttpResponseData`, shared by both model clients. (Moved out of `Claude`.) |
+| `Ollama` | `OllamaClient` (`/api/chat` request with a JSON-schema `format`, error handling), `OllamaClientOptions`, `OllamaChatResponse` and `OllamaException`. The default backend. |
+| `Claude` | `ClaudeClient` (Messages API request, retries, refusal and truncation handling), its options and exceptions. |
 | `Logging` | `DecisionLogEntry`, `AdviceOutcome`, `AdviceStance`, `SessionSummary`, and the sinks `MemoryLogSink`, `JsonLinesFileSink` and `CompositeLogSink`. Schema `courtsim.log/1`. |
 | `Sessions` | `CaseSession`, one trainee's pass through one case (advice prefetch, scoring, logging), and `Debrief`. |
 
@@ -44,7 +47,7 @@ Dependencies point downward only. `CourtSim.Core` compiles without Unity, and
 | `Cases/CaseRepository` | Loads every `TextAsset` under `Resources/Cases`, validates each with `CaseFileReader`, logs and skips invalid files, and sorts by difficulty, then id. |
 | `Advising/UnityWebRequestTransport` | `IHttpTransport` on `UnityWebRequest`. Works on every Unity platform; call it from the main thread. |
 | `Advising/ApiKeyLocator` | Finds the Anthropic key in `ANTHROPIC_API_KEY`, else `<persistentDataPath>/anthropic_api_key.txt`. Never in `Assets/` or a build. |
-| `App/CaseSessionController` | Picks the case, builds the flaw plan, chooses the advisor, opens the log file and attaches the session to the UI. Added by the bootstrap if the scene has none. Inspector settings: Case Id, Flawed Advice Count, Seed, Use Claude, Model, Effort, Api Base Url, Write Log File. |
+| `App/CaseSessionController` | Picks the case, builds the flaw plan, chooses the advisor, opens the log file and attaches the session to the UI. Added by the bootstrap if the scene has none. Inspector settings: Case Id, Flawed Advice Count, Seed, Use Model, Backend (`LocalModel` or `Claude`), Local Model, Ollama Url, Model (Claude), Effort, Api Base Url, Write Log File. |
 
 ## Runtime flow
 
@@ -69,7 +72,8 @@ Resources/Cases/*.json ─▶ CaseRepository ─▶ CaseFile ─▶ AdvicePlanne
                                                │                           │
                                                ▼                           ▼
      IAdvisor ◀── AdviceRequest ────────── CaseSession ──▶ IDecisionLogSink ─▶ logs/*.jsonl
-  (Scripted, or Fallback(Claude, Scripted))    │
+  (Scripted, or Fallback(LocalModel|Claude,    │
+   Scripted))                                  │
                                                ▼
                     UIManager: decision dialog, assistant card, evidence viewer, debrief
 ```
@@ -79,9 +83,13 @@ Resources/Cases/*.json ─▶ CaseRepository ─▶ CaseFile ─▶ AdvicePlanne
    hardest, one per session.
 3. **Plan.** `AdvicePlanner.Create(case, flawedCount, random)` fixes the flaw for each decision point
    before any advice exists. The model never chooses it.
-4. **Advisor.** With an API key and **Use Claude**:
-   `FallbackAdvisor(ClaudeAdvisor(ClaudeClient(options, UnityWebRequestTransport)), ScriptedAdvisor)`.
-   Otherwise `ScriptedAdvisor`.
+4. **Advisor.** With **Use Model** on, **Backend** picks the model:
+   - `LocalModel` (default): `FallbackAdvisor(LocalModelAdvisor(OllamaClient(options, UnityWebRequestTransport)), ScriptedAdvisor)`.
+     No key; if Ollama isn't running, each request fails fast and falls back.
+   - `Claude` with an API key: `FallbackAdvisor(ClaudeAdvisor(ClaudeClient(options, UnityWebRequestTransport)), ScriptedAdvisor)`.
+     Without a key, a warning and `ScriptedAdvisor`.
+
+   With **Use Model** off, `ScriptedAdvisor`. The authored offline advice is always the fallback.
 5. **Sink.** `MemoryLogSink`, plus `JsonLinesFileSink` at `<persistentDataPath>/logs/` when **Write Log
    File** is on.
 6. **Start.** `CaseSession.Start` writes `session_start` and requests advice for the first point.
@@ -96,8 +104,8 @@ Resources/Cases/*.json ─▶ CaseRepository ─▶ CaseFile ─▶ AdvicePlanne
 9. **Restart.** The debrief's restart button raises `UIManager.RestartRequested`. The controller cancels
    the old session's outstanding advice requests and starts a new session on the next case.
 
-Advice requests run on Unity's main thread: `UnityWebRequest` requires it, so `ClaudeClient` does not use
-`ConfigureAwait(false)`. `AdviceChanged` is raised on the caller's synchronization context.
+Advice requests run on Unity's main thread: `UnityWebRequest` requires it, so `OllamaClient` and
+`ClaudeClient` do not use `ConfigureAwait(false)`. `AdviceChanged` is raised on the caller's synchronization context.
 
 ## Event catalogue (`CourtSim.Core.Events`)
 
@@ -125,7 +133,7 @@ the bootstrap builds the same room at runtime.
 ## Cases are data too
 
 Case files are the ground truth for scoring: option grades, the authored advice for every flaw kind,
-and the debrief text all come from them. Advice from Claude must recommend the option the plan selected,
+and the debrief text all come from them. Advice from either model must recommend the option the plan selected,
 and the flaw recorded for it is always the planned one, so a model reply can change the wording but
 never the score.
 
@@ -136,7 +144,8 @@ never the score.
 | VR locomotion (XR Interaction Toolkit) | New `IPlayerInputSource` plus an XR rig factory; reuse `MovementMath` |
 | More cases | Add JSON files to `Assets/Resources/Cases` (`docs/CASE_FORMAT.md`) |
 | Adaptive difficulty | Core-side policy that reads `SessionSummary` and the log, then picks the next case by difficulty and passes the flawed count and flaw weights to `AdvicePlanner.Create` |
-| Another advice backend | Implement `IAdvisor` and pass it to `CaseSessionController.UseAdvisor`, keeping `FallbackAdvisor` around it |
+| Another local model | Pull it in Ollama and set **Local Model** on the controller; no code change |
+| Another advice backend | Implement `IAdvisor` (reuse `AdvicePromptBuilder` and `AdviceReply`) and pass it to `CaseSessionController.UseAdvisor`, keeping `FallbackAdvisor` around it |
 | A key-holding proxy | Set **Api Base Url** on the controller (`ClaudeClientOptions.BaseUrl`); see `docs/AI_ADVISOR.md` |
 | Another HTTP stack | Implement `IHttpTransport` |
 | Log export or analytics | Implement `IDecisionLogSink` and add it to the controller's `CompositeLogSink` |

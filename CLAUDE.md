@@ -16,7 +16,8 @@ evidence admissibility, then sentencing, assisted by an AI that is sometimes del
   change under `Assets/`. Only report Unity code as working once it passes there. If an interactive Editor
   has the project open, batch mode can't run: say so rather than claiming verification.
 - Case files (`Assets/Resources/Cases`, `docs/CASE_FORMAT.md`) are ground truth for scoring. Validate every
-  change with `CaseFileReader`; tests load each case in `TestCases.ShippedCaseIds`. Game logic picks flaws; Claude only writes wording.
+  change with `CaseFileReader`; tests load each case in `TestCases.ShippedCaseIds`. Game logic picks flaws; the model only writes wording.
+- Default advisor is a local Ollama model (`qwen3.5:0.8b`, no key; `docs/AI_ADVISOR.md`); Claude is optional. Offline authored advice is always the fallback.
 - Never commit API keys or place them under `Assets/`. Keys come from `ANTHROPIC_API_KEY` or `ApiKeyLocator`'s key file.
 - MCP for Unity (`.mcp.json`) works only while the Editor GUI has the project open, which blocks batch mode.
   Close the Editor before `tools/unity.ps1`; if MCP tools fail, say the Editor isn't open.

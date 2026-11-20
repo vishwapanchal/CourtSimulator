@@ -5,6 +5,28 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Local model backend, now the default: `OllamaClient` (`Core/Ollama`) calls a model running in Ollama on
+  `http://127.0.0.1:11434/api/chat` with a JSON-schema `format`, `think: false`, `keep_alive` 15 min and a
+  180 s timeout. Default model `qwen3.5:0.8b` (~1.3 GB): no API key, no internet, no cost. Errors say what
+  to do (start Ollama, `ollama pull <model>`). `LocalModelAdvisor` sends the same prompt and schema as
+  Claude; its advice is logged with `"source": "local"`.
+- `AdviceReply`: one validator for replies from either model.
+- `CaseSessionController`: **Backend** (`LocalModel` by default, or `Claude`), **Local Model** and
+  **Ollama Url** fields.
+- `tools/unity.ps1 -Task live` and `LiveSessionRunner` default to the local backend
+  (`-liveBackend local|claude`, `-liveModel <name>`); a key is needed only for Claude.
+
+### Changed
+- Claude is optional. **Use Claude** is replaced by **Use Model** (off: authored offline advice only).
+  With **Backend** `Claude` and no key, the controller logs a warning and uses the offline advice. The
+  offline advice remains the fallback for both backends.
+- `IHttpTransport`, `HttpRequestData` and `HttpResponseData` moved from `CourtSim.Core.Claude` to
+  `CourtSim.Core.Http`.
+- The system prompt asks for a rationale under 90 words with no option or factor ids in it.
+- Fallback messages and the card footnote say "AI model" instead of "Claude": `adviceError` reads
+  `AI model unavailable, used offline advice: ...`.
+
 ### Planned: Phase 3 (adaptation and XR)
 - Adaptive difficulty policy in Core, driven by the decision log: picks the next case, the number of
   flawed suggestions and the flaw kinds to emphasise.

@@ -25,6 +25,20 @@ Apart from MCP for Unity (below), the packages in `Packages/manifest.json` are U
 packages distributed under the Unity Companion License
 (<https://unity.com/legal/licenses/unity-companion-license>). They are not vendored into this repository.
 
+## External runtime dependencies (installed by the user, not redistributed)
+
+The default AI advisor talks over HTTP to a local Ollama server. Neither Ollama nor any model weights are
+included in this repository or in builds; each user installs them (`winget install Ollama.Ollama`,
+`ollama pull qwen3.5:0.8b`). CourtSim contains no code from either, only a client for Ollama's HTTP API.
+
+| Component | License |
+| --- | --- |
+| [Ollama](https://github.com/ollama/ollama) | MIT |
+| [Qwen 3.5](https://huggingface.co/Qwen/Qwen3.5-0.8B) model weights (default `qwen3.5:0.8b`; also `4b`, `9b`) by the Qwen team, Alibaba Cloud | Apache-2.0, per the Qwen model card (0.8B confirmed; check the card for any other tag you use) |
+
+Anyone redistributing Ollama or the weights alongside CourtSim must follow those licences themselves.
+The optional Claude backend uses Anthropic's API under Anthropic's terms; nothing from Anthropic is bundled.
+
 ## Editor-only developer tooling (not shipped in player builds)
 
 | Package | License |
@@ -56,7 +70,7 @@ authors** and it must stay reference-only.
 | [ai-assisted-moot-courts](https://github.com/princeton-polaris-lab/ai-assisted-moot-courts) | None found | Reference only (ideas: justice-specific questioning) |
 | [AIMootCourt](https://github.com/HKUGenAI/AIMootCourt) | Apache-2.0 (ChatArena fork) | Reference only |
 | [Lexai](https://github.com/naimakader/Lexai) | README claims MIT; no LICENSE file | Reference only (ideas: argument scoring UX) |
-| [LLMUnity](https://github.com/undreamai/LLMUnity) | Apache-2.0 | One helper adapted (above); candidate offline-LLM backend |
+| [LLMUnity](https://github.com/undreamai/LLMUnity) | Apache-2.0 | One helper adapted (above); was a candidate offline-LLM backend (Ollama chosen instead) |
 | [Milo](https://github.com/Advanced-Reality-Lab/Milo) | README claims AFL-3.0; no LICENSE file | Reference only (ideas: XR voice agent) |
 | [OpenAI-Unity](https://github.com/srcnalt/OpenAI-Unity) | MIT | Reference only (HTTP client patterns for Phase 2) |
 | [SimCourt](https://github.com/Miracle-2001/SimCourt) | MIT | Reference only; candidate case-data source (attribute if used) |

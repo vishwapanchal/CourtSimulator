@@ -59,8 +59,8 @@ as missing.
 | --- | --- | --- | --- |
 | `schema` | string | yes | Exactly `"courtsim.case/1"`. |
 | `id` | string | yes | Stable identifier, written to every log record and matched by the controller's **Case Id** field. Use kebab-case and the same name as the file. The reader does not check uniqueness across files, so keep ids unique yourself. |
-| `title` | string | yes | Shown in the evidence viewer, the debrief header and toasts, and sent to Claude. Convention: `State v. <Name>`. |
-| `summary` | string | no | One or two sentences. Sent to Claude in the case brief. |
+| `title` | string | yes | Shown in the evidence viewer, the debrief header and toasts, and sent to the model. Convention: `State v. <Name>`. |
+| `summary` | string | no | One or two sentences. Sent to the model in the case brief. |
 | `difficulty` | number | yes | Integer `1` (introductory) to `3` (advanced). Controls the order cases are played in, and is an input to Phase 3's adaptive case selection. |
 | `jurisdictionNote` | string | no | States that the case is fictional. Not enforced, but every case must include it. Use the wording from the shipped cases. |
 | `defendant` | object | yes | See [Defendant](#defendant). |
@@ -73,13 +73,13 @@ as missing.
 
 | Field | Type | Required | Rules and use |
 | --- | --- | --- | --- |
-| `name` | string | yes | Sent to Claude. |
+| `name` | string | yes | Sent to the model. |
 | `age` | number | yes | Whole number of years from 10 to 120. |
-| `background` | string | no | One sentence of personal circumstances. Sent to Claude. |
+| `background` | string | no | One sentence of personal circumstances. Sent to the model. |
 
 ### Facts
 
-The numbered case record. Every Claude request includes all of it.
+The numbered case record. Every model request includes all of it.
 
 | Field | Type | Required | Rules and use |
 | --- | --- | --- | --- |
@@ -98,7 +98,7 @@ The numbered case record. Every Claude request includes all of it.
 | `objection` | string | no | The opposing side's objection. The viewer shows "None" when it is empty. |
 
 The evidence viewer shows the exhibit referenced by the first decision point that has an `exhibitId`,
-so set `exhibitId` only on the `evidence_admissibility` point. Claude receives an exhibit's details only
+so set `exhibitId` only on the `evidence_admissibility` point. The model receives an exhibit's details only
 in the request for the decision point that references it.
 
 ### Decision points
@@ -106,17 +106,17 @@ in the request for the decision point that references it.
 | Field | Type | Required | Rules and use |
 | --- | --- | --- | --- |
 | `kind` | string | yes | `bail`, `evidence_admissibility` or `sentencing`, in that order (index 0, 1, 2). |
-| `title` | string | yes | Decision dialog heading, e.g. `Bail application`. Earlier rulings are described to Claude by this title. |
+| `title` | string | yes | Decision dialog heading, e.g. `Bail application`. Earlier rulings are described to the model by this title. |
 | `prompt` | string | yes | The question before the court, shown in the decision dialog. |
 | `exhibitId` | string | `evidence_admissibility` only | Must match an exhibit `id`. Required on the evidence point, optional (and best left out) on the others. |
-| `submissions` | object | no | `prosecution` and `defence` strings, both optional. Shown in the decision dialog and sent to Claude. Note the spelling `defence`. |
+| `submissions` | object | no | `prosecution` and `defence` strings, both optional. Shown in the decision dialog and sent to the model. Note the spelling `defence`. |
 | `factors` | array of objects | yes | Non-empty. See [Factors](#factors). |
 | `options` | array of objects | yes | At least two. See [Options](#options). |
 | `advice` | array of objects | yes | One sound entry and at least one flawed entry. See [Advice](#advice). |
 
 ### Factors
 
-Considerations relevant to one decision point. Advice cites them by id, and Claude may cite only these.
+Considerations relevant to one decision point. Advice cites them by id, and the model may cite only these.
 
 | Field | Type | Required | Rules and use |
 | --- | --- | --- | --- |
@@ -145,9 +145,9 @@ plan picks one entry per point at the start of each session; see `docs/AI_ADVISO
 | `flaw` | string | yes | `none` (sound advice) or one of `misstated_law`, `misread_fact`, `omitted_factor`, `improper_factor`. Each value may appear at most once per point. |
 | `recommends` | string | yes | An option `id` of this point. Sound advice (`none`) must recommend an option graded `sound`. Flawed advice must recommend an option that is **not** graded `sound`. |
 | `confidence` | string | no | `low`, `medium` or `high`. Defaults to `medium`. Shown on the assistant card. |
-| `rationale` | string | yes | What the trainee reads in offline mode: first person (`"I would..."`), two to four sentences. Claude writes its own wording when enabled, but for the same ruling and flaw. |
+| `rationale` | string | yes | What the trainee reads in offline mode: first person (`"I would..."`), two to four sentences. A model (local or Claude) writes its own wording when enabled, but for the same ruling and flaw. |
 | `cites` | array of strings | no | Factor ids from this point that the rationale relies on. Each must exist. |
-| `flawExplanation` | string | flawed only | Required, non-blank, for flawed advice. Shown in the debrief, and given to Claude as the exact flaw to embed. Use `""` for sound advice. |
+| `flawExplanation` | string | flawed only | Required, non-blank, for flawed advice. Shown in the debrief, and given to the model as the exact flaw to embed. Use `""` for sound advice. |
 
 ## Validation rules
 
@@ -356,7 +356,7 @@ record carefully, and should not be able to catch it by spotting a change of ton
 
 **Write a useful explanation**
 
-The `flawExplanation` is shown in the debrief and is also sent to Claude as "the specific flaw to embed",
+The `flawExplanation` is shown in the debrief and is also sent to the model as "the specific flaw to embed",
 so it must be precise enough to reproduce the flaw from.
 
 - Say what is wrong, point to the record (`(F4)`) or the rule, and say why it changes the outcome.
