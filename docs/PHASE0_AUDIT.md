@@ -52,5 +52,5 @@ recorded in `NOTICES.md`.
 | --- | --- |
 | No usable case data in English | SimCourt translation, or author 3–5 synthetic cases for the MVP |
 | Flawed-suggestion design is unspecified | Phase 2: define a taxonomy of flaws (wrong law, misread fact, ignored factor) per decision point |
-| Unity editor not available on the dev machine | Engine-independent logic lives in `CourtSim.Core` and is verified with the .NET SDK (`tools/verify-core.ps1`) |
-| Project folder lives under OneDrive | Sync can lock `Library/` files; move the project outside OneDrive or exclude `Library/` |
+| Unity editor not available on the dev machine | Resolved in 0.1.1: Unity 2022.3 is installed and `tools/unity.ps1` drives it headless. Core is still also verified under .NET (`tools/verify-core.ps1`) |
+| Project folder lives under OneDrive | Resolved in 0.1.1: the project moved to a local folder outside OneDrive |

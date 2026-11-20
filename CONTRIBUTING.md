@@ -37,15 +37,25 @@ pwsh tools/verify-core.ps1 -Dotnet <path>     # use a specific dotnet executable
 
 CI (`.github/workflows/core.yml`) runs the same script on every push and PR.
 
-### In Unity
+### In Unity, headless (preferred)
 
-1. **Window → General → Test Runner.** Run **EditMode** (core tests) and **PlayMode** (builder and UI flow).
-2. Coverage: **Window → Analysis → Code Coverage**, enable *Generate HTML report*, and re-run the tests.
-   Core must stay at or above 80% line coverage. Runtime code with logic worth testing should move to Core.
-3. Smoke test: generate the scene, press Play, enter the courtroom, open and close each screen, then
-   make all three rulings.
-4. Headless scene generation (CI or batch):
-   `Unity -batchmode -quit -projectPath . -executeMethod CourtSim.EditorTools.CourtroomSceneGenerator.GenerateFromCommandLine`
+```powershell
+pwsh tools/unity.ps1 -Coverage                 # compile, regenerate scene, EditMode + PlayMode, coverage ≥ 80%
+pwsh tools/unity.ps1 -Task compile             # just import + compile; fails on any error CS
+pwsh tools/unity.ps1 -Task scene               # regenerate Assets/Scenes/CourtRoom.unity
+pwsh tools/unity.ps1 -Task playmode            # one suite (editmode | playmode | test)
+```
+
+The script finds the Editor version from `ProjectSettings/ProjectVersion.txt` (override with `-UnityExe`
+or `UNITY_EXE`). It writes logs, NUnit XML and the HTML coverage report to `Logs/batch/`. Batch mode
+refuses to open a project that an interactive Editor already has open.
+
+### In Unity, interactively
+
+1. **Window → General → Test Runner.** Run **EditMode** (core and editor tests) and **PlayMode**.
+2. Smoke test: press Play in `CourtRoom`, enter the courtroom, open and close each screen, then make all
+   three rulings.
+3. Runtime code with logic worth testing should move to Core.
 
 ### Builds
 
@@ -55,7 +65,8 @@ the desktop target. VR targets arrive with the XR phase.
 ## Pull request checklist
 
 - [ ] `tools/verify-core.ps1` passes
-- [ ] EditMode and PlayMode tests pass in Unity
+- [ ] `tools/unity.ps1 -Coverage` passes (compile, scene, EditMode, PlayMode, coverage)
+- [ ] Regenerated `CourtRoom.unity` committed if the layout or builder changed
 - [ ] New logic in Core has tests; coverage ≥ 80%
 - [ ] No new warnings in the Unity console
 - [ ] `CHANGELOG.md` updated; `NOTICES.md` updated if third-party material was added

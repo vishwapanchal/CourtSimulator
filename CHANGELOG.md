@@ -16,6 +16,30 @@ versions follow [Semantic Versioning](https://semver.org/).
 - Adaptive difficulty policy in Core, driven by the log.
 - XR Interaction Toolkit rig implementing `IPlayerInputSource`.
 
+## [0.1.1] - 2026-11-20
+
+Phase 1 verified in Unity 2022.3.62f3, not just under .NET.
+
+### Added
+- `tools/unity.ps1`: headless Unity driver (compile, regenerate scene, EditMode/PlayMode tests, coverage
+  gate of 80%), plus the `unity-batch` Claude skill that wraps it.
+- PlayMode tests for the bootstrap, player locomotion, gravity, look clamping, interaction focus and
+  input-driven screens, using a scriptable `FakeInputSource`. Editor tests for the scene generator.
+  Totals: 102 EditMode and 24 PlayMode tests, with 94% line coverage across all CourtSim assemblies.
+- `CourtSimBootstrap.UseInputSource` to swap the input device at runtime (the XR rig will use it).
+- `CourtroomSceneGenerator.Generate(path, addToBuildSettings)` overload.
+- Generated `Assets/Scenes/CourtRoom.unity`, its material assets, all `.meta` files and the full
+  `ProjectSettings/` are now committed.
+
+### Fixed
+- The player could not move at high frame rates. `CharacterController.minMoveDistance` (default
+  0.001 m) discarded per-frame moves above about 2,400 fps, which includes every frame in batch mode.
+  It is now 0.
+
+### Changed
+- Editor pinned to 2022.3.62f3, and the Rider package to 3.0.36 (the versions Unity resolved on first import).
+- The project moved out of OneDrive to a plain local folder to avoid sync locks on `Library/`.
+
 ## [0.1.0] - 2026-11-20
 
 Phase 1: unified project foundation and environment preview.
@@ -42,8 +66,6 @@ Phase 1: unified project foundation and environment preview.
   `README`, `CONTRIBUTING`, `NOTICES`, architecture, style guide and Phase 0 audit documents.
 
 ### Known issues
-- Unity-dependent code (`CourtSim.Runtime`, `CourtSim.Editor`, PlayMode tests) was authored without a
-  Unity editor available. It passed syntax and format checks but has not yet been compiled or run
-  in Unity.
+- Unity-dependent code was authored without a Unity editor available. It was verified in 0.1.1.
 - Text uses Unity's legacy `UI.Text`; migrate to TextMeshPro for sharper type at VR distances.
 - Placeholder materials assume the Built-in render pipeline; URP needs the materials converted.

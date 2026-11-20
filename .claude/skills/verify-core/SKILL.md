@@ -33,9 +33,6 @@ and pass it with `-Dotnet`. Ask the user before installing anything.
 - **NUnit API errors inside Unity but not here:** Unity bundles NUnit 3.5. Avoid `Assert.Multiple`,
   `Has.Some.Contains(string)` and other post-3.5 constraint syntax.
 
-## Also check Unity-side code (syntax only)
+## Unity-side code
 
-Runtime/Editor/PlayMode code can't be compiled without UnityEngine. To catch syntax errors, run
-`dotnet format whitespace Assets --folder --verify-no-changes`, or build a throwaway project that
-includes those files and confirm that only missing-type errors (CS0246/CS0234/CS0103/CS0616) remain.
-Report clearly that this is **not** a compile check.
+This skill does not compile Runtime/Editor/PlayMode code. Use the `unity-batch` skill for that.
