@@ -1,0 +1,21 @@
+name: Core checks
+
+# Builds, style-checks and tests the engine-independent CourtSim.Core assembly without Unity,
+# and enforces the 80% line-coverage gate. Unity EditMode/PlayMode tests run separately
+# (see CONTRIBUTING.md) because they need a licensed editor.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Verify CourtSim.Core
+        shell: pwsh
+        run: ./tools/verify-core.ps1
