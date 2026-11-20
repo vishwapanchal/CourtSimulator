@@ -28,3 +28,6 @@
 *.ttf  binary
 *.otf  binary
 *.dll  binary
+
+# Windows scripts must keep CRLF to run reliably in cmd.exe
+*.bat text eol=crlf

@@ -22,6 +22,18 @@ log every ruling and adapt case difficulty to the trainee's performance.
 - Keep the checkout **outside OneDrive/Dropbox/iCloud** (e.g. `C:\dev\CourtSim`). Sync clients lock
   and rewrite files in `Library/` and corrupt the import cache.
 
+## Demo (one double-click)
+
+Run `demo.bat` in the project folder. It starts Ollama, preloads the local model onto the GPU, builds
+`Builds\Windows\CourtSim.exe` the first time (a few minutes), and launches the game.
+
+```
+demo.bat            launch the demo (builds once if needed)
+demo.bat rebuild    rebuild after code changes, then launch
+demo.bat editor     open the Unity Editor straight into Play mode
+```
+
+Close any Unity Editor that has the project open before building.
 ## Quick start
 
 1. Open the project folder in Unity Hub (**Add → Add project from disk**).
@@ -93,13 +105,13 @@ before a headless run, and reopen it to use MCP again.
 
 | Suite | How to run | Needs Unity |
 | --- | --- | --- |
-| Core (97 NUnit tests, coverage gate 80%) | `pwsh tools/verify-core.ps1` | No |
+| Core (435 NUnit tests, coverage gate 80%) | `pwsh tools/verify-core.ps1` | No |
 | Everything in Unity, headless: compile, regenerate scene, EditMode + PlayMode, coverage gate 80% | `pwsh tools/unity.ps1 -Coverage` | Yes (installed, no GUI) |
 | Same suites interactively | Window → General → Test Runner | Yes |
 
 `tools/unity.ps1` runs Unity in batch mode, so close any Editor that has this project open first
 (including one left open for MCP for Unity).
-Current line coverage is **94%** across all CourtSim assemblies in Unity, and **95%** for Core under .NET.
+Current line coverage is **92%** across all CourtSim assemblies in Unity (440 EditMode and 39 PlayMode tests), and **98.7%** for Core under .NET.
 
 ## Repository layout
 
