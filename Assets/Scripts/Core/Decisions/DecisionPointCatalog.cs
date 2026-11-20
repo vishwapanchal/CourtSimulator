@@ -3,8 +3,8 @@ using System;
 namespace CourtSim.Core.Decisions
 {
     /// <summary>
-    /// Placeholder decision content for the Phase 1 environment preview.
-    /// Phase 2 replaces this with definitions loaded from case files.
+    /// Generic decision content used only when no case file loads (e.g. a broken Resources folder), so
+    /// the courtroom stays playable. Real sessions take their decision points from case files.
     /// </summary>
     public static class DecisionPointCatalog
     {

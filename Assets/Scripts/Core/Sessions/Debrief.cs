@@ -119,9 +119,13 @@ namespace CourtSim.Core.Sessions
             {
                 text.Append($" You caught {summary.FlawsCaught} of {summary.FlawedAdviceSeen} flawed suggestion{(summary.FlawedAdviceSeen == 1 ? string.Empty : "s")}.");
             }
-            else
+            else if (summary.SoundAdviceSeen > 0)
             {
                 text.Append(" Every suggestion you saw this session was sound.");
+            }
+            else
+            {
+                text.Append(" No advice was shown this session.");
             }
 
             return text.ToString();

@@ -119,6 +119,13 @@ dotnet_diagnostic.IDE1006.severity = warning
 dotnet_diagnostic.IDE0051.severity = none
 dotnet_diagnostic.IDE0052.severity = suggestion
 
+# Core has no Unity messages, so dead code there is always an error: unused private members,
+# unread private members and unused parameters fail the verify-core build.
+[Assets/Scripts/Core/**.cs]
+dotnet_diagnostic.IDE0051.severity = warning
+dotnet_diagnostic.IDE0052.severity = warning
+dotnet_diagnostic.IDE0060.severity = warning
+
 # Test code: allow underscores in test method names (Method_Condition_Expectation).
 [Assets/Tests/**.cs]
 dotnet_naming_rule.types_and_members_pascal.severity = none

@@ -13,6 +13,9 @@
       playmode  Run the PlayMode test suite.
       test      editmode + playmode.
       all       compile + scene + test (default).
+      live      Play one case against the real Claude API (needs ANTHROPIC_API_KEY; costs a few cents).
+                Not part of 'all'. Pass runner options with -LiveArgs, e.g. '-liveChoices follow,follow,reject'.
+                Transcript: Logs/batch/live/live-transcript.md.
 
     Batch mode cannot open a project that an interactive Editor already has open; close it first.
 
@@ -36,7 +39,9 @@ param(
     [string] $UnityExe = $env:UNITY_EXE,
     [switch] $Coverage,
     # Line-coverage gate across the CourtSim.* assemblies, checked when -Coverage is set.
-    [double] $MinCoverage = 80
+    [double] $MinCoverage = 80,
+    # Extra arguments for the live task's LiveSessionRunner, as one string.
+    [string] $LiveArgs = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -114,7 +119,7 @@ if ((Test-Path $lock) -and (Get-Process Unity -ErrorAction SilentlyContinue)) {
     Write-Warning 'Temp/UnityLockfile exists; if an Editor has this project open, batch mode will refuse to start.'
 }
 
-$valid = 'compile', 'scene', 'editmode', 'playmode', 'test', 'all'
+$valid = 'compile', 'scene', 'editmode', 'playmode', 'test', 'all', 'live'
 $steps = foreach ($t in ($Task -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
     if ($valid -notcontains $t) { throw "Unknown task '$t'. Valid tasks: $($valid -join ', ')." }
     switch ($t) {
@@ -143,6 +148,19 @@ foreach ($step in $steps) {
         }
         'editmode' { Invoke-Tests 'EditMode' }
         'playmode' { Invoke-Tests 'PlayMode' }
+        'live' {
+            # A key set with `setx` is in the user environment but not yet in this shell's; pass it on.
+            if (-not $env:ANTHROPIC_API_KEY) {
+                $env:ANTHROPIC_API_KEY = [Environment]::GetEnvironmentVariable('ANTHROPIC_API_KEY', 'User')
+            }
+
+            if (-not $env:ANTHROPIC_API_KEY) { throw 'ANTHROPIC_API_KEY is not set. Run: setx ANTHROPIC_API_KEY "<your key>"' }
+            $liveArguments = @('-executeMethod', 'CourtSim.EditorTools.LiveSessionRunner.RunFromCommandLine')
+            if ($LiveArgs) { $liveArguments += ($LiveArgs -split '\s+' | Where-Object { $_ }) }
+            $exit = Invoke-Unity 'live' $liveArguments
+            Select-String -Path (Join-Path $outDir 'live.log') -Pattern '^\[live\]' | ForEach-Object { Write-Host "    $($_.Line)" }
+            if ($exit -ne 0) { throw "Live session failed (exit $exit). See Logs/batch/live.log" }
+        }
     }
 }
 

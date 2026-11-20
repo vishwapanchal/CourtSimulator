@@ -284,8 +284,8 @@ namespace CourtSim.Core.Tests
             CaseFile caseFile = TestCases.Load();
             var weights = new Dictionary<FlawKind, double> { { FlawKind.MisstatedLaw, 99 } };
             int misstated = 0;
-            const int Runs = 200;
-            for (int seed = 0; seed < Runs; seed++)
+            const int runs = 200;
+            for (int seed = 0; seed < runs; seed++)
             {
                 if (AdvicePlanner.Create(caseFile, 3, new Random(seed), weights).FlawAt(1) == FlawKind.MisstatedLaw)
                 {
@@ -293,7 +293,7 @@ namespace CourtSim.Core.Tests
                 }
             }
 
-            Assert.That(misstated, Is.GreaterThan(Runs * 9 / 10));
+            Assert.That(misstated, Is.GreaterThan(runs * 9 / 10));
         }
 
         [Test]

@@ -127,7 +127,7 @@ namespace CourtSim.Runtime.UI.Screens
             SetHeader("SESSION COMPLETE · DEBRIEF", session != null ? session.Case.Title : "All rulings recorded");
             _debriefText.text = session != null
                 ? BuildDebrief(session)
-                : "You have ruled on every decision point in this preview session.";
+                : "You have ruled on every decision point. No case file was loaded, so there is no debrief.";
         }
 
         private static string FormatSubmissions(CaseDecisionPoint point)

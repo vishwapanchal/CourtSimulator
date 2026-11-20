@@ -97,17 +97,19 @@ namespace CourtSim.Core.Json
 
             public JsonValue ParseValue(int depth)
             {
-                if (depth > MaxDepth)
-                {
-                    throw Error($"JSON is nested more than {MaxDepth} levels deep");
-                }
-
                 if (AtEnd)
                 {
                     throw Error("Unexpected end of JSON");
                 }
 
                 char c = _text[_position];
+
+                // depth counts the containers already open; opening one more than MaxDepth is rejected.
+                if ((c == '{' || c == '[') && depth >= MaxDepth)
+                {
+                    throw Error($"JSON is nested more than {MaxDepth} levels deep");
+                }
+
                 switch (c)
                 {
                     case '{':

@@ -163,7 +163,6 @@ namespace CourtSim.Core.Tests
         }
 
         [Test]
-        [Ignore("BUG (minor): JsonReader.cs:100 checks depth only when a value is parsed, so 65 nested empty arrays are accepted although MaxDepth is 64; 64 arrays around a scalar are accepted but 65 are not.")]
         public void Parse_EmptyContainersBeyondMaxDepth_Throws()
         {
             Assert.Throws<JsonParseException>(() => JsonReader.Parse(Nested(JsonReader.MaxDepth + 1, string.Empty)));
@@ -235,10 +234,10 @@ namespace CourtSim.Core.Tests
         [Test]
         public void RoundTrip_ParseWriteParse_IsStable()
         {
-            const string Text = "{\"s\":\"line\\nquote\\\" \\u00e9 \\ud83d\\ude00 \\u0002\",\"n\":[0,-1.5,1e-7,12345678901],"
+            const string text = "{\"s\":\"line\\nquote\\\" \\u00e9 \\ud83d\\ude00 \\u0002\",\"n\":[0,-1.5,1e-7,12345678901],"
                 + "\"b\":[true,false,null],\"o\":{\"nested\":{\"deep\":[{}]}}}";
 
-            string once = JsonReader.Parse(Text).ToJson();
+            string once = JsonReader.Parse(text).ToJson();
             string twice = JsonReader.Parse(once).ToJson();
 
             Assert.That(twice, Is.EqualTo(once));

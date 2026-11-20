@@ -101,7 +101,7 @@ namespace CourtSim.Runtime.UI
 
             _assistant.SetMessage(current != null
                 ? $"Your next ruling is the {current.Title.ToLowerInvariant()}. Approach the bench when you are ready and I will offer a suggested ruling there."
-                : "Every ruling in this session is recorded. In later phases I will walk you through where my advice helped and where it misled you.");
+                : "Every ruling in this session is recorded.");
         }
 
         /// <summary>Shows the case title and, when the session has it, the advice for the pending ruling.</summary>
