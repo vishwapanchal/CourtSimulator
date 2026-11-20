@@ -108,7 +108,7 @@ namespace CourtSim.Core.Tests
             var request = new AdviceRequest(_case, 0, FlawKind.None, null);
             string reply = Reply("bail.grant", "I would release.", new[] { "ties", "hash", "ties", "record" }, "high", string.Empty);
 
-            Advice advice = ClaudeAdvisor.Parse(reply, request, request.TargetScript);
+            Advice advice = AdviceReply.Parse(reply, request, request.TargetScript, AdviceSource.Claude);
 
             Assert.That(advice.CitedFactorIds, Is.EqualTo(new[] { "ties", "record" }));
         }
@@ -123,8 +123,8 @@ namespace CourtSim.Core.Tests
                 .Set("cited_factor_ids", TestCases.ArrayOf(JsonValue.Number(1), JsonValue.String("ties")));
             JsonValue without = JsonValue.NewObject().Set("recommended_option_id", "bail.grant").Set("rationale", "r");
 
-            Assert.That(ClaudeAdvisor.Parse(withNumbers.ToJson(), request, request.TargetScript).CitedFactorIds, Is.EqualTo(new[] { "ties" }));
-            Assert.That(ClaudeAdvisor.Parse(without.ToJson(), request, request.TargetScript).CitedFactorIds, Is.Empty);
+            Assert.That(AdviceReply.Parse(withNumbers.ToJson(), request, request.TargetScript, AdviceSource.Claude).CitedFactorIds, Is.EqualTo(new[] { "ties" }));
+            Assert.That(AdviceReply.Parse(without.ToJson(), request, request.TargetScript, AdviceSource.Claude).CitedFactorIds, Is.Empty);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 1, FlawKind.OmittedFactor, null);
 
-            Advice advice = ClaudeAdvisor.Parse(Reply("evidence.exclude", "I would exclude.", new[] { "gap" }, "medium", "   "), request, request.TargetScript);
+            Advice advice = AdviceReply.Parse(Reply("evidence.exclude", "I would exclude.", new[] { "gap" }, "medium", "   "), request, request.TargetScript, AdviceSource.Claude);
 
             Assert.That(advice.Flaw, Is.EqualTo(FlawKind.OmittedFactor));
             Assert.That(advice.FlawExplanation, Is.EqualTo("Ignores the hash match."));
@@ -144,7 +144,7 @@ namespace CourtSim.Core.Tests
             var request = new AdviceRequest(_case, 0, FlawKind.MisreadFact, null);
             JsonValue reply = JsonValue.NewObject().Set("recommended_option_id", "bail.deny").Set("rationale", "r");
 
-            Assert.That(ClaudeAdvisor.Parse(reply.ToJson(), request, request.TargetScript).FlawExplanation, Is.EqualTo("Invents a failure to appear."));
+            Assert.That(AdviceReply.Parse(reply.ToJson(), request, request.TargetScript, AdviceSource.Claude).FlawExplanation, Is.EqualTo("Invents a failure to appear."));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 2, FlawKind.None, null);
 
-            Advice advice = ClaudeAdvisor.Parse(Reply("sentence.community", "I would order.", new[] { "plea" }, "high", "Nothing wrong, honestly."), request, request.TargetScript);
+            Advice advice = AdviceReply.Parse(Reply("sentence.community", "I would order.", new[] { "plea" }, "high", "Nothing wrong, honestly."), request, request.TargetScript, AdviceSource.Claude);
 
             Assert.That(advice.Flaw, Is.EqualTo(FlawKind.None));
             Assert.That(advice.FlawExplanation, Is.Empty);
@@ -163,7 +163,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 1, FlawKind.OmittedFactor, null);
 
-            Advice advice = ClaudeAdvisor.Parse(Reply("evidence.exclude", "r", new string[0], "certain", "x"), request, request.TargetScript);
+            Advice advice = AdviceReply.Parse(Reply("evidence.exclude", "r", new string[0], "certain", "x"), request, request.TargetScript, AdviceSource.Claude);
 
             Assert.That(advice.Confidence, Is.EqualTo(AdviceConfidence.Low));
         }
@@ -175,7 +175,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 0, FlawKind.None, null);
 
-            Assert.Throws<AdvisorException>(() => ClaudeAdvisor.Parse(reply, request, request.TargetScript));
+            Assert.Throws<AdvisorException>(() => AdviceReply.Parse(reply, request, request.TargetScript, AdviceSource.Claude));
         }
 
         [TestCase("")]
@@ -184,7 +184,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 0, FlawKind.None, null);
 
-            AdvisorException error = Assert.Throws<AdvisorException>(() => ClaudeAdvisor.Parse(Reply("bail.grant", rationale, new string[0], "high", string.Empty), request, request.TargetScript));
+            AdvisorException error = Assert.Throws<AdvisorException>(() => AdviceReply.Parse(Reply("bail.grant", rationale, new string[0], "high", string.Empty), request, request.TargetScript, AdviceSource.Claude));
 
             Assert.That(error.Message, Does.Contain("no rationale"));
         }
@@ -194,7 +194,7 @@ namespace CourtSim.Core.Tests
         {
             var request = new AdviceRequest(_case, 0, FlawKind.None, null);
 
-            Assert.Throws<AdvisorException>(() => ClaudeAdvisor.Parse("{\"rationale\":\"r\"}", request, request.TargetScript));
+            Assert.Throws<AdvisorException>(() => AdviceReply.Parse("{\"rationale\":\"r\"}", request, request.TargetScript, AdviceSource.Claude));
         }
 
         [Test]

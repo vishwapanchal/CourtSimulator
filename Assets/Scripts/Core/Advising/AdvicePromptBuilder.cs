@@ -24,7 +24,9 @@ namespace CourtSim.Core.Advising
             + "hedge more than you would for sound advice. Explain the flaw in flaw_explanation; the judge sees that only in "
             + "the debrief, after ruling.\n\n"
             + "Recommend exactly the option id the request gives. Cite only factor ids from the request's list, and only those "
-            + "your rationale actually relies on.";
+            + "your rationale actually relies on.\n\n"
+            + "Keep the rationale under 90 words. Never write option ids or factor ids in the rationale: name rulings and facts "
+            + "in plain words, and state only facts that appear in the record.";
 
         public static string BuildBrief(AdviceRequest request)
         {
@@ -126,7 +128,7 @@ namespace CourtSim.Core.Advising
 
             JsonValue properties = JsonValue.NewObject()
                 .Set("recommended_option_id", JsonValue.NewObject().Set("type", "string").Set("enum", JsonValue.StringArray(new[] { request.TargetScript.RecommendedOptionId })))
-                .Set("rationale", JsonValue.NewObject().Set("type", "string").Set("description", "Two to four sentences addressed to the judge."))
+                .Set("rationale", JsonValue.NewObject().Set("type", "string").Set("description", "Two to four sentences, under 90 words, addressed to the judge. No ids."))
                 .Set("cited_factor_ids", JsonValue.NewObject()
                     .Set("type", "array")
                     .Set("items", JsonValue.NewObject().Set("type", "string").Set("enum", JsonValue.StringArray(factorIds))))

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using CourtSim.Core.Claude;
+using CourtSim.Core.Http;
 using CourtSim.Core.Json;
 using NUnit.Framework;
 

@@ -86,7 +86,15 @@ namespace CourtSim.Core.Logging
 
         public static string Source(AdviceSource source)
         {
-            return source == AdviceSource.Claude ? "claude" : "scripted";
+            switch (source)
+            {
+                case AdviceSource.Claude:
+                    return "claude";
+                case AdviceSource.LocalModel:
+                    return "local";
+                default:
+                    return "scripted";
+            }
         }
 
         public static string Timestamp(DateTime utc)

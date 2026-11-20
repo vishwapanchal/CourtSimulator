@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CourtSim.Core.Claude
+namespace CourtSim.Core.Http
 {
     /// <summary>An HTTP POST with a JSON body.</summary>
     public sealed class HttpRequestData

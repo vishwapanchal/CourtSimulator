@@ -153,8 +153,13 @@ namespace CourtSim.Runtime.UI
                 return "Written by Claude for this case.";
             }
 
+            if (advice.Source == AdviceSource.LocalModel)
+            {
+                return "Written by a local AI model for this case.";
+            }
+
             return session.AdviceErrorAt(session.CurrentIndex) != null
-                ? "Offline advice: the Claude API was unavailable."
+                ? "Offline advice: the AI model was unavailable."
                 : "Offline advice from the case file.";
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CourtSim.Core.Claude;
+using CourtSim.Core.Http;
 using UnityEngine.Networking;
 
 namespace CourtSim.Runtime.Advising

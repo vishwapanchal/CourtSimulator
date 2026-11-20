@@ -13,7 +13,8 @@
       playmode  Run the PlayMode test suite.
       test      editmode + playmode.
       all       compile + scene + test (default).
-      live      Play one case against the real Claude API (needs ANTHROPIC_API_KEY; costs a few cents).
+      live      Play one case against a real language model: the local Ollama model by default (free),
+                or Claude with -LiveArgs '-liveBackend claude' (needs ANTHROPIC_API_KEY).
                 Not part of 'all'. Pass runner options with -LiveArgs, e.g. '-liveChoices follow,follow,reject'.
                 Transcript: Logs/batch/live/live-transcript.md.
 
@@ -154,7 +155,7 @@ foreach ($step in $steps) {
                 $env:ANTHROPIC_API_KEY = [Environment]::GetEnvironmentVariable('ANTHROPIC_API_KEY', 'User')
             }
 
-            if (-not $env:ANTHROPIC_API_KEY) { throw 'ANTHROPIC_API_KEY is not set. Run: setx ANTHROPIC_API_KEY "<your key>"' }
+            if ($LiveArgs -match '-liveBackend\s+claude' -and -not $env:ANTHROPIC_API_KEY) { throw 'ANTHROPIC_API_KEY is not set. Run: setx ANTHROPIC_API_KEY "<your key>"' }
             $liveArguments = @('-executeMethod', 'CourtSim.EditorTools.LiveSessionRunner.RunFromCommandLine')
             if ($LiveArgs) { $liveArguments += ($LiveArgs -split '\s+' | Where-Object { $_ }) }
             $exit = Invoke-Unity 'live' $liveArguments

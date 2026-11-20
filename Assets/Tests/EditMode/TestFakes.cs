@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CourtSim.Core.Advising;
-using CourtSim.Core.Claude;
+using CourtSim.Core.Http;
 using CourtSim.Core.Json;
 
 namespace CourtSim.Core.Tests
@@ -139,6 +139,32 @@ namespace CourtSim.Core.Tests
                 .Set("type", "error")
                 .Set("error", JsonValue.NewObject().Set("type", type).Set("message", message));
             return Response(status, body.ToJson(), headers);
+        }
+    }
+
+    /// <summary>Builders for Ollama <c>/api/chat</c> responses.</summary>
+    internal static class OllamaResponses
+    {
+        public static JsonValue ChatBody(string content, string doneReason = "stop")
+        {
+            return JsonValue.NewObject()
+                .Set("model", "qwen3.5:0.8b")
+                .Set("message", JsonValue.NewObject().Set("role", "assistant").Set("content", content))
+                .Set("done", true)
+                .Set("done_reason", doneReason)
+                .Set("total_duration", 2500000000)
+                .Set("prompt_eval_count", 812)
+                .Set("eval_count", 96);
+        }
+
+        public static HttpResponseData Ok(string content)
+        {
+            return new HttpResponseData(200, ChatBody(content).ToJson());
+        }
+
+        public static HttpResponseData Error(int status, string message)
+        {
+            return new HttpResponseData(status, JsonValue.NewObject().Set("error", message).ToJson());
         }
     }
 }

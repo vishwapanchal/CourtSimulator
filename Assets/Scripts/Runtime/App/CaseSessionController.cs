@@ -5,6 +5,7 @@ using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Claude;
 using CourtSim.Core.Logging;
+using CourtSim.Core.Ollama;
 using CourtSim.Core.Sessions;
 using CourtSim.Runtime.Advising;
 using CourtSim.Runtime.Cases;
@@ -13,10 +14,20 @@ using UnityEngine;
 
 namespace CourtSim.Runtime.App
 {
+    /// <summary>Which language model writes the assistant's advice.</summary>
+    public enum AdvisorBackend
+    {
+        /// <summary>A model running in Ollama on this machine: free, offline, no API key.</summary>
+        LocalModel,
+
+        /// <summary>Claude over the internet; needs ANTHROPIC_API_KEY.</summary>
+        Claude,
+    }
+
     /// <summary>
     /// Runs training sessions in the scene: picks a case, plans which advice is flawed, chooses the advisor
-    /// (Claude when an API key is available, otherwise the authored offline advice), writes the decision log
-    /// and hands the session to the <see cref="UIManager"/>.
+    /// (a local model by default, or Claude), writes the decision log and hands the session to the
+    /// <see cref="UIManager"/>. Whichever model is used, the authored offline advice is the fallback.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class CaseSessionController : MonoBehaviour
@@ -30,8 +41,15 @@ namespace CourtSim.Runtime.App
         [SerializeField] private int _seed;
 
         [Header("Advisor")]
-        [Tooltip("Use Claude when an API key is found. Offline advice is always the fallback.")]
-        [SerializeField] private bool _useClaude = true;
+        [Tooltip("Use a language model for advice. Off: always use the authored offline advice.")]
+        [SerializeField] private bool _useModel = true;
+        [SerializeField] private AdvisorBackend _backend = AdvisorBackend.LocalModel;
+
+        [Header("Local model (Ollama)")]
+        [SerializeField] private string _localModel = OllamaClientOptions.DefaultModel;
+        [SerializeField] private string _ollamaUrl = OllamaClientOptions.DefaultBaseUrl;
+
+        [Header("Claude")]
         [SerializeField] private string _model = ClaudeClientOptions.DefaultModel;
         [Tooltip("low, medium, high, xhigh or max.")]
         [SerializeField] private string _effort = "medium";
@@ -56,7 +74,7 @@ namespace CourtSim.Runtime.App
         /// <summary>Path of the current session's JSON Lines log, or null if file logging is off.</summary>
         public string LogFilePath { get; private set; }
 
-        /// <summary>Which advisor answers this session: the Claude model id, "scripted" (offline) or "custom".</summary>
+        /// <summary>Which advisor answers this session: the model id, "scripted" (offline) or "custom".</summary>
         public string AdvisorLabel { get; private set; }
 
         public static string LogDirectory => Path.Combine(Application.persistentDataPath, "logs");
@@ -89,13 +107,20 @@ namespace CourtSim.Runtime.App
         }
 
         /// <summary>Configures case selection before the first session starts.</summary>
-        public void Configure(string caseId, int flawedAdviceCount, int seed, bool useClaude, bool writeLogFile)
+        /// <param name="useModel">False forces the authored offline advice (used by tests).</param>
+        public void Configure(string caseId, int flawedAdviceCount, int seed, bool useModel, bool writeLogFile)
         {
             _caseId = caseId ?? string.Empty;
             _flawedAdviceCount = Mathf.Clamp(flawedAdviceCount, 0, 3);
             _seed = seed;
-            _useClaude = useClaude;
+            _useModel = useModel;
             _writeLogFile = writeLogFile;
+        }
+
+        /// <summary>Chooses the language model used when <c>useModel</c> is on.</summary>
+        public void UseBackend(AdvisorBackend backend)
+        {
+            _backend = backend;
         }
 
         /// <summary>Starts a new session on the next (or configured) case. Returns null if no valid case is available.</summary>
@@ -137,8 +162,8 @@ namespace CourtSim.Runtime.App
                 {
                     if (session == _session && !session.IsComplete)
                     {
-                        session.NoteAdvisorFallback(session.CurrentIndex, "Claude unavailable, used offline advice: " + error.Message);
-                        Debug.LogWarning("Claude advice failed; using offline advice instead. " + error.Message);
+                        session.NoteAdvisorFallback(session.CurrentIndex, "AI model unavailable, used offline advice: " + error.Message);
+                        Debug.LogWarning("AI advice failed; using offline advice instead. " + error.Message);
                     }
                 };
             }
@@ -218,9 +243,30 @@ namespace CourtSim.Runtime.App
             }
 
             var scripted = new ScriptedAdvisor();
-            string apiKey = _useClaude ? ApiKeyLocator.Find() : null;
+            if (!_useModel)
+            {
+                label = "scripted";
+                return scripted;
+            }
+
+            if (_backend == AdvisorBackend.LocalModel)
+            {
+                var local = new OllamaClientOptions
+                {
+                    Model = string.IsNullOrWhiteSpace(_localModel) ? OllamaClientOptions.DefaultModel : _localModel.Trim(),
+                    BaseUrl = string.IsNullOrWhiteSpace(_ollamaUrl) ? OllamaClientOptions.DefaultBaseUrl : _ollamaUrl.Trim(),
+                };
+
+                // If Ollama isn't running, each request fails fast and the offline advice is shown instead.
+                _fallbackAdvisor = new FallbackAdvisor(new LocalModelAdvisor(new OllamaClient(local, new UnityWebRequestTransport())), scripted);
+                label = local.Model;
+                return _fallbackAdvisor;
+            }
+
+            string apiKey = ApiKeyLocator.Find();
             if (string.IsNullOrEmpty(apiKey))
             {
+                Debug.LogWarning("Claude was selected but ANTHROPIC_API_KEY is not set; using offline advice.");
                 label = "scripted";
                 return scripted;
             }
