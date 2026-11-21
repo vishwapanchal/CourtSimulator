@@ -1,5 +1,6 @@
 using CourtSim.Core.Advising;
 using CourtSim.Core.Logging;
+using CourtSim.Core.Presentation;
 using CourtSim.Core.Sessions;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,11 +17,11 @@ namespace CourtSim.Runtime.UI
     {
         public const string Caution = "Suggestions can be deliberately flawed. Test every one against the evidence and the law before relying on it.";
 
-        private readonly Text _message;
+        private readonly TypewriterText _message;
         private readonly Text _footnote;
         private readonly RectTransform _actions;
 
-        private AssistantCardView(RectTransform root, Text message, Text footnote, RectTransform actions, Button accept, Button challenge)
+        private AssistantCardView(RectTransform root, TypewriterText message, Text footnote, RectTransform actions, Button accept, Button challenge)
         {
             Root = root;
             _message = message;
@@ -36,7 +37,11 @@ namespace CourtSim.Runtime.UI
 
         public Button ChallengeButton { get; }
 
-        public string Message => _message.text;
+        /// <summary>The full message, even while it is still typing out (the tests rely on this).</summary>
+        public string Message => _message.Target;
+
+        /// <summary>True while the message is still typing out.</summary>
+        public bool IsTyping => _message.IsTyping;
 
         /// <param name="standalone">True when not inside a layout group; the card then sizes its own height.</param>
         /// <param name="onAccept">Accept action; when both actions are null the action row is hidden.</param>
@@ -70,6 +75,7 @@ namespace CourtSim.Runtime.UI
 
             Text message = factory.CreateText("Message", card.rectTransform, string.Empty, TextStyle.Body);
             message.supportRichText = true; // our own bold/italic markup; model text is passed through UIFactory.Plain
+            TypewriterText typewriter = message.gameObject.AddComponent<TypewriterText>();
             factory.CreateText("Caution", card.rectTransform, Caution, TextStyle.Caption, TextAnchor.UpperLeft, theme.Warning);
 
             RectTransform actions = factory.CreateRect("Actions", card.rectTransform);
@@ -81,12 +87,19 @@ namespace CourtSim.Runtime.UI
             actions.gameObject.SetActive(onAccept != null || onChallenge != null);
             Text footnote = factory.CreateText("Footnote", card.rectTransform, string.Empty, TextStyle.Caption);
 
-            return new AssistantCardView(card.rectTransform, message, footnote, actions, accept, challenge);
+            return new AssistantCardView(card.rectTransform, typewriter, footnote, actions, accept, challenge);
         }
 
+        /// <summary>Types <paramref name="message"/> out; sending the same message again carries on instead of restarting.</summary>
         public void SetMessage(string message)
         {
-            _message.text = message;
+            _message.SetTarget(message);
+        }
+
+        /// <summary>Shows the whole message at once, cutting the typing short.</summary>
+        public void SkipTyping()
+        {
+            _message.Skip();
         }
 
         public void SetFootnote(string footnote)
@@ -139,6 +152,24 @@ namespace CourtSim.Runtime.UI
                 default:
                     return "I am reviewing the record for this ruling. My suggestion will appear here shortly.";
             }
+        }
+
+        /// <summary>
+        /// What the assistant's voice says for the ready advice, "My suggested ruling: (option). (reasons)",
+        /// with no rich-text tags. Empty when no advice is ready.
+        /// </summary>
+        public static string Spoken(CaseSession session)
+        {
+            if (session == null || session.IsComplete || session.CurrentAdviceState != AdviceState.Ready || session.CurrentAdvice == null)
+            {
+                return string.Empty;
+            }
+
+            Advice advice = session.CurrentAdvice;
+            string label = session.CurrentPoint.Definition.FindOption(advice.RecommendedOptionId)?.Label ?? advice.RecommendedOptionId;
+            string ruling = RichTextTyping.StripTags(label).Trim().TrimEnd('.');
+            string rationale = RichTextTyping.StripTags(advice.Rationale).Trim();
+            return rationale.Length > 0 ? $"My suggested ruling: {ruling}. {rationale}" : $"My suggested ruling: {ruling}.";
         }
 
         public static string Footnote(CaseSession session)

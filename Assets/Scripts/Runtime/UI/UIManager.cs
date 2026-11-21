@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CourtSim.Core.Advising;
 using CourtSim.Core.Decisions;
 using CourtSim.Core.Events;
 using CourtSim.Core.Interaction;
@@ -7,6 +8,7 @@ using CourtSim.Core.Logging;
 using CourtSim.Core.Sessions;
 using CourtSim.Core.UI;
 using CourtSim.Runtime.App;
+using CourtSim.Runtime.Audio;
 using CourtSim.Runtime.Common;
 using CourtSim.Runtime.Player;
 using CourtSim.Runtime.UI.Screens;
@@ -45,6 +47,9 @@ namespace CourtSim.Runtime.UI
         private UISpriteCache _sprites;
         private UIFactory _factory;
         private HudView _hud;
+        private AssistantVoice _voice;
+        private Advice _spokenAdvice;
+        private bool _submitting;
         private bool _ownsTheme;
         private bool _built;
         private bool _gameplayBlocked;
@@ -56,6 +61,35 @@ namespace CourtSim.Runtime.UI
         public bool IsGameplayBlocked => !_stack.IsEmpty;
 
         public bool IsAssistantVisible => _hud != null && _hud.IsAssistantVisible;
+
+        /// <summary>The assistant's speaking voice; it reads each piece of advice aloud once.</summary>
+        public AssistantVoice Voice => _voice;
+
+        /// <summary>True while the assistant's speech is still being generated.</summary>
+        public bool IsAssistantPreparing => _voice != null && _voice.IsPreparing;
+
+        /// <summary>True while the assistant is audibly speaking or a visible assistant message is still typing.</summary>
+        public bool IsAssistantTalking
+        {
+            get
+            {
+                if (_voice != null && _voice.IsPlaying)
+                {
+                    return true;
+                }
+
+                if (_hud != null && _hud.IsAssistantVisible && _hud.IsAssistantTyping)
+                {
+                    return true;
+                }
+
+                // A hidden card pauses its typing, so only a visible one counts.
+                return _screens.TryGetValue(ScreenId.DecisionPoint, out UIScreen screen)
+                    && screen.IsVisible
+                    && screen is DecisionPointScreen decision
+                    && decision.Assistant.IsTyping;
+            }
+        }
 
         public IPlayerInputSource InputSource
         {
@@ -100,6 +134,12 @@ namespace CourtSim.Runtime.UI
             if (_session != null)
             {
                 _session.AdviceChanged -= OnSessionAdviceChanged;
+            }
+
+            if (_session != session)
+            {
+                // A new session (e.g. a restart): the old advice must not keep talking.
+                StopSpeaking();
             }
 
             _session = session;
@@ -182,6 +222,7 @@ namespace CourtSim.Runtime.UI
         {
             EnsureBuilt();
             _hud.SetAssistantVisible(visible);
+            SpeakNewAdvice();
         }
 
         public void ToggleAssistant()
@@ -201,16 +242,29 @@ namespace CourtSim.Runtime.UI
                 return false;
             }
 
-            DecisionRecord record = _session != null ? _session.Submit(optionId).Record : Decisions.Record(optionId);
-            GameServices.Events.Publish(new DecisionSubmitted(record, option.Label));
-            RefreshDecisionViews();
-            ShowToast($"Ruling recorded: {option.Label}");
+            // Once the ruling is made the advice for it is moot, so the voice stops mid-sentence. The next
+            // advice waits until the dialog has closed and the trainee actually sees it.
+            StopSpeaking();
+            _submitting = true;
+            try
+            {
+                DecisionRecord record = _session != null ? _session.Submit(optionId).Record : Decisions.Record(optionId);
+                GameServices.Events.Publish(new DecisionSubmitted(record, option.Label));
+                RefreshDecisionViews();
+                ShowToast($"Ruling recorded: {option.Label}");
+            }
+            finally
+            {
+                _submitting = false;
+            }
+
             _stack.Remove(ScreenId.DecisionPoint);
             return true;
         }
 
         public void RestartSession()
         {
+            StopSpeaking();
             if (RestartRequested != null)
             {
                 RestartRequested.Invoke();
@@ -226,6 +280,7 @@ namespace CourtSim.Runtime.UI
 
         public void QuitApplication()
         {
+            StopSpeaking();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -242,6 +297,15 @@ namespace CourtSim.Runtime.UI
             }
 
             _stack.TopChanged += OnTopChanged;
+
+            _voice = GetComponent<AssistantVoice>();
+            if (_voice == null)
+            {
+                _voice = gameObject.AddComponent<AssistantVoice>();
+            }
+
+            // Typing waits for the voice, so the advice is typed while it is being read out.
+            TypewriterText.HoldWhile = () => _voice != null && _voice.IsPreparing;
         }
 
         private void OnEnable()
@@ -338,6 +402,7 @@ namespace CourtSim.Runtime.UI
             _hud = hudRoot.gameObject.AddComponent<HudView>();
             _hud.Build(_factory, InputSource);
             _hud.SetDecisionProgress(Decisions);
+            _hud.SetSession(_session);
 
             Canvas screenCanvas = _factory.CreateCanvas("ScreenCanvas", transform, ScreenSortingOrder, true);
             AddScreen<MainMenuScreen>(screenCanvas.transform);
@@ -372,6 +437,7 @@ namespace CourtSim.Runtime.UI
             _hud.SetVisible(!_stack.Contains(ScreenId.MainMenu));
             ApplyGameplayBlock(IsGameplayBlocked);
             GameServices.Events.Publish(new ScreenChanged(previous, current));
+            SpeakNewAdvice();
         }
 
         private void ApplyGameplayBlock(bool blocked, bool force = false)
@@ -400,6 +466,39 @@ namespace CourtSim.Runtime.UI
                 _hud.SetDecisionProgress(Decisions);
                 _hud.SetSession(_session);
             }
+
+            SpeakNewAdvice();
+        }
+
+        /// <summary>
+        /// Reads the current advice aloud the first time it is both ready and on screen (in the decision
+        /// dialog or the HUD assistant panel). Remembering which advice was spoken means a screen refresh,
+        /// or the same advice showing in both places, never repeats it.
+        /// </summary>
+        private void SpeakNewAdvice()
+        {
+            if (_voice == null || _submitting || _session == null || _session.IsComplete || _session.CurrentAdviceState != AdviceState.Ready)
+            {
+                return;
+            }
+
+            Advice advice = _session.CurrentAdvice;
+            bool onScreen = _stack.Top == ScreenId.DecisionPoint || (_stack.IsEmpty && IsAssistantVisible);
+            if (advice == null || advice == _spokenAdvice || !onScreen)
+            {
+                return;
+            }
+
+            _spokenAdvice = advice;
+            _voice.Speak(AdviceText.Spoken(_session));
+        }
+
+        private void StopSpeaking()
+        {
+            if (_voice != null)
+            {
+                _voice.Stop();
+            }
         }
 
         private void RefreshOpenScreen()
@@ -423,6 +522,7 @@ namespace CourtSim.Runtime.UI
             }
 
             RefreshOpenScreen();
+            SpeakNewAdvice();
         }
 
         private void OnInteractionRequested(InteractionRequested evt)

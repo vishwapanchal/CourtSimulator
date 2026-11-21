@@ -71,6 +71,7 @@ namespace CourtSim.Runtime.App
             }
 
             ScreenshotTour.AttachIfRequested(this);
+            DemoRecorder.AttachIfRequested(this);
         }
 
         /// <summary>

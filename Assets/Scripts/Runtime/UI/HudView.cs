@@ -30,8 +30,12 @@ namespace CourtSim.Runtime.UI
         private float _toastRemaining;
         private CanvasGroupFader _assistantFader;
         private AssistantCardView _assistant;
+        private CaseSession _session;
 
         public bool IsAssistantVisible => _assistantFader != null && _assistantFader.TargetVisible;
+
+        /// <summary>True while the assistant panel's message is still typing out.</summary>
+        public bool IsAssistantTyping => _assistant != null && _assistant.IsTyping;
 
         internal void Build(UIFactory factory, IPlayerInputSource input)
         {
@@ -99,14 +103,20 @@ namespace CourtSim.Runtime.UI
                 _progressPips[i].color = i < decisions.CurrentIndex ? _factory.Theme.Accent : _factory.Theme.Border;
             }
 
-            _assistant.SetMessage(current != null
-                ? $"Your next ruling is the {current.Title.ToLowerInvariant()}. Approach the bench when you are ready and I will offer a suggested ruling there."
-                : "Every ruling in this session is recorded.");
+            // With a case session the assistant shows its advice instead (SetSession). Writing this placeholder
+            // first and the advice straight after would restart the typing effect on every refresh.
+            if (_session == null)
+            {
+                _assistant.SetMessage(current != null
+                    ? $"Your next ruling is the {current.Title.ToLowerInvariant()}. Approach the bench when you are ready and I will offer a suggested ruling there."
+                    : "Every ruling in this session is recorded.");
+            }
         }
 
         /// <summary>Shows the case title and, when the session has it, the advice for the pending ruling.</summary>
         public void SetSession(CaseSession session)
         {
+            _session = session;
             if (session == null)
             {
                 return;
