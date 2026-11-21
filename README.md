@@ -46,9 +46,14 @@ Run `demo.bat` in the project folder. It starts Ollama, preloads the local model
 demo.bat            launch the demo (builds once if needed)
 demo.bat rebuild    rebuild after code changes, then launch
 demo.bat editor     open the Unity Editor straight into Play mode
+demo.bat guided     launch straight into the guided demo (Esc stops it)
 ```
 
 Close any Unity Editor that has the project open before building.
+
+**Guided demo inside the game:** press **Watch guided demo** on the main menu (or run `demo.bat guided`). A scripted judge walks into the Sessions Court, approaches the bench, hears the AI assistant type and speak its advice, challenges a flawed suggestion, examines the exhibit, rules three times and reaches the debrief, with captions explaining each step. Press Esc to stop; control returns to you at the end.
+
+**Recorded demo video:** `docs/demo/CourtSim-demo.mp4` (1080p, about 3 minutes, with the assistant's voice and typing sounds). Re-record with `BuildsWindowsCourtSim.exe -courtsimRecordDemo docsdemoCourtSim-demo.mp4` (needs ffmpeg: `winget install Gyan.FFmpeg`).
 
 ## Quick start
 

@@ -46,6 +46,7 @@ namespace CourtSim.Runtime.UI.Screens
             RectTransform actions = Factory.CreateRect("Actions", column);
             UIFactory.AddVerticalLayout(actions.gameObject, new RectOffset(0, 220, 0, 0), 10f);
             _enterButton = Factory.CreateButton("Enter", actions, "Enter the courtroom", ButtonVariant.Primary, Manager.CloseAll);
+            Factory.CreateButton("Demo", actions, "Watch guided demo", ButtonVariant.Secondary, Manager.RequestGuidedDemo);
             Factory.CreateButton("Controls", actions, "Controls", ButtonVariant.Secondary, () => Manager.Open(ScreenId.Controls));
             Factory.CreateButton("Quit", actions, "Quit", ButtonVariant.Ghost, Manager.QuitApplication);
 

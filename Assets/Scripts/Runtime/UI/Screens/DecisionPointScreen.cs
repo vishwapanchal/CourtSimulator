@@ -166,6 +166,16 @@ namespace CourtSim.Runtime.UI.Screens
             {
                 int index = _optionButtons.Count;
                 Button button = Factory.CreateButton($"Option_{index}", _options, string.Empty, ButtonVariant.Secondary, () => OnOptionSelected(index));
+
+                // Case files can have long option labels: wrap them and shrink the text a little if needed.
+                Text label = button.GetComponentInChildren<Text>();
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.resizeTextForBestFit = true;
+                label.resizeTextMaxSize = label.fontSize;
+                label.resizeTextMinSize = 14;
+                RectTransform labelRect = label.rectTransform;
+                labelRect.offsetMin = new Vector2(16f, 4f);
+                labelRect.offsetMax = new Vector2(-16f, -4f);
                 _optionButtons.Add(button);
                 _optionIds.Add(string.Empty);
             }

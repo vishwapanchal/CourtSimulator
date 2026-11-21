@@ -18,24 +18,30 @@ using Debug = UnityEngine.Debug;
 namespace CourtSim.Runtime.App
 {
     /// <summary>
-    /// Records a narrated demo video of a full session. Launch the player with
-    /// <c>-courtsimRecordDemo &lt;file.mp4&gt;</c>: a scripted "judge" walks the courtroom with the same input a person
-    /// uses, rules on every decision point and reaches the debrief, while captions explain each step. Every frame
-    /// and the game's own sound (typing clicks and the assistant's voice) are captured and encoded with ffmpeg.
+    /// The guided demo: a scripted "judge" walks the courtroom with the same input a person uses, hears the typed and
+    /// spoken advice, rules on every decision point and reaches the debrief, while captions explain each step.
+    /// It runs two ways:
+    /// <list type="bullet">
+    /// <item><b>Live in the game</b> — "Watch guided demo" on the main menu, or <c>-courtsimGuidedDemo</c>. Press Esc
+    /// to stop it; control returns to the keyboard and mouse at the end.</item>
+    /// <item><b>Recorded to video</b> — <c>-courtsimRecordDemo &lt;file.mp4&gt;</c> captures every frame and the game's own
+    /// sound and encodes them with ffmpeg.</item>
+    /// </list>
     /// </summary>
     /// <remarks>
-    /// Time.captureFramerate fixes game time at 30 fps, so the video plays at true speed however long a frame takes
-    /// to save. Recording pauses while the local model writes advice or the voice is being synthesised, so the video
-    /// never shows long waits.
+    /// When recording, Time.captureFramerate fixes game time at 30 fps, so the video plays at true speed however long
+    /// a frame takes to save, and recording pauses while the model writes advice or the voice is synthesised.
     /// </remarks>
     public sealed class DemoRecorder : MonoBehaviour
     {
         public const string Argument = "-courtsimRecordDemo";
+        public const string GuidedArgument = "-courtsimGuidedDemo";
         private const int Fps = 30;
 
         private readonly List<float> _audio = new List<float>();
         private CourtSimBootstrap _bootstrap;
         private ScriptedInputSource _input;
+        private bool _record;
         private string _output;
         private Process _ffmpeg;
         private Stream _ffmpegInput;
@@ -49,33 +55,54 @@ namespace CourtSim.Runtime.App
         public static void AttachIfRequested(CourtSimBootstrap bootstrap)
         {
             string[] args = Environment.GetCommandLineArgs();
-            for (int i = 0; i < args.Length - 1; i++)
+            for (int i = 0; i < args.Length; i++)
             {
-                if (args[i] == Argument)
+                if (args[i] == Argument && i + 1 < args.Length)
                 {
-                    DemoRecorder recorder = bootstrap.gameObject.AddComponent<DemoRecorder>();
-                    recorder._bootstrap = bootstrap;
+                    DemoRecorder recorder = Create(bootstrap);
+                    recorder._record = true;
                     recorder._output = Path.GetFullPath(args[i + 1]);
-                    recorder._input = new ScriptedInputSource();
-                    bootstrap.UseInputSource(recorder._input);
+                    return;
+                }
+
+                if (args[i] == GuidedArgument)
+                {
+                    Create(bootstrap);
                     return;
                 }
             }
         }
 
+        /// <summary>Starts the guided demo live in the game (ignored if one is already running).</summary>
+        public static void StartGuided(CourtSimBootstrap bootstrap)
+        {
+            if (bootstrap.GetComponent<DemoRecorder>() == null)
+            {
+                Create(bootstrap);
+            }
+        }
+
+        private static DemoRecorder Create(CourtSimBootstrap bootstrap)
+        {
+            DemoRecorder demo = bootstrap.gameObject.AddComponent<DemoRecorder>();
+            demo._bootstrap = bootstrap;
+            demo._input = new ScriptedInputSource();
+            bootstrap.UseInputSource(demo._input);
+            return demo;
+        }
+
         private IEnumerator Start()
         {
-            Application.runInBackground = true;
             yield return null; // let the UI and the first session start
             BuildCaptionBar();
-
-            // A fixed demo: the first (easiest) case, two of three suggestions planted as flawed, a repeatable plan.
-            if (_bootstrap.Sessions != null)
+            if (!_record)
             {
-                string firstCase = _bootstrap.Sessions.Cases.Count > 0 ? _bootstrap.Sessions.Cases[0].Id : string.Empty;
-                _bootstrap.Sessions.Configure(firstCase, 2, 2026, true, true);
-                _bootstrap.Sessions.StartNewSession();
+                yield return RunLive();
+                yield break;
             }
+
+            Application.runInBackground = true;
+            StartFixedSession();
 
             string ffmpeg = FindFfmpeg();
             if (ffmpeg == null)
@@ -98,6 +125,60 @@ namespace CourtSim.Runtime.App
             yield return null;
             yield return FinishEncoding(ffmpeg);
             Application.Quit();
+        }
+
+        /// <summary>Plays the demo in the running game, then hands control back to the keyboard and mouse.</summary>
+        private IEnumerator RunLive()
+        {
+            StartFixedSession();
+            _captionBar.SetActive(true);
+            _caption.text = "Preparing the guided demo…";
+            yield return WaitWhile(() => Session != null && Session.CurrentAdviceState == AdviceState.Pending, 180f);
+            Debug.Log("[guided-demo] started");
+            _recording = true;
+            yield return Perform();
+            yield return Hold(2f);
+            EndLive();
+        }
+
+        private void Update()
+        {
+#if ENABLE_LEGACY_INPUT_MANAGER
+            // In the live demo the keyboard is otherwise ignored; Esc stops the demo early.
+            if (!_record && Input.GetKeyDown(KeyCode.Escape))
+            {
+                StopAllCoroutines();
+                EndLive();
+            }
+#endif
+        }
+
+        private void EndLive()
+        {
+            Debug.Log("[guided-demo] finished; control returned to the player");
+            _input.Move = Vector2.zero;
+            _input.Look = Vector2.zero;
+            _bootstrap.UseInputSource(new LegacyPlayerInputSource());
+            if (_bootstrap.Sessions != null)
+            {
+                _bootstrap.Sessions.Configure(string.Empty, 1, 0, true, true); // back to normal sessions
+                _bootstrap.Sessions.StartNewSession();
+            }
+
+            UI.ShowMainMenu();
+            Destroy(_captionBar.transform.parent.gameObject);
+            Destroy(this);
+        }
+
+        // A fixed demo: the first (easiest) case, two of three suggestions planted as flawed, a repeatable plan.
+        private void StartFixedSession()
+        {
+            if (_bootstrap.Sessions != null)
+            {
+                string firstCase = _bootstrap.Sessions.Cases.Count > 0 ? _bootstrap.Sessions.Cases[0].Id : string.Empty;
+                _bootstrap.Sessions.Configure(firstCase, 2, 2026, true, true);
+                _bootstrap.Sessions.StartNewSession();
+            }
         }
 
         private CaseSession Session => _bootstrap.Sessions != null ? _bootstrap.Sessions.Session : null;
@@ -246,12 +327,16 @@ namespace CourtSim.Runtime.App
         /// <summary>Turns smoothly by the given angles (degrees; positive pitch looks down) over a duration.</summary>
         private IEnumerator TurnBy(float yawDegrees, float pitchDegrees, float seconds)
         {
-            int frames = Mathf.Max(1, Mathf.RoundToInt(seconds * Fps));
             const float Sensitivity = 2f; // FirstPersonController default
-            for (int i = 0; i < frames; i++)
+            float done = 0f;
+            while (done < 1f)
             {
+                // Share of the turn for this frame, based on game time so it takes the same time at any frame rate.
+                float step = Mathf.Min(1f - done, Time.deltaTime / Mathf.Max(0.01f, seconds));
+                done += step;
+
                 // Pitch input is inverted: negative mouse Y looks down.
-                _input.Look = new Vector2(yawDegrees / frames / Sensitivity, -pitchDegrees / frames / Sensitivity);
+                _input.Look = new Vector2(yawDegrees * step / Sensitivity, -pitchDegrees * step / Sensitivity);
                 yield return null;
             }
 
@@ -289,10 +374,11 @@ namespace CourtSim.Runtime.App
             }
         }
 
+        // Game time: real time when live, fixed 1/30 s steps when recording, so both play at true speed.
         private static IEnumerator Hold(float seconds)
         {
-            int frames = Mathf.RoundToInt(seconds * Fps);
-            for (int i = 0; i < frames; i++)
+            float end = Time.time + seconds;
+            while (Time.time < end)
             {
                 yield return null;
             }

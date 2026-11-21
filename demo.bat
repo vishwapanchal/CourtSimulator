@@ -7,6 +7,7 @@ rem    demo.bat            Start the local AI model and launch the built game
 rem                        (builds it first if Builds\Windows\CourtSim.exe is missing).
 rem    demo.bat rebuild    Rebuild the game, then launch it.
 rem    demo.bat editor     Open the Unity Editor straight into Play mode instead.
+rem    demo.bat guided     Launch the game straight into the guided demo (Esc stops it).
 rem
 rem  Needs: Unity 2022.3.62f3 and Ollama (with the model pulled). No API key.
 rem  Close the Unity Editor first if it has this project open (builds run headless).
@@ -84,5 +85,7 @@ echo.
 echo   Controls: WASD move ^| mouse look ^| E interact ^| Tab assistant ^| Esc menu
 echo   Walk through the gate, look at the judge's bench and press E to rule.
 echo.
-start "" "%PLAYER%" -screen-fullscreen 1 -window-mode borderless
+set "EXTRA="
+if /i "%~1"=="guided" set "EXTRA=-courtsimGuidedDemo"
+start "" "%PLAYER%" -screen-fullscreen 1 -window-mode borderless %EXTRA%
 exit /b 0

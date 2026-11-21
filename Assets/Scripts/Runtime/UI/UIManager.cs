@@ -278,6 +278,14 @@ namespace CourtSim.Runtime.UI
             ShowToast(_session != null ? $"New session: {_session.Case.Title}" : "New session started");
         }
 
+        /// <summary>Raised by the main menu's "Watch guided demo" button; the bootstrap starts the demo.</summary>
+        public event Action GuidedDemoRequested;
+
+        public void RequestGuidedDemo()
+        {
+            GuidedDemoRequested?.Invoke();
+        }
+
         public void QuitApplication()
         {
             StopSpeaking();

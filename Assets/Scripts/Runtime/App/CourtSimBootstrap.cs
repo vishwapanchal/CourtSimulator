@@ -72,6 +72,10 @@ namespace CourtSim.Runtime.App
 
             ScreenshotTour.AttachIfRequested(this);
             DemoRecorder.AttachIfRequested(this);
+            if (_ui != null)
+            {
+                _ui.GuidedDemoRequested += () => DemoRecorder.StartGuided(this);
+            }
         }
 
         /// <summary>
