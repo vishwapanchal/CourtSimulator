@@ -66,7 +66,7 @@ namespace CourtSim.EditorTools
         private static void Begin()
         {
             // -liveCases a,b plays several cases in a row with one shared adaptive controller (one trainee).
-            string[] caseIds = Argument("-liveCases", Argument("-liveCase", "hale-burglary")).Split(',');
+            string[] caseIds = Argument("-liveCases", Argument("-liveCase", "state-v-sahil-kadam")).Split(',');
             string[] flawed = Argument("-liveFlawed", "1").Split(',');
             _random = new System.Random(int.Parse(Argument("-liveSeed", "11")));
             _choices = Argument("-liveChoices", "sound,sound,sound").Split(',');

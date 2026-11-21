@@ -231,6 +231,8 @@ namespace CourtSim.Core.Tests
         {
             Assert.That(AdvicePromptBuilder.SystemPrompt, Does.Contain("flaw_explanation"));
             Assert.That(AdvicePromptBuilder.SystemPrompt, Does.Contain("fictional"));
+            Assert.That(AdvicePromptBuilder.SystemPrompt, Does.Contain("Bharatiya Nyaya Sanhita"));
+            Assert.That(AdvicePromptBuilder.SystemPrompt, Does.Contain("Never invent a section number"));
         }
 
         [Test]

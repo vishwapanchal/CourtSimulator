@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-mahesh-rathod",
+  "title": "State v. Mahesh Rathod",
+  "summary": "A parking quarrel outside a tea stall ended with the complainant's jaw fractured. The accused is also said to have warned the complainant's son, the eyewitness, to say he saw nothing.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Mahesh Rathod",
+    "age": 41,
+    "background": "Runs a tea stall in Shivaji Nagar, Kesarnagar, where he has lived all his life, and supports his elderly mother and two school-going children."
+  },
+  "charges": [
+    "Voluntarily causing grievous hurt (section 117(2), Bharatiya Nyaya Sanhita, 2023)",
+    "Threatening a person to give false evidence (section 232(1), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "On the evening of 9 August 2025 Rathod and his neighbour Suresh Pawar, 52, quarrelled over a scooter parked across the front of Rathod's tea stall. Two customers say Pawar loudly abused Rathod's elderly mother, who was sitting at the stall." },
+    { "id": "F2", "text": "Rathod punched Pawar several times and kicked him after he fell. No weapon was used. Pawar suffered a fractured lower jaw, lost two teeth and spent nine days in hospital. The medical officer certified the injuries as grievous (fracture)." },
+    { "id": "F3", "text": "Pawar's son Aman, 19, who lives three houses from the stall, saw the assault. The FIR was registered the next morning. Aman later told the police that two days after the incident Rathod stopped him in the lane and said, \"Tell the court you saw nothing, or you will regret it.\"" },
+    { "id": "F4", "text": "Rathod was arrested on 12 August. While in police custody he told the Investigating Officer (IO): \"I hit Suresh and kicked him, and I threw my blood-stained shirt into the cattle shed behind my house.\" He then led the IO and two panch witnesses to the shed, where a blood-stained shirt was recovered under a memorandum and recovery panchnama. The State FSL found the blood matched Pawar's blood group." },
+    { "id": "F5", "text": "Rathod has no previous convictions and no history of missing a court date." },
+    { "id": "F6", "text": "On the day of the arrest a residents' group held a protest outside the police station demanding that Rathod be kept in jail." },
+    { "id": "F7", "text": "At trial Rathod was convicted under section 117(2) and acquitted under section 232(1): in the witness box Aman conceded that he had not heard the alleged threat himself and had been told of it by a neighbour. Pawar's medical bills came to Rs. 62,000. Rathod has offered no compensation, and Pawar opposes any leniency. At the hearing on sentence Rathod said he regretted losing his temper." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Disclosure memorandum and recovery panchnama, with the blood-stained shirt",
+      "description": "The IO's memorandum recording Rathod's statement in police custody, the panchnama of the recovery from the cattle shed signed by two panch witnesses, and the shirt itself with the FSL report.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Statement recorded by the IO on 12 August 2025 while Rathod was in police custody, not before a Magistrate. Rathod then led the IO and the panch witnesses to the cattle shed, where the shirt was recovered and sealed. The FSL matched the blood to Pawar's blood group.",
+      "objection": "The defence advocate says the whole statement is a confession made to the police in custody, barred by section 23 of the Bharatiya Sakshya Adhiniyam, so the memorandum and everything that flows from it must be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Rathod applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The Assistant Public Prosecutor (APP) opposes, relying on the alleged threat to Aman.",
+      "submissions": {
+        "prosecution": "The eyewitness lives three houses from the accused, and within two days of the assault the accused told him to say he saw nothing. If he is released, the witness will be under pressure every day.",
+        "defence": "He has lived in Shivaji Nagar all his life, runs a stall and supports a family. He has never been convicted. Any concern about the witness can be met by conditions."
+      },
+      "factors": [
+        { "id": "ties", "text": "A lifelong resident who runs a tea stall and supports his mother and two children." },
+        { "id": "record", "text": "No previous convictions and no history of failing to appear." },
+        { "id": "witness_risk", "text": "The prosecution says that two days after the assault Rathod told the eyewitness, Aman, to say he saw nothing; Aman lives three houses from the stall." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977). Custody is justified where there is a real risk of flight, reoffending or intimidating witnesses that conditions cannot manage." },
+        { "id": "mandatory_conditions", "text": "Both offences are punishable with up to seven years, so section 480(3) BNSS requires conditions that he attend, not commit a similar offence and not threaten or induce any witness; the court may add other conditions in the interests of justice." },
+        { "id": "protest", "text": "A residents' group protested outside the police station demanding that he be kept in jail." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the mandatory section 480(3) conditions", "quality": "defensible", "feedback": "The mandatory conditions do forbid threats to witnesses, but with a specific alleged threat to an eyewitness who lives three doors away, the court should add tailored protection such as no contact and keeping away from the witness's house." },
+        { "id": "bail.grant_conditions", "label": "Release with a surety, the mandatory conditions, no contact with Aman or the Pawar family, and weekly reporting to the police station", "quality": "sound", "feedback": "The presumption of bail applies to a rooted first offender, and the one real risk, pressure on the eyewitness, is directly managed by a no-contact condition backed by the power to cancel bail." },
+        { "id": "bail.deny", "label": "Refuse bail and remand to judicial custody", "quality": "defensible", "feedback": "Intimidation of witnesses is a recognised ground for refusing bail, so this is within reason. But a single alleged threat, made before arrest and not repeated, can be managed by conditions, so custody is stronger than necessary." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on conditions. Mr Rathod is a lifelong resident with a family and no record, so the rule of bail, not jail, applies. The alleged warning to the eyewitness is the real concern, and a no-contact condition with the Pawar family, on top of the mandatory conditions and weekly reporting, meets it directly.",
+          "cites": ["ties", "record", "witness_risk", "bail_rule", "mandatory_conditions"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Mr Rathod has threatened the eyewitness more than once, including after the FIR was registered and the police had spoken to him, so he has shown he will ignore warnings. A no-contact condition would not stop someone living three houses away.",
+          "cites": ["witness_risk", "ties"],
+          "flawExplanation": "The record describes one alleged threat, two days after the incident and before the arrest (F3). Nothing says it was repeated or that Rathod ignored a police warning. The advice invents a pattern of defiance to justify custody."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. The assault has caused serious anger in the locality, residents have protested outside the police station, and releasing Mr Rathod now would undermine public confidence in the court. Together with the alleged threat to the eyewitness, that makes custody the right course.",
+          "cites": ["protest", "witness_risk"],
+          "flawExplanation": "Public protest or local anger is not a lawful ground for refusing bail (F6). The question is whether this accused poses risks that conditions cannot manage, and the single alleged threat can be met by a no-contact condition."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the disclosure statement",
+      "prompt": "The APP tenders exhibit P-1 and asks the court to read the whole memorandum, including the words \"I hit Suresh and kicked him\". The defence objects that the whole statement is a confession to the police and inadmissible.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "The statement led directly to the recovery of the blood-stained shirt, so it falls within the proviso and should be read in full. Two panch witnesses confirm it.",
+        "defence": "It is a confession made to a police officer while in custody. Section 23 says it cannot be proved against him, and the recovery cannot be separated from it."
+      },
+      "factors": [
+        { "id": "custody", "text": "The statement was made to the IO while Rathod was in police custody, not in the immediate presence of a Magistrate." },
+        { "id": "s23_rule", "text": "Section 23(1) and (2) BSA: no confession made to a police officer, or made in police custody unless in the immediate presence of a Magistrate, may be proved against the accused." },
+        { "id": "proviso_rule", "text": "The proviso to section 23(2) BSA: where a fact is discovered in consequence of information from an accused in police custody, so much of the information as relates distinctly to the fact discovered may be proved, whether or not it amounts to a confession." },
+        { "id": "distinct", "text": "Only the words about throwing the shirt into the cattle shed relate distinctly to the discovery; the words \"I hit Suresh and kicked him\" do not (Pulukuri Kottaya v. Emperor, 1947, on the identical old section 27)." },
+        { "id": "recovery", "text": "Two panch witnesses signed the memorandum and the recovery panchnama, and the FSL matched the blood on the shirt to Pawar's blood group." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the whole memorandum, including \"I hit Suresh and kicked him\"", "quality": "unsound", "feedback": "The proviso admits only what relates distinctly to the fact discovered. The admission of the assault is a confession to the police in custody and is barred by section 23." },
+        { "id": "evidence.admit_limited", "label": "Admit only the part leading to the shirt, with the recovery panchnama; exclude the admission of the assault", "quality": "sound", "feedback": "This applies section 23 and its proviso exactly: the information that led to the shirt, and the recovery itself, may be proved; the confessional words may not." },
+        { "id": "evidence.exclude", "label": "Exclude the memorandum and the recovery altogether", "quality": "unsound", "feedback": "Section 23 bars the confession, but its proviso expressly allows proof of information that led to a discovery. Excluding the recovery throws away admissible evidence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would admit only the part of the statement that led to the shirt, together with the recovery panchnama. A confession to the police in custody cannot be proved, so the words admitting the assault must be excluded. But the information about the cattle shed led directly to the blood-stained shirt, and the proviso allows that much to be proved.",
+          "cites": ["custody", "s23_rule", "proviso_rule", "distinct"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the whole memorandum. The statement led directly to the recovery of the blood-stained shirt, and once a statement results in a discovery the proviso lifts the bar on police confessions for the statement as a whole. The panch witnesses and the FSL report confirm its reliability.",
+          "cites": ["proviso_rule", "recovery"],
+          "flawExplanation": "The proviso admits only so much of the information as relates distinctly to the fact discovered. The words \"I hit Suresh and kicked him\" do not relate to finding the shirt and remain barred by section 23 (F4)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the memorandum and the recovery. The statement was made to the IO while Mr Rathod was in police custody and not before a Magistrate, and section 23 forbids proving such a confession against him. The recovery rests entirely on that statement, so it must go too.",
+          "cites": ["custody", "s23_rule"],
+          "flawExplanation": "The advice ignores the proviso to section 23(2), which allows proof of the part of the information that led to the discovery of the shirt, and the recovery itself (F4)."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Rathod has been convicted under section 117(2) BNS (voluntarily causing grievous hurt: imprisonment up to seven years and fine) and acquitted under section 232(1).",
+      "submissions": {
+        "prosecution": "He beat a 52-year-old man and kicked him on the ground, breaking his jaw. He has paid nothing towards Rs. 62,000 of medical bills. A real custodial sentence is needed.",
+        "defence": "He is 41 with no record, a family depends on his stall, and he was provoked by abuse of his mother. He regrets what happened. We ask for probation."
+      },
+      "factors": [
+        { "id": "injury", "text": "A fractured jaw, two teeth lost and nine days in hospital; he kicked Pawar after he had fallen." },
+        { "id": "provocation", "text": "Pawar abused Rathod's elderly mother moments before the assault; the provocation did not reduce the offence, but it is mitigation." },
+        { "id": "first_offence", "text": "Aged 41, no previous convictions, and the sole earner for his mother and two children." },
+        { "id": "no_compensation", "text": "He has offered no compensation towards Rs. 62,000 of medical bills, and Pawar opposes leniency." },
+        { "id": "acquitted", "text": "He was acquitted of threatening Aman under section 232(1)." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows the court to apply a fine to compensate the injured person, or to order compensation where no fine is imposed." },
+        { "id": "probation_rule", "text": "Release on probation under section 4 of the Probation of Offenders Act, 1958 is available, because the offence is not punishable with death or life imprisonment, but only where the nature of the offence and the offender's character make it expedient." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct with compensation to Pawar", "quality": "defensible", "feedback": "Lawful for a first offender, and the provocation is real. But a sustained attack that continued after the victim fell, serious injuries and no offer of compensation make probation hard to justify as expedient." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for one year and a fine of Rs. 50,000, most of it payable to Pawar as compensation", "quality": "sound", "feedback": "A short custodial term reflects the serious injuries and the kicks on the ground, while the provocation, his clean record and his family keep it near the bottom of the range. Directing the fine to compensation under section 395 BNSS answers the unpaid medical bills." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years and a fine", "quality": "unsound", "feedback": "Five years is close to the maximum. Nothing in a provoked, unarmed first offence puts it there, and the acquitted charge cannot be used to increase the sentence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for one year and a fine of Rs. 50,000, most of it to go to Mr Pawar. Kicking a man who had already fallen and breaking his jaw calls for a custodial term, and no compensation has been offered. The abuse of his mother, his clean record and his family keep the term short.",
+          "cites": ["injury", "provocation", "first_offence", "no_compensation", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Rathod on probation of good conduct. He is a first offender who was provoked by abuse of his mother, he has already paid Mr Pawar's medical bills, and Mr Pawar has accepted his apology. Sending the family's only earner to prison would serve no purpose.",
+          "cites": ["provocation", "first_offence", "probation_rule"],
+          "flawExplanation": "The record says the opposite: Rathod has offered no compensation towards Rs. 62,000 of medical bills and Pawar opposes any leniency (F7). The advice invents reparation and reconciliation to justify probation."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for five years. Beyond the serious injuries, Mr Rathod tried to silence the only eyewitness by telling him to say he saw nothing, which shows contempt for the court process and a real danger to the family. That conduct calls for a sentence well above the minimum.",
+          "cites": ["injury", "acquitted"],
+          "flawExplanation": "Rathod was acquitted of the alleged threat (F7). A court cannot treat conduct on a charge that ended in acquittal as proved when it sentences for the offence of conviction."
+        }
+      ]
+    }
+  ]
+}

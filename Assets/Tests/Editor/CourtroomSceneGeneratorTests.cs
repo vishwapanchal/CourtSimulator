@@ -68,7 +68,10 @@ namespace CourtSim.EditorTools.Tests
             foreach (MeshRenderer renderer in bootstrap.Courtroom.GetComponentsInChildren<MeshRenderer>(true))
             {
                 StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(renderer.gameObject);
-                Assert.That((flags & StaticEditorFlags.BatchingStatic) != 0, Is.True, renderer.name);
+                bool spins = renderer.GetComponentInParent<CourtSim.Runtime.Courtroom.CeilingFan>() != null;
+
+                // Ceiling fan rotors spin, so they must stay dynamic; everything else is batched as static.
+                Assert.That((flags & StaticEditorFlags.BatchingStatic) != 0, Is.EqualTo(!spins), renderer.name);
             }
 
             Assert.That(GameObjectUtility.GetStaticEditorFlags(bootstrap.Player.gameObject), Is.EqualTo((StaticEditorFlags)0));

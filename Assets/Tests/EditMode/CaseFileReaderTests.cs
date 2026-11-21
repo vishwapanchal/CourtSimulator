@@ -10,9 +10,9 @@ namespace CourtSim.Core.Tests
 {
     public sealed class CaseFileReaderTests
     {
-        [TestCase("hale-burglary")]
-        [TestCase("raman-assault")]
-        [TestCase("okafor-supply")]
+        [TestCase("state-v-sahil-kadam")]
+        [TestCase("state-v-mahesh-rathod")]
+        [TestCase("state-v-kunal-bisht")]
         public void Read_ShippedCase_LoadsWithoutErrors(string caseId)
         {
             string path = TestCases.ShippedCasePath(caseId);

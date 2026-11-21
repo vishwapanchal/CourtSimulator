@@ -15,7 +15,7 @@ namespace CourtSim.Core.Tests
     {
         public const string CaseId = "test-case";
 
-        public static readonly IReadOnlyList<string> ShippedCaseIds = new[] { "hale-burglary", "raman-assault", "okafor-supply" };
+        public static readonly IReadOnlyList<string> ShippedCaseIds = new[] { "state-v-sahil-kadam", "state-v-mahesh-rathod", "state-v-kunal-bisht" };
 
         /// <summary>
         /// Point 0 (bail) has flaw misread_fact; point 1 (evidence, exhibit P-1) has misstated_law and omitted_factor;

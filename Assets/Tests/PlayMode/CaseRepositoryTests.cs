@@ -19,7 +19,7 @@ namespace CourtSim.Runtime.Tests
                 ids.Add(caseFile.Id);
             }
 
-            Assert.That(ids, Is.EqualTo(new[] { "hale-burglary", "raman-assault", "okafor-supply" }));
+            Assert.That(ids, Is.EqualTo(new[] { "state-v-sahil-kadam", "state-v-mahesh-rathod", "state-v-kunal-bisht" }));
             Assert.That(cases[0].Difficulty, Is.EqualTo(1));
             Assert.That(cases[1].Difficulty, Is.EqualTo(2));
             Assert.That(cases[2].Difficulty, Is.EqualTo(3));

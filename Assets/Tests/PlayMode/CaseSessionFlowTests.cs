@@ -23,7 +23,7 @@ namespace CourtSim.Runtime.Tests
     /// <summary>End-to-end: bootstrap → case session → advice → rulings → debrief → decision log on disk.</summary>
     public sealed class CaseSessionFlowTests
     {
-        private const string CaseId = "hale-burglary";
+        private const string CaseId = "state-v-sahil-kadam";
 
         private readonly List<string> _logFiles = new List<string>();
         private CourtSimBootstrap _bootstrap;
@@ -171,7 +171,7 @@ namespace CourtSim.Runtime.Tests
             UI.Open(ScreenId.Evidence);
             EvidenceScreen evidence = Screen<EvidenceScreen>();
             Assert.That(evidence.StatusText, Does.StartWith("Awaiting"));
-            Assert.That(AllText(evidence), Does.Contain("Brightline"));
+            Assert.That(AllText(evidence), Does.Contain("Navrang Mobile Centre"));
 
             UI.CloseAll();
             UI.SubmitDecision(SoundOption());
@@ -179,7 +179,7 @@ namespace CourtSim.Runtime.Tests
             UI.CloseAll();
             UI.Open(ScreenId.Evidence);
 
-            Assert.That(evidence.StatusText, Does.StartWith("Ruled: Admit"));
+            Assert.That(evidence.StatusText, Does.StartWith("Ruled: Admit the pen-drive clip"));
         }
 
         [Test]

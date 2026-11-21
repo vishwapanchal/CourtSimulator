@@ -1,0 +1,185 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-sahil-kadam",
+  "title": "State v. Sahil Kadam",
+  "summary": "A night-time break-in at a mobile phone shop in Kesarnagar. Five of the six stolen phones were recovered from the accused's room two days later.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Sahil Kadam",
+    "age": 20,
+    "background": "Works at a tyre-repair shop and has lived with his parents at the same address in Kesarnagar for fifteen years."
+  },
+  "charges": [
+    "House-breaking after sunset and before sunrise in order to commit theft (section 331(4), Bharatiya Nyaya Sanhita, 2023)",
+    "Theft in a building used for the custody of property (section 305(a), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 01:25 on 14 March 2025 the lock on the rear shutter of Navrang Mobile Centre, Gandhi Chowk, Kesarnagar, was broken and six smartphones worth Rs. 84,000 in total were taken. The owner, Ashok Jain, lodged an FIR at Kotwali police station the same morning." },
+    { "id": "F2", "text": "On 16 March the Investigating Officer (IO) searched Kadam's room in the presence of two panch witnesses and found five of the six phones in a cloth bag under his bed. Kadam was arrested the same day. The sixth phone was never recovered." },
+    { "id": "F3", "text": "Kadam told the IO that he had bought the phones from a stranger at the bus stand, and then declined to answer further questions." },
+    { "id": "F4", "text": "Kadam, aged 20, lives with his parents at the Kesarnagar address where the family has lived for fifteen years, and works at a tyre-repair shop. He has no previous conviction. A 2023 FIR naming him over a scuffle at a college festival was closed by the police with a final report; no charge-sheet was ever filed and the matter never reached court." },
+    { "id": "F5", "text": "The shop's CCTV recorder (DVR) captured a young man in a red cap breaking the shutter lock and carrying out a carton. On 15 March the owner copied the clip to a pen drive, which stayed in his shop drawer until the IO seized it on 18 March. The DVR is still with the owner. The prosecution has filed a certificate under section 63(4) of the Bharatiya Sakshya Adhiniyam: Part A signed by the owner as the person in charge of the DVR, and Part B by the State FSL expert, both recording the same SHA-256 hash for the clip on the DVR and on the pen drive." },
+    { "id": "F6", "text": "After trial the court convicted Kadam on both charges. At the hearing on sentence he expressed remorse and deposited Rs. 14,000 in court for the missing phone and the broken lock. The probation officer's report is favourable: steady work, a supportive family and a fixed address." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Pen drive with CCTV clip, Navrang Mobile Centre rear lane",
+      "description": "Three minutes forty seconds of footage, 01:24 to 01:28, showing a young man in a red cap breaking the rear shutter lock and carrying a carton out of the shop.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Copied from the shop's DVR to a pen drive by the owner on 15 March 2025. The pen drive stayed in his shop drawer until the IO seized it under a seizure memo on 18 March. The DVR is still with the owner. A section 63(4) BSA certificate is on file: Part A by the owner, Part B by the State FSL expert, both giving the same SHA-256 hash for the DVR clip and the pen-drive copy.",
+      "objection": "The defence advocate says the pen drive is only a copy, so the original DVR must be produced, and that three days in the owner's drawer break the chain of custody. The clip should therefore be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Kadam applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The Assistant Public Prosecutor (APP) does not seriously oppose release, but asks for conditions.",
+      "submissions": {
+        "prosecution": "The case is strong: the phones were recovered from his room before panch witnesses. We ask for a local surety, weekly reporting at Kotwali police station and a direction that he not approach the shop owner or staff.",
+        "defence": "He has lived at the same address for fifteen years, works, and has never been convicted of anything. The mandatory statutory conditions are enough; nothing more is needed."
+      },
+      "factors": [
+        { "id": "ties", "text": "He has lived at the same address with his parents for fifteen years and works at a tyre-repair shop." },
+        { "id": "record", "text": "No previous conviction; a 2023 FIR naming him was closed by the police with a final report and never reached court." },
+        { "id": "nonviolent", "text": "The alleged offence is a non-violent property offence, and five of the six phones have been recovered." },
+        { "id": "strength", "text": "The prosecution case appears strong: the phones were found in his room in the presence of panch witnesses." },
+        { "id": "bail_rule", "text": "Bail in a non-bailable offence under section 480 BNSS is discretionary, but the basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977): custody is justified only by a real risk of flight, reoffending or interference with witnesses that conditions cannot manage." },
+        { "id": "mandatory_conditions", "text": "Because section 331(4) BNS is punishable with imprisonment of seven years or more, section 480(3) BNSS requires conditions that he attend, not commit a similar offence and not threaten or induce any witness; the court may add other conditions in the interests of justice." },
+        { "id": "silence", "text": "He declined to answer the IO's further questions after his first explanation." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the mandatory section 480(3) conditions", "quality": "defensible", "feedback": "Lawful and close to the mark, but it gives the shop owner, a direct witness, no specific protection and ignores the strength of the evidence. A local surety and a no-approach direction fit better." },
+        { "id": "bail.grant_conditions", "label": "Release on a bond with one local surety, the mandatory conditions, weekly reporting and no approach to the shop owner or staff", "quality": "sound", "feedback": "Bail, not jail, is the rule here. The modest risks, a strong case and a commercial witness, are fully managed by the mandatory section 480(3) conditions plus light additional ones." },
+        { "id": "bail.deny", "label": "Refuse bail and remand to judicial custody", "quality": "unsound", "feedback": "Nothing in the record shows a risk of flight, reoffending or interference that conditions cannot manage. Custody is disproportionate for a non-violent property offence by a young man with deep local roots." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "high",
+          "rationale": "I would release Mr Kadam on a bond with a local surety. He has lived at the same address for fifteen years, works, and has no conviction, so the rule of bail, not jail, clearly applies. Because the evidence is strong and the shop owner is a witness, I would add weekly reporting and a no-approach direction to the mandatory statutory conditions.",
+          "cites": ["ties", "record", "strength", "bail_rule", "mandatory_conditions"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would remand Mr Kadam to judicial custody. He has only recently moved to Kesarnagar and has no settled address here, so there is a real risk he will not be found for trial. With strong evidence against him, he has every reason to leave the district.",
+          "cites": ["ties", "strength"],
+          "flawExplanation": "The record says the opposite: Kadam has lived at the same Kesarnagar address with his parents for fifteen years (F4). The advice invents a lack of roots and builds the whole case for custody on it."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Mr Kadam gave the IO an unlikely story about buying the phones from a stranger and then refused to answer any further questions, which shows he will not cooperate with the investigation or the court. That refusal tips the balance toward custody.",
+          "cites": ["silence", "strength"],
+          "flawExplanation": "An accused's choice to stay silent is protected by Article 20(3) of the Constitution and is not evidence of any bail risk. Without it, nothing in the record suggests a risk that conditions cannot manage (F3)."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the CCTV clip",
+      "prompt": "The APP tenders exhibit P-1 with its section 63 BSA certificate. The defence objects that the original DVR has not been produced and that the three days in the owner's drawer break the chain of custody.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "The certificate under section 63(4) is on file, signed by the owner and the FSL expert, and the hash of the copy matches the clip on the DVR exactly. The DVR is preserved if the defence wants to inspect it.",
+        "defence": "A pen drive is a copy. The court should insist on the original DVR, and for three days anyone in that shop could have handled the drive. The clip cannot be trusted and must be excluded."
+      },
+      "factors": [
+        { "id": "certificate", "text": "A section 63(4) BSA certificate is on file: Part A signed by the shop owner as the person in charge of the DVR, and Part B by the State FSL expert." },
+        { "id": "hash", "text": "Both parts of the certificate record the same SHA-256 hash for the clip on the DVR and on the pen drive." },
+        { "id": "original", "text": "The DVR is still with the shop owner and available for the defence to inspect." },
+        { "id": "gap", "text": "The pen drive stayed in the owner's shop drawer for three days before the IO seized it." },
+        { "id": "s63_rule", "text": "Under section 63 BSA a copy of an electronic record (computer output) is deemed a document and admissible without production of the original if the section's conditions are met and the certificate is filed. The certificate is mandatory for such a copy, but unnecessary when the original device itself is produced (Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal, 2020, on the identical old section 65B)." },
+        { "id": "weight", "text": "Once the certificate and matching hash show the copy is faithful, the three-day gap is a matter for cross-examination and for the weight the court gives the clip." },
+        { "id": "probative", "text": "The footage is directly relevant to who broke into the shop." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the pen-drive clip with its section 63 certificate", "quality": "sound", "feedback": "Section 63 BSA admits the copy without the original once the certificate is filed, and the matching hash answers the tampering concern. The three-day gap goes to weight and can be tested in cross-examination." },
+        { "id": "evidence.admit_limited", "label": "Admit the clip only if the prosecution also produces the DVR", "quality": "defensible", "feedback": "Admitting the clip is right. Insisting on the DVR as well is harmless but unnecessary, because section 63 makes the certified copy admissible without production of the original." },
+        { "id": "evidence.exclude", "label": "Exclude the clip", "quality": "unsound", "feedback": "Exclusion ignores the section 63(4) certificate and the matching hash, and treats an imperfect chain of custody as fatal. That is not the test." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the clip. The prosecution has filed the section 63 certificate, signed by the owner and the FSL expert, and the hash of the copy matches the clip still on the DVR. A certified copy does not need the original device beside it, and the three days in the drawer are a fair point for cross-examination rather than a ground for exclusion.",
+          "cites": ["certificate", "hash", "s63_rule", "weight"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the clip. Since the Khotkar judgment, CCTV footage can be proved only by producing the original recording device; a pen-drive copy is secondary evidence and is inadmissible even with a certificate. The DVR has not been tendered, so the copy cannot come in.",
+          "cites": ["original", "s63_rule"],
+          "flawExplanation": "Khotkar holds the reverse: the certificate is what makes a copy admissible, and producing the original device is the alternative that makes a certificate unnecessary. Section 63(1) BSA admits certified computer output without production of the original (F5)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the clip. The pen drive lay in an unlocked shop drawer for three days with no record of who handled it, so the court cannot be confident the footage is unaltered. Its value does not outweigh that risk of unfairness to the accused.",
+          "cites": ["gap", "probative"],
+          "flawExplanation": "The advice ignores the section 63(4) certificate and the matching SHA-256 hash for the DVR clip and the copy (F5), which together answer the tampering concern."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Kadam has been convicted under section 331(4) BNS (house-breaking after sunset in order to commit theft: up to fourteen years and fine) and section 305(a) BNS (up to seven years and fine). He is 20. The probation officer's report has been received.",
+      "submissions": {
+        "prosecution": "This was a planned night-time break-in of a business. Shopkeepers in Gandhi Chowk need protection, and we ask for a deterrent sentence.",
+        "defence": "He is 20, a first offender with a job and a family behind him. Five phones were recovered, he has paid for the rest, and the probation officer supports release. Section 6 of the Probation of Offenders Act applies."
+      },
+      "factors": [
+        { "id": "age_rule", "text": "Section 6 of the Probation of Offenders Act, 1958: an offender under 21 convicted of an offence punishable with imprisonment (but not life) must not be sentenced to imprisonment unless the court is satisfied that release under section 3 or 4 is not desirable, must record its reasons, and must call for and consider the probation officer's report." },
+        { "id": "probation_rule", "text": "Section 4 of the Act allows release on probation of good conduct, on a bond of up to three years, for an offence not punishable with death or life imprisonment; section 5 allows a compensation order at the same time." },
+        { "id": "report", "text": "The probation officer's report is favourable: steady work, a supportive family and a fixed address." },
+        { "id": "recovery", "text": "Five of the six phones were recovered undamaged, and he has deposited Rs. 14,000 for the missing phone and the lock." },
+        { "id": "clean_record", "text": "No previous conviction; the 2023 FIR was closed by the police without a charge-sheet." },
+        { "id": "planning", "text": "A deliberate night-time break-in of a shop by breaking the shutter lock." },
+        { "id": "deterrence", "text": "The APP says break-ins at shops in Gandhi Chowk have risen this year." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct for two years under section 4, with compensation to the shop owner", "quality": "sound", "feedback": "He is under 21, so section 6 of the Probation of Offenders Act bars imprisonment unless release is shown to be undesirable. The favourable report, the recovery, the payment and his clean record all point to probation with compensation." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for one year and a fine", "quality": "defensible", "feedback": "Within the court's powers for a planned break-in, but it needs recorded reasons why probation is undesirable for an offender under 21, and the favourable report, the recovery and his clean record leave little room for them." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years and a fine", "quality": "unsound", "feedback": "A long term is for repeat or aggravated house-breaking. Nothing here puts the case there, and it ignores the statutory restriction on imprisoning offenders under 21." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Kadam on probation of good conduct for two years with compensation to the shop owner. The break-in was planned, but he is 20, so the court may imprison him only if probation is shown to be undesirable. The probation officer's report is favourable, almost all the phones were recovered and he has paid for the rest, and he has no conviction.",
+          "cites": ["age_rule", "probation_rule", "report", "recovery", "clean_record", "planning"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for one year with a fine. This was a deliberate night-time break-in at a business, and break-ins in that market are rising. Recovering most of the phones does not change the planning involved, so a short custodial term is needed to mark its seriousness.",
+          "cites": ["planning", "deterrence", "recovery"],
+          "flawExplanation": "The advice never deals with Kadam's age. He is 20 (F4), so section 6 of the Probation of Offenders Act forbids imprisonment unless the court finds probation undesirable and records reasons, and the favourable probation report points the other way."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for five years. Mr Kadam already has a 2023 conviction for violence, so he is not a first offender, and a repeat offender who breaks into a shop at night calls for a substantial term despite his age.",
+          "cites": ["clean_record", "planning"],
+          "flawExplanation": "Kadam has no conviction. The 2023 FIR was closed by the police with a final report and never reached court (F4). The advice treats it as a previous conviction, which inflates the sentence."
+        }
+      ]
+    }
+  ]
+}

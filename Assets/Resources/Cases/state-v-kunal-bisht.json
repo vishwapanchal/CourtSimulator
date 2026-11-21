@@ -1,0 +1,184 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-kunal-bisht",
+  "title": "State v. Kunal Bisht",
+  "summary": "A delivery rider was stopped at a checkpoint with ganja in his jacket and in his motorcycle's side box. The search of his person did not comply with section 50 of the NDPS Act.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Narcotic Drugs and Psychotropic Substances Act, 1985. Not legal advice.",
+  "defendant": {
+    "name": "Kunal Bisht",
+    "age": 22,
+    "background": "Food-delivery rider who lives with his widowed mother in Kesarnagar."
+  },
+  "charges": [
+    "Possession of ganja in a quantity greater than small but less than commercial quantity (section 20(b)(ii)(B), Narcotic Drugs and Psychotropic Substances Act, 1985)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At 21:15 on 3 February 2025, acting on secret information recorded in writing, Sub-Inspector Anil Deshmukh, an officer empowered under the NDPS Act, stopped Bisht's motorcycle at the Kesarnagar bypass checkpoint in the presence of two panch witnesses." },
+    { "id": "F2", "text": "Before searching Bisht's person, the SI asked him whether he had any objection to being searched. Bisht said he did not. The SI did not tell him that he had a right to be searched before a Gazetted Officer or a Magistrate. The search memo records only that \"the accused consented to the search\"." },
+    { "id": "F3", "text": "The search of Bisht's person found 1.2 kg of ganja in packets in his jacket pockets. The SI then opened the locked side box of the motorcycle with a key from Bisht's key ring and found a further 4.8 kg. The total of 6.0 kg was sampled and sealed on the spot, and the State FSL confirmed it was ganja." },
+    { "id": "F4", "text": "Bisht told the SI that an unknown man paid him Rs. 2,000 a trip to carry parcels from the bypass to an address in the city. His phone records show repeated calls with one unidentified number. There is no evidence that he owned, financed or sold the ganja." },
+    { "id": "F5", "text": "Bisht has no previous convictions and no other pending cases. He has worked as a delivery rider for two years and is his mother's only support." },
+    { "id": "F6", "text": "The charge-sheet was filed on 20 May 2025. When his bail application was heard on 2 June 2025 he had spent four months in custody, and the trial had not begun." },
+    { "id": "F7", "text": "At trial Bisht was convicted of possessing an intermediate quantity of ganja. At the hearing on sentence he expressed remorse." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Seizure memo, sealed samples and FSL report: 6.0 kg of ganja",
+      "description": "The seizure memo for 1.2 kg recovered from Bisht's jacket pockets and 4.8 kg recovered from the motorcycle's locked side box, with the sealed samples and the FSL report confirming ganja.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recovered at the bypass checkpoint on 3 February 2025 in the presence of two panch witnesses, sampled and sealed on the spot, and tested by the State FSL. Before the personal search the SI asked only whether Bisht objected to being searched; he did not tell him of his right to be searched before a Gazetted Officer or a Magistrate.",
+      "objection": "The defence advocate says the search breached section 50 of the NDPS Act, so the entire seizure, from his person and from the motorcycle, is tainted and must be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Bisht applies for regular bail before the Special Court (NDPS), Kesarnagar. He has spent four months in custody and the charge-sheet has been filed. The Special Public Prosecutor opposes bail, relying on section 37 of the NDPS Act.",
+      "submissions": {
+        "prosecution": "Section 37 bars bail unless the court is satisfied that he is not guilty and will not offend again. Six kilograms is not a personal stash, and his calls show he is part of a supply chain.",
+        "defence": "The quantity is intermediate, not commercial, so section 37's twin conditions do not apply. Investigation is complete, he has no record, and his widowed mother depends on him."
+      },
+      "factors": [
+        { "id": "quantity", "text": "The total seized is 6.0 kg of ganja: above the 1 kg small quantity and far below the 20 kg commercial quantity." },
+        { "id": "s37_rule", "text": "Every NDPS offence is cognizable and non-bailable (section 37(1)(a)), but the twin conditions of section 37(1)(b), reasonable grounds for believing the accused not guilty and not likely to offend on bail, apply only to offences under sections 19, 24 and 27A and to offences involving commercial quantity." },
+        { "id": "bail_rule", "text": "For other NDPS offences the ordinary bail principles of the BNSS apply: the basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977), unless there is a risk of flight, reoffending or tampering that conditions cannot manage." },
+        { "id": "investigation", "text": "The charge-sheet has been filed and the samples have been tested, so there is little scope left for tampering with the evidence." },
+        { "id": "custody", "text": "He has been in custody for four months and the trial has not begun." },
+        { "id": "ties", "text": "He lives with his widowed mother, has worked as a delivery rider for two years, and has no previous cases." },
+        { "id": "role", "text": "The prosecution says the quantity and his repeated calls with one unidentified number show he is part of a supply chain." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with one surety", "quality": "defensible", "feedback": "Bail is right, but a bare bond does nothing to address the prosecution's concern about a supply chain. Reporting and residence conditions fit better." },
+        { "id": "bail.grant_conditions", "label": "Release on a bond with two sureties, weekly reporting, no leaving the district without permission, and no contact with prosecution witnesses", "quality": "sound", "feedback": "Section 37's twin conditions do not apply to an intermediate quantity, so ordinary principles govern. Investigation is complete, he has roots and no record, and conditions manage the remaining risk." },
+        { "id": "bail.deny", "label": "Refuse bail", "quality": "unsound", "feedback": "Refusal rests either on section 37, which does not apply to an intermediate quantity, or on a supply-chain suspicion that conditions can manage now that investigation is complete." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on conditions. Six kilograms of ganja is an intermediate quantity, so the twin conditions of section 37 do not apply and the ordinary rule of bail, not jail, governs. The charge-sheet is filed, he has spent four months in custody, and he has roots and no record. Sureties, weekly reporting and a direction not to leave the district meet the prosecution's concern.",
+          "cites": ["quantity", "s37_rule", "bail_rule", "investigation", "custody", "ties"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Section 37 of the NDPS Act bars bail for any offence under the Act unless I am satisfied that there are reasonable grounds for believing he is not guilty and will not offend on bail. Six kilograms recovered from his jacket and his motorcycle leaves no room for that finding.",
+          "cites": ["s37_rule", "quantity"],
+          "flawExplanation": "Section 37(1)(b)'s twin conditions apply only to offences under sections 19, 24 and 27A and to commercial quantity. At 6.0 kg against a 20 kg threshold this is an intermediate quantity (F3), so ordinary bail principles govern."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Although section 37 does not apply, six kilograms and repeated calls to one unidentified number suggest Mr Bisht is a link in a supply chain. If released, he could warn the people behind it or destroy evidence of their dealings.",
+          "cites": ["role", "quantity", "s37_rule"],
+          "flawExplanation": "The advice ignores that the charge-sheet has been filed and the samples tested (F6), so the investigation the risk relates to is complete. It also passes over four months in custody and his roots, which conditions can build on."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the seizure",
+      "prompt": "The Special Public Prosecutor tenders exhibit P-1. The defence objects that the search breached section 50 of the NDPS Act, so the entire seizure must be excluded.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "Bisht consented to the search before two panch witnesses. Indian law does not exclude relevant evidence because a search was irregular, and the seizure is fully corroborated by the FSL report.",
+        "defence": "He was never told of his right to be searched before a Gazetted Officer or a Magistrate. That is a mandatory safeguard, and the whole search, including the motorcycle, falls with it."
+      },
+      "factors": [
+        { "id": "not_informed", "text": "The SI asked only whether Bisht objected to being searched and never told him of his right to be searched before a Gazetted Officer or a Magistrate." },
+        { "id": "s50_rule", "text": "Section 50 NDPS: before searching a person, the empowered officer must, if the person so requires, take him to the nearest Gazetted Officer or Magistrate. The officer must inform the suspect of this right, and the requirement is mandatory (State of Punjab v. Baldev Singh, 1999; Vijaysinh Chandubha Jadeja v. State of Gujarat, 2011)." },
+        { "id": "consequence", "text": "An article recovered from the person in a search that breaches section 50 cannot be used as evidence of unlawful possession, though other material recovered may still be relied on (Baldev Singh)." },
+        { "id": "scope", "text": "Section 50 applies only to a search of a person, not to a bag, vehicle or premises (State of Himachal Pradesh v. Pawan Kumar, 2005)." },
+        { "id": "relevance_rule", "text": "Apart from a statutory safeguard such as section 50, Indian courts do not exclude relevant evidence merely because it was obtained by an illegal search (Pooran Mal v. Director of Inspection, 1974)." },
+        { "id": "panch", "text": "Two panch witnesses signed the seizure memo, the samples were sealed on the spot, and the FSL confirmed ganja." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit and rely on both recoveries", "quality": "unsound", "feedback": "Section 50 was breached for the personal search, and that recovery cannot be used to prove possession. Admitting it as well ignores a mandatory statutory safeguard." },
+        { "id": "evidence.admit_limited", "label": "Rely on the side-box recovery only; the recovery from his person cannot be used to prove possession", "quality": "sound", "feedback": "The breach of section 50 makes the 1.2 kg from his person unusable as proof of possession, but section 50 does not apply to a vehicle, so the 4.8 kg from the side box stands on its own." },
+        { "id": "evidence.exclude", "label": "Exclude both recoveries", "quality": "unsound", "feedback": "Section 50 protects only the search of a person. Extending it to the motorcycle's side box applies the safeguard where the statute does not." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would rely on the side-box recovery only. The SI never told Mr Bisht of his right to be searched before a Gazetted Officer or Magistrate, so the ganja found in his jacket cannot be used to prove possession. Section 50 does not cover a vehicle, however, and the 4.8 kg from the locked side box remains admissible evidence.",
+          "cites": ["not_informed", "s50_rule", "consequence", "scope"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude both recoveries. Section 50 governs every search carried out under the NDPS Act, of a person or of a vehicle, and the SI never told Mr Bisht of his right to be searched before a Gazetted Officer or Magistrate. Once that safeguard was breached, everything seized in that search is tainted.",
+          "cites": ["not_informed", "s50_rule"],
+          "flawExplanation": "Section 50 applies only to the search of a person, not to a vehicle, bag or premises (Pawan Kumar). The breach affects the 1.2 kg from his jacket, not the 4.8 kg from the side box (F3)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.admit",
+          "confidence": "medium",
+          "rationale": "I would admit both recoveries. Indian courts do not exclude relevant evidence because a search was irregular, and this seizure is strongly corroborated: two panch witnesses signed the memo, the samples were sealed on the spot, and the FSL confirmed ganja. Mr Bisht also consented to the search.",
+          "cites": ["relevance_rule", "panch"],
+          "flawExplanation": "The advice ignores that the SI never told Bisht of his right to be searched before a Gazetted Officer or Magistrate (F2). Section 50 is a statutory safeguard that overrides the general relevance rule, and bare consent does not cure it, so the recovery from his person cannot be used."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Bisht has been convicted under section 20(b)(ii)(B) of the NDPS Act for possessing an intermediate quantity of ganja. The offence carries rigorous imprisonment of up to ten years and a fine of up to Rs. 1,00,000, with no minimum term.",
+      "submissions": {
+        "prosecution": "Ganja trafficking along the bypass is rising, and couriers make it possible. We ask for a deterrent sentence near the upper end.",
+        "defence": "He is 22, a first offender, and a paid courier who never owned or sold anything. We ask for probation, or failing that the shortest term the court thinks just."
+      },
+      "factors": [
+        { "id": "range", "text": "Section 20(b)(ii)(B) NDPS: rigorous imprisonment up to ten years and a fine up to Rs. 1,00,000; there is no minimum term." },
+        { "id": "probation_bar", "text": "Section 33 NDPS: the Probation of Offenders Act, 1958 and probation under the criminal procedure code do not apply to a person convicted under the NDPS Act unless he is under eighteen or the offence is under section 26 or 27." },
+        { "id": "role", "text": "A paid courier, at Rs. 2,000 a trip, with no evidence that he owned, financed or sold the ganja." },
+        { "id": "quantity", "text": "An intermediate quantity, well below the 20 kg commercial threshold." },
+        { "id": "personal", "text": "Aged 22, no previous convictions, his widowed mother's only support, and remorseful." },
+        { "id": "setoff", "text": "Section 468 BNSS: the four months he spent in custody before conviction will be set off against any term of imprisonment." },
+        { "id": "deterrence", "text": "The prosecution says ganja trafficking along the bypass has risen this year." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct", "quality": "unsound", "feedback": "Section 33 of the NDPS Act bars probation for an adult convicted under section 20. The court has no power to release him this way." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for two years and a fine of Rs. 20,000, with the time already spent in custody set off", "quality": "sound", "feedback": "Proportionate to a young first-offender courier with an intermediate quantity: real custody, because probation is barred, but well toward the lower end of a range with no minimum." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for eight years and a fine of Rs. 1,00,000", "quality": "unsound", "feedback": "A term near the maximum suits an organiser or a quantity close to commercial. A paid courier with no record and an intermediate quantity is at the other end of the range." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for two years and a fine of Rs. 20,000, setting off the four months already served. Probation is barred for this offence, so some custody is unavoidable. But Mr Bisht is a 22-year-old first offender, a paid courier with no stake in the drugs, and the quantity is well below commercial, so the term belongs near the lower end.",
+          "cites": ["probation_bar", "role", "quantity", "personal", "setoff", "range"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Bisht on probation of good conduct. He is a 22-year-old first offender who acted as a paid courier, and the Probation of Offenders Act lets the court spare a young first offender prison where the offence is not punishable with life imprisonment. His remorse and his mother's dependence on him make release expedient.",
+          "cites": ["personal", "role"],
+          "flawExplanation": "Section 33 of the NDPS Act excludes the Probation of Offenders Act for anyone convicted under the Act unless under eighteen or convicted under section 26 or 27. Bisht is 22 and convicted under section 20, so probation is not available."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for eight years and a fine of Rs. 1,00,000. The phone records show Mr Bisht arranging the consignments with his supplier and selling on to buyers in the city, so he is a dealer rather than a courier. With trafficking rising on the bypass, the sentence must deter.",
+          "cites": ["role", "deterrence"],
+          "flawExplanation": "The record shows only repeated calls with one unidentified number and no evidence that he owned, financed or sold the ganja; he was paid Rs. 2,000 a trip as a courier (F4). The advice turns a courier into a dealer and inflates the sentence."
+        }
+      ]
+    }
+  ]
+}

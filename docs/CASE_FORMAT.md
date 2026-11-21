@@ -9,9 +9,19 @@ Case files are **ground truth**. Rulings are scored against the grades in the fi
 explains flaws using the file's text. `CaseFileReader` validates strictly, so a case that loads is
 playable and gradeable.
 
-All cases are **fictional**. They are set in an invented common-law jurisdiction, and their names,
-events and rules are made up for instruction. They are not legal advice and must not describe real
-people or real proceedings.
+All cases are **fictional** but set in **India**. Names, places (the shipped cases use the invented
+Kesarnagar district) and events are made up and must not describe real people or real proceedings.
+The law is real: offences and punishments under the Bharatiya Nyaya Sanhita, 2023 (BNS), arrest, bail
+and procedure under the Bharatiya Nagarik Suraksha Sanhita, 2023 (BNSS), evidence under the Bharatiya
+Sakshya Adhiniyam, 2023 (BSA), all in force from 1 July 2024, plus any special law a case needs (for
+example the NDPS Act, 1985 or the Probation of Offenders Act, 1958). Use Indian court terms (FIR,
+charge-sheet, Investigating Officer, Public Prosecutor or APP, defence advocate, panch witnesses) and
+amounts in rupees (₹). Cases are teaching summaries, not legal advice.
+
+**Cite only what you have checked.** Every section number and judgment in a case must be verified
+against the bare Act or the judgment itself (India Code, the Gazette text or the Supreme Court
+report). If a citation cannot be verified, state the principle without it. The model is told never to
+invent citations, so a case file is the only source of them.
 
 ## Where case files live
 
@@ -26,9 +36,9 @@ Shipped cases:
 
 | File | Title | Difficulty |
 | --- | --- | --- |
-| `hale-burglary.json` | State v. Marcus Hale | 1 |
-| `raman-assault.json` | State v. Priya Raman | 2 |
-| `okafor-supply.json` | State v. Tomas Okafor | 3 |
+| `state-v-sahil-kadam.json` | State v. Sahil Kadam (night house-breaking; s.63 BSA electronic evidence; probation of an offender under 21) | 1 |
+| `state-v-mahesh-rathod.json` | State v. Mahesh Rathod (grievous hurt and a threatened witness; police confession vs. discovery under the s.23 BSA proviso) | 2 |
+| `state-v-kunal-bisht.json` | State v. Kunal Bisht (NDPS intermediate quantity; s.37 bail; s.50 personal search) | 3 |
 
 Start a new case by copying one of these.
 
@@ -58,11 +68,11 @@ as missing.
 | Field | Type | Required | Rules and use |
 | --- | --- | --- | --- |
 | `schema` | string | yes | Exactly `"courtsim.case/1"`. |
-| `id` | string | yes | Stable identifier, written to every log record and matched by the controller's **Case Id** field. Use kebab-case and the same name as the file. The reader does not check uniqueness across files, so keep ids unique yourself. |
+| `id` | string | yes | Stable identifier, written to every log record and matched by the controller's **Case Id** field. Use kebab-case and the same name as the file. Convention: `state-v-<first>-<last>`. The reader does not check uniqueness across files, so keep ids unique yourself. |
 | `title` | string | yes | Shown in the evidence viewer, the debrief header and toasts, and sent to the model. Convention: `State v. <Name>`. |
 | `summary` | string | no | One or two sentences. Sent to the model in the case brief. |
 | `difficulty` | number | yes | Integer `1` (introductory) to `3` (advanced). Controls the order cases are played in (adaptive case selection is planned, not built). |
-| `jurisdictionNote` | string | no | States that the case is fictional. Not enforced, but every case must include it. Use the wording from the shipped cases. |
+| `jurisdictionNote` | string | no | States that the case is fictional. Not enforced, but every case must include it. Use the wording from the shipped cases: "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice." Name any special law the case relies on as well. |
 | `defendant` | object | yes | See [Defendant](#defendant). |
 | `charges` | array of strings | yes | Non-empty. Each entry is a non-empty string. |
 | `facts` | array of objects | yes | Non-empty. See [Facts](#facts). |
@@ -209,33 +219,34 @@ Real cases have more facts, three options per point, submissions and several fla
 ```json
 {
   "schema": "courtsim.case/1",
-  "id": "doe-bicycle",
-  "title": "State v. Alex Doe",
-  "summary": "A bicycle taken from a public rack was found at the accused's home the next day.",
+  "id": "state-v-ravi-more",
+  "title": "State v. Ravi More",
+  "summary": "A bicycle worth ₹3,000 taken from outside a railway station was found at the accused's home the next day.",
   "difficulty": 1,
-  "jurisdictionNote": "Training case set in a fictional common-law jurisdiction. Names, events and rules are invented for instruction and are not legal advice.",
-  "defendant": { "name": "Alex Doe", "age": 30 },
-  "charges": ["Theft"],
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": { "name": "Ravi More", "age": 30 },
+  "charges": ["Theft (section 303(2), Bharatiya Nyaya Sanhita, 2023)"],
   "facts": [
-    { "id": "F1", "text": "A bicycle worth about 300 was taken from a public rack and found at the accused's home the next day." },
-    { "id": "F2", "text": "The accused has no previous convictions and has attended every court date." }
+    { "id": "F1", "text": "A bicycle worth ₹3,000 was taken from outside Kesarnagar railway station and found at the accused's home the next day. It was returned to its owner undamaged." },
+    { "id": "F2", "text": "The accused has no previous conviction and has attended every court date." },
+    { "id": "F3", "text": "After his arrest the accused told the police constable, \"I took the bicycle.\"" }
   ],
   "exhibits": [
     {
       "id": "P-1",
-      "title": "Photograph of the bicycle",
+      "title": "Constable's note of the accused's statement",
       "tenderedBy": "Prosecution",
-      "provenance": "Taken by the arresting officer in the accused's hallway.",
-      "objection": "The defence says the bicycle itself must be produced, not a photograph."
+      "provenance": "Written by the arresting constable at the police station.",
+      "objection": "The defence advocate says a confession to a police officer cannot be proved against the accused."
     }
   ],
   "decisionPoints": [
     {
       "kind": "bail",
       "title": "Bail application",
-      "prompt": "The accused applies for bail pending trial.",
+      "prompt": "The accused applies for bail under section 480 BNSS.",
       "factors": [
-        { "id": "record", "text": "No previous convictions; has attended every court date." }
+        { "id": "record", "text": "No previous conviction; has attended every court date." }
       ],
       "options": [
         { "id": "bail.grant", "label": "Release on bail", "quality": "sound", "feedback": "Nothing suggests a risk that requires custody." },
@@ -246,14 +257,14 @@ Real cases have more facts, three options per point, submissions and several fla
           "flaw": "none",
           "recommends": "bail.grant",
           "confidence": "high",
-          "rationale": "I would grant bail. The accused has no record and has attended every court date, so there is no real risk of absconding.",
+          "rationale": "I would grant bail. The accused has no conviction and has attended every court date, so there is no real risk of absconding.",
           "cites": ["record"],
           "flawExplanation": ""
         },
         {
           "flaw": "misread_fact",
           "recommends": "bail.deny",
-          "rationale": "I would refuse bail. The accused has missed court dates before, so there is a real risk they will not attend trial.",
+          "rationale": "I would refuse bail. The accused has missed court dates before, so there is a real risk he will not attend trial.",
           "cites": ["record"],
           "flawExplanation": "The record says the opposite: the accused has attended every court date (F2)."
         }
@@ -261,60 +272,60 @@ Real cases have more facts, three options per point, submissions and several fla
     },
     {
       "kind": "evidence_admissibility",
-      "title": "Admissibility of the photograph",
-      "prompt": "The prosecution tenders exhibit P-1. The defence objects that the bicycle itself must be produced.",
+      "title": "Admissibility of the statement to the constable",
+      "prompt": "The prosecution tenders exhibit P-1. The defence objects that it is a confession to a police officer.",
       "exhibitId": "P-1",
       "factors": [
-        { "id": "authentic", "text": "The officer who took the photograph can confirm it shows the bicycle as found." },
-        { "id": "photo_rule", "text": "A photograph is admissible if it is shown to be what it claims to be; the object need not be produced." }
+        { "id": "to_police", "text": "The statement was made to a police constable after arrest." },
+        { "id": "s23_rule", "text": "Section 23(1) BSA: no confession made to a police officer shall be proved against a person accused of any offence." }
       ],
       "options": [
-        { "id": "evidence.admit", "label": "Admit the photograph", "quality": "sound", "feedback": "Authenticity is shown, and there is no rule requiring the object itself." },
-        { "id": "evidence.exclude", "label": "Exclude the photograph", "quality": "unsound", "feedback": "Exclusion applies a rule that does not exist." }
+        { "id": "evidence.exclude", "label": "Exclude the statement", "quality": "sound", "feedback": "A confession to a police officer cannot be proved against the accused." },
+        { "id": "evidence.admit", "label": "Admit the statement", "quality": "unsound", "feedback": "Admission ignores the bar in section 23(1) BSA." }
       ],
       "advice": [
         {
           "flaw": "none",
-          "recommends": "evidence.admit",
-          "rationale": "I would admit the photograph. The officer can confirm it shows the bicycle as found, and a photograph does not need the object beside it.",
-          "cites": ["authentic", "photo_rule"],
+          "recommends": "evidence.exclude",
+          "rationale": "I would exclude the statement. It is a confession made to a police constable, and the law does not allow such a confession to be proved against the accused.",
+          "cites": ["to_police", "s23_rule"],
           "flawExplanation": ""
         },
         {
           "flaw": "misstated_law",
-          "recommends": "evidence.exclude",
-          "rationale": "I would exclude the photograph. Where the prosecution relies on an object, it must produce the object itself, and a photograph is only secondary evidence of it.",
-          "cites": ["authentic"],
-          "flawExplanation": "There is no rule that the object must be produced. A photograph is admissible once it is shown to be authentic, which the officer can do."
+          "recommends": "evidence.admit",
+          "rationale": "I would admit the statement. Nothing suggests it was forced, and a voluntary confession is admissible whoever it was made to.",
+          "cites": ["to_police"],
+          "flawExplanation": "Voluntariness does not help. Section 23(1) BSA bars proof of any confession made to a police officer, however freely it was made."
         }
       ]
     },
     {
       "kind": "sentencing",
       "title": "Sentence",
-      "prompt": "The accused has pleaded guilty to theft. The range runs from a fine to six months' custody.",
+      "prompt": "The accused has been convicted of theft under section 303(2) BNS for the first time. The bicycle, worth ₹3,000, has been restored to its owner.",
       "factors": [
-        { "id": "clean_record", "text": "No previous convictions." },
-        { "id": "deterrence", "text": "Thefts from public racks are common in the area." }
+        { "id": "proviso", "text": "The proviso to section 303(2) BNS: where the stolen property is worth less than ₹5,000 and a person is convicted for the first time, he shall, on return of the value or restoration of the property, be punished with community service." },
+        { "id": "deterrence", "text": "Bicycle thefts at the station are common." }
       ],
       "options": [
-        { "id": "sentence.non_custodial", "label": "Fine and compensation", "quality": "sound", "feedback": "A first, low-value theft is well below the custody threshold." },
-        { "id": "sentence.custodial", "label": "Short custodial sentence", "quality": "unsound", "feedback": "Custody is disproportionate for a first offence of this value." }
+        { "id": "sentence.non_custodial", "label": "Community service", "quality": "sound", "feedback": "The proviso to section 303(2) applies: a first conviction, property under ₹5,000, and the bicycle restored." },
+        { "id": "sentence.custodial", "label": "Short custodial sentence", "quality": "unsound", "feedback": "The proviso requires community service on these facts." }
       ],
       "advice": [
         {
           "flaw": "none",
           "recommends": "sentence.non_custodial",
-          "rationale": "I would impose a fine with compensation. This is a first offence of low value, which sits well below the custody threshold.",
-          "cites": ["clean_record"],
+          "rationale": "I would order community service. This is a first conviction, the bicycle was worth less than ₹5,000, and it has been restored, which is exactly the case the proviso covers.",
+          "cites": ["proviso"],
           "flawExplanation": ""
         },
         {
           "flaw": "omitted_factor",
           "recommends": "sentence.custodial",
-          "rationale": "I would impose a short custodial sentence. Thefts from public racks are common here, and the court needs to deter them.",
+          "rationale": "I would impose a short custodial sentence. Bicycle thefts at the station are common, and the court needs to deter them.",
           "cites": ["deterrence"],
-          "flawExplanation": "The advice ignores the accused's clean record (F2), which keeps a first, low-value theft below the custody threshold."
+          "flawExplanation": "The advice ignores the proviso to section 303(2) BNS: a first conviction for theft of property under ₹5,000 that has been restored (F1, F2) is punished with community service."
         }
       ]
     }
@@ -362,14 +373,14 @@ so it must be precise enough to reproduce the flaw from.
 - Say what is wrong, point to the record (`(F4)`) or the rule, and say why it changes the outcome.
 - Keep it to one to three sentences.
 
-**By flaw kind** (examples from `hale-burglary.json`)
+**By flaw kind** (examples from the shipped cases)
 
 | Flaw | Write it so that | Example |
 | --- | --- | --- |
-| `misstated_law` | The advice applies a wrong test, burden or rule, stated confidently. | "An unbroken chain of custody is a precondition of admissibility." The real test is authenticity, which the hash match proves. |
-| `misread_fact` | The advice relies on something the record does not say, or says the opposite of. | "His record shows he has failed to appear before." He has never missed a court date (F4). |
-| `omitted_factor` | The advice ignores one material consideration that would change the result, and is otherwise accurate. | A custodial sentence that never mentions the guilty plea at the first opportunity (F6). |
-| `improper_factor` | The advice relies on a consideration the law treats as irrelevant or forbidden. | Refusing bail because the accused stayed silent in interview. |
+| `misstated_law` | The advice applies a wrong test, burden or rule, stated confidently. | "Section 37 of the NDPS Act bars bail for any offence under the Act." Its twin conditions apply only to sections 19, 24 and 27A and to commercial quantity (`state-v-kunal-bisht`). |
+| `misread_fact` | The advice relies on something the record does not say, or says the opposite of. | "He has a 2023 conviction for violence." The 2023 FIR was closed with a final report and never reached court (F4, `state-v-sahil-kadam`). |
+| `omitted_factor` | The advice ignores one material consideration that would change the result, and is otherwise accurate. | Excluding a custodial statement under section 23 BSA without mentioning the proviso for information that led to a discovery (`state-v-mahesh-rathod`). |
+| `improper_factor` | The advice relies on a consideration the law treats as irrelevant or forbidden. | Refusing bail because residents protested outside the police station, or because the accused declined to answer the IO's questions. |
 
 **Coverage**
 
