@@ -117,6 +117,7 @@ namespace CourtSim.Runtime.App
                 _courtroom = CourtroomBuilder.Build(layout, _runtimeMaterials);
                 CourtroomLighting.Build(_courtroom.transform, new Vector3(layout.RoomSize.X, layout.RoomSize.Y, layout.RoomSize.Z));
                 CourtroomLighting.ApplyAmbient();
+                CourtroomAmbience.Build(_courtroom.transform, new Vector3(layout.RoomSize.X, layout.RoomSize.Y, layout.RoomSize.Z), _runtimeMaterials);
             }
 
             if (_player == null)

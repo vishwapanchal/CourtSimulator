@@ -82,12 +82,19 @@ namespace CourtSim.EditorTools
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
-            CourtroomRoot courtroom = CourtroomBuilder.Build(layout, new EditorMaterialProvider());
+            var materials = new EditorMaterialProvider();
+            CourtroomRoot courtroom = CourtroomBuilder.Build(layout, materials);
             var roomSize = new Vector3(layout.RoomSize.X, layout.RoomSize.Y, layout.RoomSize.Z);
             CourtroomLighting.Build(courtroom.transform, roomSize);
             CourtroomLighting.ApplyAmbient();
+            CourtroomAmbience.Build(courtroom.transform, roomSize, materials);
             foreach (MeshRenderer renderer in courtroom.GetComponentsInChildren<MeshRenderer>(true))
             {
+                if (renderer.GetComponentInParent<CeilingFan>() != null)
+                {
+                    continue; // fans spin, so they must not be static
+                }
+
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, StaticFlags);
             }
 

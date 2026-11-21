@@ -21,6 +21,11 @@ namespace CourtSim.EditorTools
             bool ok = CourtroomSceneGenerator.Generate();
             if (ok)
             {
+                // Presentation mode: borderless full screen at the monitor's native resolution.
+                PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
+                PlayerSettings.defaultIsNativeResolution = true;
+                PlayerSettings.resizableWindow = false;
+                PlayerSettings.productName = "CourtSim";
                 Directory.CreateDirectory(Path.GetDirectoryName(PlayerPath));
                 var options = new BuildPlayerOptions
                 {

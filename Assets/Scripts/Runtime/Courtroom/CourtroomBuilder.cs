@@ -160,18 +160,77 @@ namespace CourtSim.Runtime.Courtroom
             AddWainscot(shell, "Right", new Vector3((w * 0.5f) - (PanelDepth * 0.5f), 0f, 0f), new Vector3(PanelDepth, 0f, d), PanelHeight, wainscot, cap);
             AddWainscot(shell, "Left", new Vector3(-(w * 0.5f) + (PanelDepth * 0.5f), 0f, 0f), new Vector3(PanelDepth, 0f, d), PanelHeight, wainscot, cap);
 
-            // Court crest behind the bench.
-            AddBlock(shell, "Crest_Frame", new Vector3(0f, 3.4f, (d * 0.5f) - 0.03f), new Vector3(1.4f, 1.4f, 0.06f), materials.Get(SurfaceKind.Brass));
-            AddBlock(shell, "Crest_Field", new Vector3(0f, 3.4f, (d * 0.5f) - 0.065f), new Vector3(1.1f, 1.1f, 0.02f), materials.Get(SurfaceKind.DarkWood));
+            BuildBenchBackdrop(shell, d, materials);
 
-            // Clerestory windows high on the side walls, clear of wall-mounted fixtures.
+            // High windows on the side walls with maroon curtains, and fluorescent tube lights between them,
+            // as in most Indian district court halls.
             Material glow = materials.Get(SurfaceKind.WindowGlow);
+            Material curtain = materials.Get(SurfaceKind.Curtain);
+            Material tube = materials.Get(SurfaceKind.TubeLight);
             for (int i = -1; i <= 1; i++)
             {
                 float z = i * (d * 0.25f);
-                AddBlock(shell, $"Window_Right_{i + 1}", new Vector3((w * 0.5f) - 0.01f, 3.5f, z), new Vector3(0.02f, 1.6f, 1.3f), glow);
-                AddBlock(shell, $"Window_Left_{i + 1}", new Vector3(-(w * 0.5f) + 0.01f, 3.5f, z), new Vector3(0.02f, 1.6f, 1.3f), glow);
+                foreach (float side in new[] { -1f, 1f })
+                {
+                    string name = side > 0f ? "Right" : "Left";
+                    float x = side * ((w * 0.5f) - 0.01f);
+                    AddBlock(shell, $"Window_{name}_{i + 1}", new Vector3(x, 3.5f, z), new Vector3(0.02f, 1.6f, 1.3f), glow);
+                    float inner = side * ((w * 0.5f) - 0.06f);
+                    AddBlock(shell, $"Curtain_{name}_{i + 1}_A", new Vector3(inner, 3.45f, z - 0.8f), new Vector3(0.06f, 1.9f, 0.35f), curtain);
+                    AddBlock(shell, $"Curtain_{name}_{i + 1}_B", new Vector3(inner, 3.45f, z + 0.8f), new Vector3(0.06f, 1.9f, 0.35f), curtain);
+                    AddBlock(shell, $"CurtainRod_{name}_{i + 1}", new Vector3(inner, 4.42f, z), new Vector3(0.03f, 0.03f, 2.2f), materials.Get(SurfaceKind.Brass));
+                    if (i < 1)
+                    {
+                        AddBlock(shell, $"TubeLight_{name}_{i + 1}", new Vector3(side * ((w * 0.5f) - 0.05f), 3.1f, z + (d * 0.125f)), new Vector3(0.05f, 0.05f, 1.2f), tube);
+                    }
+                }
             }
+
+            // Wall clock above the entrance on the back wall.
+            AddBlock(shell, "Clock_Frame", new Vector3(0f, 3.6f, -(d * 0.5f) + 0.03f), new Vector3(0.6f, 0.6f, 0.05f), materials.Get(SurfaceKind.DarkWood));
+            AddBlock(shell, "Clock_Face", new Vector3(0f, 3.6f, -(d * 0.5f) + 0.06f), new Vector3(0.5f, 0.5f, 0.01f), materials.Get(SurfaceKind.WhiteCloth));
+            AddBlock(shell, "Clock_HandHour", new Vector3(0f, 3.66f, -(d * 0.5f) + 0.07f), new Vector3(0.025f, 0.13f, 0.005f), materials.Get(SurfaceKind.Metal));
+            AddBlock(shell, "Clock_HandMinute", new Vector3(0.07f, 3.6f, -(d * 0.5f) + 0.07f), new Vector3(0.16f, 0.02f, 0.005f), materials.Get(SurfaceKind.Metal));
+        }
+
+        /// <summary>
+        /// Panelled wall behind the judge with a scales-of-justice motif and a "SESSIONS COURT" nameplate.
+        /// The State Emblem and national flag are left out on purpose: their use is restricted by law.
+        /// </summary>
+        private static void BuildBenchBackdrop(Transform shell, float depth, IMaterialProvider materials)
+        {
+            float z = (depth * 0.5f) - 0.04f;
+            Material wood = materials.Get(SurfaceKind.DarkWood);
+            Material brass = materials.Get(SurfaceKind.Brass);
+            AddBlock(shell, "Backdrop_Panel", new Vector3(0f, 2.5f, z), new Vector3(6.4f, 3.2f, 0.06f), wood);
+            AddBlock(shell, "Backdrop_Cornice", new Vector3(0f, 4.15f, z - 0.03f), new Vector3(6.8f, 0.12f, 0.12f), materials.Get(SurfaceKind.LightWood));
+
+            // Scales of justice: a post, a beam and two hanging pans.
+            float sz = z - 0.05f;
+            AddBlock(shell, "Scales_Post", new Vector3(0f, 2.95f, sz), new Vector3(0.05f, 0.9f, 0.03f), brass);
+            AddBlock(shell, "Scales_Beam", new Vector3(0f, 3.38f, sz), new Vector3(0.9f, 0.04f, 0.03f), brass);
+            AddBlock(shell, "Scales_Base", new Vector3(0f, 2.5f, sz), new Vector3(0.35f, 0.05f, 0.03f), brass);
+            foreach (float side in new[] { -0.42f, 0.42f })
+            {
+                AddBlock(shell, $"Scales_Chain_{side}", new Vector3(side, 3.18f, sz), new Vector3(0.015f, 0.38f, 0.015f), brass);
+                AddBlock(shell, $"Scales_Pan_{side}", new Vector3(side, 2.98f, sz), new Vector3(0.28f, 0.03f, 0.03f), brass);
+            }
+
+            // Nameplate board with 3D lettering.
+            AddBlock(shell, "Nameplate_Board", new Vector3(0f, 3.8f, sz), new Vector3(3.2f, 0.42f, 0.03f), brass);
+            var label = new GameObject("Nameplate_Text");
+            label.transform.SetParent(shell, false);
+            label.transform.localPosition = new Vector3(0f, 3.8f, sz - 0.03f); // readable from the room (camera looks +Z)
+            var text = label.AddComponent<TextMesh>();
+            text.text = "SESSIONS COURT";
+            text.font = BuiltinAssets.DefaultFont;
+            text.fontSize = 64;
+            text.characterSize = 0.045f;
+            text.anchor = TextAnchor.MiddleCenter;
+            text.alignment = TextAlignment.Center;
+            text.fontStyle = FontStyle.Bold;
+            text.color = new Color(0.16f, 0.1f, 0.06f);
+            label.GetComponent<MeshRenderer>().sharedMaterial = BuiltinAssets.DefaultFont.material;
         }
 
         private static void AddWainscot(Transform parent, string side, Vector3 center, Vector3 span, float height, Material panel, Material cap)

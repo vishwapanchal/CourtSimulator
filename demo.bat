@@ -84,5 +84,5 @@ echo.
 echo   Controls: WASD move ^| mouse look ^| E interact ^| Tab assistant ^| Esc menu
 echo   Walk through the gate, look at the judge's bench and press E to rule.
 echo.
-start "" "%PLAYER%"
+start "" "%PLAYER%" -screen-fullscreen 1 -window-mode borderless
 exit /b 0

@@ -19,6 +19,14 @@ namespace CourtSim.Runtime.Courtroom
         Screen,
         AssistantScreen,
         WindowGlow,
+
+        // Indian courtroom details.
+        GreenBaize,   // green cloth on the judge, reader and advocates' tables
+        WhiteCloth,   // towel draped over the judge's chair
+        Curtain,      // maroon window curtains
+        FileCover,    // pink-red cloth-bound case files ("basta")
+        TubeLight,    // wall-mounted fluorescent tubes
+        Metal,        // ceiling fans and fittings
     }
 
     /// <summary>Supplies one shared material per surface kind.</summary>
@@ -75,11 +83,12 @@ namespace CourtSim.Runtime.Courtroom
             switch (kind)
             {
                 case SurfaceKind.Floor:
-                    albedo = new Color(0.24f, 0.16f, 0.11f);
-                    smoothness = 0.45f;
+                    // Polished grey-beige stone, common in Indian court buildings.
+                    albedo = new Color(0.55f, 0.52f, 0.47f);
+                    smoothness = 0.55f;
                     break;
                 case SurfaceKind.Wall:
-                    albedo = new Color(0.86f, 0.82f, 0.74f);
+                    albedo = new Color(0.90f, 0.86f, 0.73f);
                     smoothness = 0.08f;
                     break;
                 case SurfaceKind.Wainscot:
@@ -121,6 +130,32 @@ namespace CourtSim.Runtime.Courtroom
                     albedo = new Color(0.82f, 0.88f, 0.95f);
                     smoothness = 0.9f;
                     emission = new Color(0.55f, 0.6f, 0.68f);
+                    break;
+                case SurfaceKind.GreenBaize:
+                    albedo = new Color(0.10f, 0.32f, 0.20f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.WhiteCloth:
+                    albedo = new Color(0.95f, 0.95f, 0.92f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.Curtain:
+                    albedo = new Color(0.45f, 0.08f, 0.11f);
+                    smoothness = 0.15f;
+                    break;
+                case SurfaceKind.FileCover:
+                    albedo = new Color(0.80f, 0.36f, 0.40f);
+                    smoothness = 0.2f;
+                    break;
+                case SurfaceKind.TubeLight:
+                    albedo = new Color(0.95f, 0.97f, 1f);
+                    smoothness = 0.6f;
+                    emission = new Color(0.9f, 0.93f, 0.95f);
+                    break;
+                case SurfaceKind.Metal:
+                    albedo = new Color(0.33f, 0.33f, 0.35f);
+                    smoothness = 0.5f;
+                    metallic = 0.6f;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown surface kind.");
