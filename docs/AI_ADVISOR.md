@@ -22,8 +22,10 @@ Code: `Assets/Scripts/Core/Advising/`, `Assets/Scripts/Core/Ollama/`, `Assets/Sc
 | `omitted_factor` | Ignores a material consideration that changes the outcome. | A custodial sentence that never accounts for the early guilty plea (F6). |
 | `improper_factor` | Relies on a consideration the law treats as irrelevant or forbidden. | Refusing bail because the accused stayed silent in interview. |
 
-The taxonomy is what the debrief teaches, and what Phase 3's adaptation will target: a trainee who misses
-one kind of flaw will see more of it.
+The taxonomy is what the debrief teaches and what adaptive difficulty works with: `AdaptiveController`
+ranks the kinds from obvious to subtle (`misread_fact`, `misstated_law`, `improper_factor`,
+`omitted_factor`) and shifts toward the subtle end for a trainee who keeps following flawed advice. See
+[Adaptive difficulty](#adaptive-difficulty).
 
 ## Who decides the flaws
 
@@ -32,9 +34,33 @@ one kind of flaw will see more of it.
 
 - It flaws exactly **Flawed Advice Count** points (a `CaseSessionController` setting, 0 to 3, default 1),
   clamped to the points that have authored flawed variants. Points are chosen at random.
-- For each flawed point it draws a flaw kind from that point's authored variants. Optional per-kind
-  weights (missing kinds weigh 1; 0 excludes a kind where possible) are the knob Phase 3 will adapt.
+- For each flawed point it draws a flaw kind from that point's authored variants (optional per-kind
+  weights; missing kinds weigh 1; 0 excludes a kind where possible).
 - **Seed** on the controller fixes the plan; 0 draws a new plan every session.
+- With **Adaptive** on (the default), the plan still fixes *which* points are flawed, but the kind is
+  re-chosen by `AdaptiveController.ChooseFlaw` when that point's advice is requested, from the same
+  authored variants. It is still game logic, never the model, and the chosen kind is in the `decision`
+  record's `advice.flaw`.
+
+## Adaptive difficulty
+
+`AdaptiveController` (`Core/Adaptive/AdaptiveController.cs`) learns from each ruling's outcome (rolling
+history of 20). "Accepted" means the ruling matched the suggestion, whatever the Accept/Challenge click.
+
+| Trigger | Effect on the advice |
+| --- | --- |
+| Two flawed suggestions accepted in a row (`misled_by_flaw` ×2) | Subtlety +1 (max 3). Each authored flaw kind weighs (1 + rank)^subtlety, rank 0 = `misread_fact` … 3 = `omitted_factor`. |
+| Two sound suggestions rejected in a row (`overrode_sound` ×2) | The next request carries `ExplanationDetail.Detailed`, once. |
+
+**Explanation detail.** `AdviceRequest.Detail` is `Standard` or `Detailed`. For `Detailed`, the brief adds:
+"Explanation: detailed. Use four to six sentences (up to 160 words) and explain how each factor you cite
+supports the ruling, describing every factor in plain words, never by its id." `ScriptedAdvisor` (and so
+the fallback) appends the cited factors in plain words to the authored rationale. The `decision` record's
+`advice.detail` says which level was used.
+
+State is saved per trainee at `<persistentDataPath>/trainees/<Trainee Id>.json`. Each firing shows a toast
+and writes an [`adaptation`](#adaptation) record. A live run with `qwen3.5:9b`, where the subtlety rule
+fires after two accepted flaws, is in `docs/evidence/phase-b-adaptive-playtest.md`.
 
 The plan selects an authored advice entry for every point (`AdviceRequest.TargetScript`). That entry
 fixes the **recommended option** and the **flaw**. Whichever advisor answers must recommend that option,
@@ -46,7 +72,7 @@ on authored ground truth: option grades and flaw explanations from the case file
 | Class | Role |
 | --- | --- |
 | `ScriptedAdvisor` | Offline. Returns the authored entry verbatim (rationale, cites, confidence, flaw explanation). Instant, deterministic and free. Used when **Use Model** is off, when Claude is selected without a key, in tests, and as the fallback. |
-| `LocalModelAdvisor` | Asks a local model in Ollama (default `qwen3.5:0.8b`) to write the rationale for the planned ruling and flaw. No key, no internet, no cost. |
+| `LocalModelAdvisor` | Asks a local model in Ollama (default `qwen3.5:9b`) to write the rationale for the planned ruling and flaw. No key, no internet, no cost. |
 | `ClaudeAdvisor` | Asks Claude to write the rationale for the planned ruling and flaw. |
 | `FallbackAdvisor` | Tries the model advisor; on any failure other than cancellation, answers with `ScriptedAdvisor` for the same plan. |
 
@@ -58,7 +84,7 @@ the reply with the same code (`AdviceReply.Parse`), so they obey identical rules
 1. An advisor set with `UseAdvisor(...)` (tests, custom backends). Logged as `"custom"`.
 2. **Use Model** off: `ScriptedAdvisor`. Logged as `"scripted"`.
 3. **Backend** `LocalModel` (the default): `FallbackAdvisor(LocalModelAdvisor, ScriptedAdvisor)`. Logged as
-   the model tag, e.g. `"qwen3.5:0.8b"`. If Ollama isn't running, each request fails fast and the offline
+   the model tag, e.g. `"qwen3.5:9b"`. If Ollama isn't running, each request fails fast and the offline
    advice is shown.
 4. **Backend** `Claude` and `ApiKeyLocator.Find()` returns a key: `FallbackAdvisor(ClaudeAdvisor, ScriptedAdvisor)`.
    Logged as the model id, e.g. `"claude-opus-5-5"`.
@@ -75,7 +101,7 @@ the AI model was unavailable."
 | Runs | On this machine, in Ollama | Anthropic's API, over the internet |
 | Needs | Ollama and a pulled model | An API key (or a proxy token) |
 | Cost | Free | Per token |
-| Reasoning quality | Basic with the 0.8B default; better with larger tags | Strong |
+| Reasoning quality | Good with the 9B default; basic with the light 0.8B tag | Strong |
 | Controller fields | **Local Model**, **Ollama Url** | **Model**, **Effort**, **Api Base Url** |
 
 ### Local model (Ollama)
@@ -92,7 +118,7 @@ Body, for the same bail point as the [Claude request](#claude-request) (long str
 
 ```json
 {
-  "model": "qwen3.5:0.8b",
+  "model": "qwen3.5:9b",
   "messages": [
     { "role": "system", "content": "You are the AI judicial assistant in CourtSim, a training simulation for trainee judges. ..." },
     { "role": "user", "content": "<case>\nTitle: State v. Marcus Hale\n...\n</instructions>" }
@@ -100,7 +126,7 @@ Body, for the same bail point as the [Claude request](#claude-request) (long str
   "stream": false,
   "think": false,
   "keep_alive": "15m",
-  "options": { "temperature": 0.3, "num_ctx": 8192 },
+  "options": { "temperature": 0.3, "num_ctx": 4096 },
   "format": { "type": "object", "properties": { "recommended_option_id": { "type": "string", "enum": ["bail.deny"] }, "...": "..." } }
 }
 ```
@@ -111,11 +137,11 @@ off the model's thinking mode, which only adds delay for short advice. The reply
 
 | Setting | Value | Where to change it |
 | --- | --- | --- |
-| Model | `qwen3.5:0.8b` | Controller **Local Model** field (`OllamaClientOptions.Model`) |
+| Model | `qwen3.5:9b` | Controller **Local Model** field (`OllamaClientOptions.Model`) |
 | Base URL | `http://127.0.0.1:11434` | Controller **Ollama Url** field |
 | Timeout | 180 s (the first request also loads the model) | `OllamaClientOptions.Timeout` |
 | `temperature` | 0.3 | `OllamaClientOptions.Temperature` |
-| `num_ctx` | 8192 tokens (the brief is well under 3,000) | `OllamaClientOptions.ContextTokens` |
+| `num_ctx` | 4096 tokens (brief plus reply stay under 2,000; 4k keeps the 9B model fully in 8 GB of VRAM) | `OllamaClientOptions.ContextTokens` |
 | `keep_alive` | `15m`, so later requests skip the model load | `OllamaClientOptions.KeepAlive` |
 
 **Errors.** `OllamaClient` raises `OllamaException` (with `StatusCode` when there was a response). There
@@ -132,19 +158,24 @@ are no retries; `FallbackAdvisor` serves the offline advice instead.
 A reply that parses but fails validation (wrong option, no rationale) raises `AdvisorException`, as for
 Claude.
 
-**Performance.** Measured on an RTX 5050 Laptop GPU (8 GB) with Ollama 0.40.16 and `qwen3.5:0.8b`: the
-first request takes about 60 s because it loads the model; after that each piece of advice takes about
-2 s, running 100% on the GPU (about 625 MB of VRAM). Prefetching (see [Cost and latency](#cost-and-latency))
-hides most of the first load. A live run of `hale-burglary` got valid JSON for all three decision points.
+**Performance.** Measured on an RTX 5050 Laptop GPU (8 GB) with Ollama 0.40.16. `qwen3.5:9b` at
+`num_ctx` 4096 runs 100% on the GPU (about 5.6 GB): the first request takes about 30 s because it loads
+the model; after that each piece of advice takes about 4–7 s (the Phase B playtest logged 4.2–5.2 s at
+roughly 1,000–1,200 tokens in, 130–190 out). `qwen3.5:0.8b` takes about 60 s to load cold and about 2 s
+per advice (about 625 MB of VRAM). Prefetching (see [Cost and latency](#cost-and-latency)) and
+`demo.bat`'s preload hide most of the first load.
 
 **Model choice.** Any Ollama tag that supports structured output works; set it in **Local Model** and
 `ollama pull` it first.
 
 | Tag | Download | Speed | Trade-off |
 | --- | --- | --- | --- |
-| `qwen3.5:0.8b` (default) | ~1.3 GB, ~625 MB VRAM | ~2 s per advice | Fast and runs almost anywhere. Rationales can run long, and it sometimes misstates a fact or contradicts the planned flaw. The ruling and flaw are still enforced by validation and the plan. |
-| `qwen3.5:4b` | Larger | Slower | Noticeably better reasoning; a good middle ground on a mid-range GPU. |
-| `qwen3.5:9b` | ~6 GB of VRAM | Slowest | Best reasoning of the three; fits an 8 GB GPU. |
+| `qwen3.5:9b` (default) | ~5.6 GB of VRAM at 4k context | ~4–7 s per advice | Best reasoning of the three; the strongest model that fits fully in an 8 GB GPU. Flawed rationales occasionally contradict themselves. |
+| `qwen3.5:4b` | Smaller | Faster | A middle ground on a mid-range GPU. |
+| `qwen3.5:0.8b` (light) | ~1.3 GB, ~625 MB VRAM | ~2 s per advice | Fast and runs almost anywhere. Rationales can run long, and it more often misstates a fact or gives the flaw away. |
+
+Whatever the tag, the ruling and flaw are enforced by the plan and validation, so a weak rationale can
+make the exercise less convincing but never changes the grade.
 
 The system prompt asks for a rationale under 90 words with no option or factor ids in it, which helps the
 small model most.
@@ -277,7 +308,7 @@ The reply must be one JSON object, from either backend:
 | Field | Schema | What `AdviceReply.Parse` does with it |
 | --- | --- | --- |
 | `recommended_option_id` | string, `enum` of the single planned option | Must equal the planned option, or the reply is rejected. |
-| `rationale` | string | Must be non-blank, or the reply is rejected. Trimmed. Shown to the trainee. |
+| `rationale` | string | Must be non-blank, or the reply is rejected. Trimmed. Shown to the trainee. Two guards also reject it: for flawed advice, a rationale that **admits its own flaw** (contains "flaw", "mistake", "incorrect", "erroneous", "misappl…", "misstat…", "misread", "wrongly", "proceed as if" or "deliberately wrong", case-insensitive); and for any advice, a rationale that **leaks an internal id** (an option or factor id containing `.` or `_`, such as `bail.grant` or `early_plea`). |
 | `cited_factor_ids` | array of strings, `enum` of this point's factor ids | Unknown ids and duplicates are dropped silently. |
 | `confidence` | `low`, `medium` or `high` | An invalid value falls back to the authored confidence. |
 | `flaw_explanation` | string | Sound advice: always cleared. Flawed advice: used for the debrief; if blank, the authored explanation is used instead. |
@@ -348,10 +379,11 @@ Prefetching applies to both backends. The local model is free; its latency is un
 
 1. Install Ollama: `winget install Ollama.Ollama` (or the installer from ollama.com). It installs per
    user and runs in the background on port 11434.
-2. Pull the model once: `ollama pull qwen3.5:0.8b` (about 1.3 GB).
+2. Pull the model once: `ollama pull qwen3.5:9b` (or run `demo.bat`, which pulls and preloads it). On a
+   GPU with less than 8 GB, pull `qwen3.5:0.8b` and set it in **Local Model**.
 3. Press Play. **Use Model** is on and **Backend** is `LocalModel` by default. The assistant card footnote
    reads "Written by a local AI model for this case.", and the log's `session_start` record shows
-   `"advisor":"qwen3.5:0.8b"`.
+   `"advisor":"qwen3.5:9b"`.
 
 No key is needed. If Ollama isn't running or the model isn't pulled, the card shows the offline advice and
 the Unity console says why. To use only the offline advice, untick **Use Model**.
@@ -360,7 +392,7 @@ Ollama and the model are installed by each user; neither is in the repository or
 
 To try it headless: `tools/unity.ps1 -Task live` plays one case against the local model and writes
 `Logs/batch/live/live-transcript.md`. Pass runner options with `-LiveArgs`, e.g.
-`-LiveArgs '-liveModel qwen3.5:4b'` or `-LiveArgs '-liveBackend claude'` (needs `ANTHROPIC_API_KEY`).
+`-LiveArgs '-liveModel qwen3.5:0.8b'` or `-LiveArgs '-liveBackend claude'` (needs `ANTHROPIC_API_KEY`).
 
 ## Enabling Claude advice
 
@@ -430,8 +462,8 @@ record, so a crashed session still leaves a readable log. Write errors never int
 (`JsonLinesFileSink.LastError` holds the last one). Schema id: `courtsim.log/1`.
 
 Every record has `type`, `schema`, `sessionId` (32 hex characters), `caseId` and `timestampUtc`
-(ISO 8601, UTC, milliseconds). A complete session is one `session_start`, three `decision` records and
-one `session_end`.
+(ISO 8601, UTC, milliseconds). A complete session is one `session_start`, three `decision` records (each
+possibly followed by an `adaptation` record) and one `session_end`.
 
 ### `session_start`
 
@@ -442,8 +474,8 @@ one `session_end`.
 | Field | Meaning |
 | --- | --- |
 | `caseTitle`, `difficulty` | From the case file. |
-| `advisor` | The requested model: the Ollama tag (e.g. `qwen3.5:0.8b`) or Claude model id, even if every request later falls back. `scripted` when **Use Model** is off or Claude has no key, `custom` for an override. |
-| `plan` | The planned flaw per decision point, in order. |
+| `advisor` | The requested model: the Ollama tag (e.g. `qwen3.5:9b`) or Claude model id, even if every request later falls back. `scripted` when **Use Model** is off or Claude has no key, `custom` for an override. |
+| `plan` | The planned flaw per decision point, in order. With adaptive difficulty on, flawed points read `"flawed"`, because the kind is chosen when the advice is requested; the `decision` record's `advice.flaw` has it. |
 
 ### `decision`
 
@@ -473,7 +505,7 @@ A ruling made before advice was ready:
 | `secondsToDecide` | From when the decision dialog was first shown for this point (or, if it never was, from the previous ruling or the session start) to the ruling. Rounded to 0.01 s. |
 | `stance` | The trainee's last Accept/Challenge click before ruling: `accepted`, `challenged` or `none`. Always `none` when no advice was shown. |
 | `outcome` | How the ruling relates to the advice; see below. |
-| `advice` | `null` when no advice was ready. Otherwise `recommendedOptionId`, `flaw`, `confidence`, `source` (`local`, `claude` or `scripted`) and `followed` (ruling equals the recommendation). |
+| `advice` | `null` when no advice was ready. Otherwise `recommendedOptionId`, `flaw`, `confidence`, `source` (`local`, `claude` or `scripted`), `followed` (ruling equals the recommendation) and `detail` (`standard` or `detailed`). |
 | `adviceError` | Present only when set: why advice was missing, failed, was cancelled, or came from the fallback. |
 
 ### Outcomes
@@ -490,6 +522,18 @@ The outcome depends only on whether the ruling matches the recommendation, not o
 can challenge advice and still follow it. `caught_flaw` means only that the flawed recommendation was not
 followed; read `quality` to see whether the ruling chosen instead was sound.
 
+### `adaptation`
+
+Written straight after the `decision` record that made an adaptive rule fire (so a session can hold zero or
+more):
+
+```json
+{"type":"adaptation","schema":"courtsim.log/1","sessionId":"3f2a9c1e7b4d4e0f9a6b2c8d1e5f7a90","afterIndex":1,"note":"Two flawed suggestions accepted in a row: flaws are now subtler (level 1).","state":{"subtlety":1,"detailedExplanationPending":false,"acceptedFlawsInARow":0,"rejectedSoundInARow":0,"history":["misled_by_flaw","misled_by_flaw"]},"timestampUtc":"2026-11-20T12:22:41.118Z"}
+```
+
+`afterIndex` is the decision point just ruled on, `note` is the text of the in-game toast, and `state` is
+the controller's full state, the same JSON saved to `trainees/<id>.json`.
+
 ### `session_end`
 
 ```json
@@ -500,6 +544,11 @@ followed; read `quality` to see whether the ruling chosen instead was sound.
 `timesMisled`), `soundAdviceSeen` (trusted + overridden), `soundAdviceOverridden`, and
 `flawDetectionRate` = `flawsCaught / flawedAdviceSeen`, rounded to 3 decimals, or `null` when no flawed
 advice was shown. Rulings with `no_advice` count toward the quality totals only.
+
+Phase C (in progress) adds `overTrust` = `timesMisled / flawedAdviceSeen` (flawed suggestions accepted ÷
+shown) and `underTrust` = `soundAdviceOverridden / soundAdviceSeen` (sound suggestions rejected ÷ shown),
+each `null` when the denominator is 0. The debrief shows them as percentages with a one-line reading:
+50% or more is high, 25% or more moderate, otherwise low.
 
 The debrief (`Core/Sessions/Debrief.cs`) is built from the same entries: for each ruling, its grade, the
 sound ruling if the trainee missed it, the author's feedback, a line describing the outcome, and for

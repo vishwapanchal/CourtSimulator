@@ -61,7 +61,7 @@ as missing.
 | `id` | string | yes | Stable identifier, written to every log record and matched by the controller's **Case Id** field. Use kebab-case and the same name as the file. The reader does not check uniqueness across files, so keep ids unique yourself. |
 | `title` | string | yes | Shown in the evidence viewer, the debrief header and toasts, and sent to the model. Convention: `State v. <Name>`. |
 | `summary` | string | no | One or two sentences. Sent to the model in the case brief. |
-| `difficulty` | number | yes | Integer `1` (introductory) to `3` (advanced). Controls the order cases are played in, and is an input to Phase 3's adaptive case selection. |
+| `difficulty` | number | yes | Integer `1` (introductory) to `3` (advanced). Controls the order cases are played in (adaptive case selection is planned, not built). |
 | `jurisdictionNote` | string | no | States that the case is fictional. Not enforced, but every case must include it. Use the wording from the shipped cases. |
 | `defendant` | object | yes | See [Defendant](#defendant). |
 | `charges` | array of strings | yes | Non-empty. Each entry is a non-empty string. |
@@ -375,8 +375,9 @@ so it must be precise enough to reproduce the flaw from.
 
 - Give each decision point at least two flawed variants of different kinds where you can. The flaw
   plan draws the kind from the variants you author, so more variants mean more varied sessions.
-- Across a case, cover several flaw kinds. Phase 3 adapts to the kinds a trainee misses, which only
-  works if every kind appears somewhere.
+- Across a case, cover several flaw kinds. Adaptive difficulty shifts toward subtler kinds
+  (`improper_factor`, `omitted_factor`) for a trainee who keeps following flawed advice, which only works
+  if those kinds are authored.
 
 ## Checking a case
 

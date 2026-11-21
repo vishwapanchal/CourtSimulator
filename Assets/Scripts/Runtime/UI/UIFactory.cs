@@ -124,6 +124,15 @@ namespace CourtSim.Runtime.UI
             return text;
         }
 
+        /// <summary>
+        /// Makes text safe to show inside a rich-text label: model or case text could contain "&lt;b&gt;"-style tags,
+        /// so angle brackets are swapped for look-alike characters that Unity does not treat as markup.
+        /// </summary>
+        public static string Plain(string text)
+        {
+            return string.IsNullOrEmpty(text) ? string.Empty : text.Replace("<", "‹").Replace(">", "›");
+        }
+
         /// <summary>A pill-shaped label, e.g. a key cap or a status tag. Sizes itself to its text inside layouts.</summary>
         public RectTransform CreateChip(string name, Transform parent, string label, Color background, Color foreground, out Text text)
         {

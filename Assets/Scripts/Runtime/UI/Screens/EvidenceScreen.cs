@@ -106,7 +106,9 @@ namespace CourtSim.Runtime.UI.Screens
             RectTransform row = Factory.CreateRect(label, parent);
             UIFactory.AddHorizontalLayout(row.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.UpperLeft);
             Text labelText = Factory.CreateText("Label", row, label, TextStyle.Body, TextAnchor.UpperLeft, Theme.TextSecondary);
-            UIFactory.GetOrAddLayoutElement(labelText.gameObject).preferredWidth = 160f;
+            LayoutElement labelLayout = UIFactory.GetOrAddLayoutElement(labelText.gameObject);
+            labelLayout.preferredWidth = 160f;
+            labelLayout.minWidth = 160f; // stops long values squeezing the label into one letter per line
             Text valueText = Factory.CreateText("Value", row, string.Empty, TextStyle.Body);
             UIFactory.GetOrAddLayoutElement(valueText.gameObject).flexibleWidth = 1f;
             return valueText;

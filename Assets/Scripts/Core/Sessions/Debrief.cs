@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using CourtSim.Core.Advising;
@@ -103,6 +104,52 @@ namespace CourtSim.Core.Sessions
                     return "Unsound";
             }
         }
+
+        /// <summary>Plain-English band for a trust score: 50% or more is high, 25% or more moderate, otherwise low.</summary>
+        public static string Band(double rate)
+        {
+            if (rate >= 0.5)
+            {
+                return "high";
+            }
+
+            return rate >= 0.25 ? "moderate" : "low";
+        }
+
+        /// <summary>Over-trust as a percentage, or "–" if no flawed suggestions were shown.</summary>
+        public static string OverTrustPercent(SessionSummary summary) => Percent(summary.OverTrust);
+
+        public static string UnderTrustPercent(SessionSummary summary) => Percent(summary.UnderTrust);
+
+        /// <summary>One line explaining over-trust, e.g. "You accepted 3 of 4 flawed suggestions: high over-trust."</summary>
+        public static string OverTrustLine(SessionSummary summary)
+        {
+            if (!summary.OverTrust.HasValue)
+            {
+                return "No flawed suggestions were shown, so over-trust could not be measured.";
+            }
+
+            string band = Band(summary.OverTrust.Value);
+            string advice = band == "low" ? "you are checking the AI's advice well." : "test each suggestion against the record before relying on it.";
+            return $"You accepted {summary.TimesMisled} of {summary.FlawedAdviceSeen} flawed suggestion{Plural(summary.FlawedAdviceSeen)}: {band} over-trust, so {advice}";
+        }
+
+        /// <summary>One line explaining under-trust, e.g. "You rejected 1 of 2 sound suggestions: high under-trust."</summary>
+        public static string UnderTrustLine(SessionSummary summary)
+        {
+            if (!summary.UnderTrust.HasValue)
+            {
+                return "No sound suggestions were shown, so under-trust could not be measured.";
+            }
+
+            string band = Band(summary.UnderTrust.Value);
+            string advice = band == "low" ? "you use good advice when it is right." : "good advice is being dismissed; ask what the record actually supports.";
+            return $"You rejected {summary.SoundAdviceOverridden} of {summary.SoundAdviceSeen} sound suggestion{Plural(summary.SoundAdviceSeen)}: {band} under-trust, so {advice}";
+        }
+
+        private static string Percent(double? rate) => rate.HasValue ? $"{Math.Round(rate.Value * 100):0}%" : "–";
+
+        private static string Plural(int count) => count == 1 ? string.Empty : "s";
 
         /// <summary>A short paragraph summarising the session.</summary>
         public static string Headline(SessionSummary summary)

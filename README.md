@@ -2,20 +2,35 @@
 
 An adaptive courtroom simulation for training legal decision-making with AI assistance.
 The trainee presides as judge and makes three rulings (**bail**, **admissibility of evidence** and
-**sentencing**) while an AI assistant offers advice that is sometimes deliberately wrong. Later phases
-log every ruling and adapt case difficulty to the trainee's performance.
+**sentencing**) while an AI assistant offers advice that is sometimes deliberately wrong. Every ruling is
+graded against the case file and logged, the difficulty adapts to how the trainee treats the advice, and
+a debrief reveals which suggestions were flawed and how far the trainee over- or under-trusted the AI.
 
-> **Status: Phase 2, case data and AI assistant.** Three fictional cases drive the decision flow.
-> Every ruling is graded against the case file and logged, the assistant's advice is written by a local
-> model (Ollama) by default, optionally by Claude, or taken from the case file offline, and a debrief at the end reveals which suggestions were flawed. Adaptive
-> difficulty and the VR rig arrive in Phase 3. See `CHANGELOG.md`.
+> **Status.** Phases 0–2 (audit, foundation, case data and AI assistant) and **Phase B (adaptive
+> difficulty)** are done. **Phase C (trust scores and debrief polish)** is in progress. The VR rig is not
+> built yet: the game runs as a desktop first-person app. See `CHANGELOG.md`.
+
+## Project structure at a glance
+
+```
+Case files (JSON) ─▶ CaseSession ◀── AdvicePlanner (which points are flawed)
+                         │      ◀── AdaptiveController (how subtle, how detailed)
+                         ▼
+                  Advisor: local model (Ollama) | Claude | authored offline advice (always the fallback)
+                         ▼
+                  UI (bench, assistant card, evidence) ─▶ decision log (JSONL) ─▶ debrief + trust scores
+```
+
+Game logic, never the model, decides which advice is flawed; the model only writes the wording, and the
+case file is the ground truth for grading. Details: `docs/ARCHITECTURE.md`, `docs/AI_ADVISOR.md`, and the
+one-page summary in `docs/VIVA_CHEAT_SHEET.md`.
 
 ## Requirements
 
 - **Unity 2022.3 LTS** (project file pins 2022.3.62f3; any newer 2022.3 patch works). Built-in render pipeline.
 - Optional, to run core tests without Unity: **.NET SDK 8.0+**.
-- Optional, for model-written advice: **Ollama** with `qwen3.5:0.8b` (free, local, the default; see below).
-  Without it the assistant uses the offline advice from the case file.
+- Optional, for model-written advice: **Ollama** with `qwen3.5:9b` (free, local, the default; about 6 GB of
+  VRAM) or `qwen3.5:0.8b` on smaller GPUs. Without it the assistant uses the offline advice from the case file.
 - Optional, for Claude-written advice instead: an **Anthropic API key**.
 - Optional, for MCP for Unity: **git** on `PATH` (Unity fetches the package from GitHub) and
   **uv** (`winget install --id astral-sh.uv`).
@@ -34,6 +49,7 @@ demo.bat editor     open the Unity Editor straight into Play mode
 ```
 
 Close any Unity Editor that has the project open before building.
+
 ## Quick start
 
 1. Open the project folder in Unity Hub (**Add → Add project from disk**).
@@ -60,13 +76,41 @@ new session plays the next case, from easiest to hardest.
 By default a small model running on your machine writes the advice. No key, no internet, no cost:
 
 1. Install Ollama: `winget install Ollama.Ollama`. It runs in the background on port 11434.
-2. Pull the model once: `ollama pull qwen3.5:0.8b` (about 1.3 GB download, about 625 MB of VRAM).
+2. Pull the model once: `ollama pull qwen3.5:9b` (`demo.bat` does this for you).
 3. Press **Play**. The assistant card reads "Written by a local AI model for this case."
 
-The first request takes about a minute while the model loads; after that advice arrives in about two
-seconds on a laptop GPU. If Ollama isn't running, the card shows the offline advice authored in the case
-file. Larger tags such as `qwen3.5:4b` or `qwen3.5:9b` write better reasoning; set one in the Case Session
-Controller's **Local Model** field after pulling it. Untick **Use Model** to always use the offline advice.
+The default is `qwen3.5:9b` with a 4,096-token context, which fits entirely in an 8 GB laptop GPU (tested
+on an RTX 5050 Laptop): about 30 s for the first load, then about 4–7 s per suggestion. Advice is fetched
+ahead of time, so most of that wait is hidden. On a smaller GPU, pull `qwen3.5:0.8b` and set it in the Case
+Session Controller's **Local Model** field: much faster, weaker reasoning. If Ollama isn't running, the card
+shows the offline advice authored in the case file. Untick **Use Model** to always use the offline advice.
+
+Model replies are validated before the trainee sees them: the ruling must be the planned one, and a
+flawed rationale that admits its own flaw, or any rationale that leaks an internal id, is rejected in
+favour of the authored advice.
+
+## Adaptive difficulty
+
+`AdaptiveController` (`Assets/Scripts/Core/Adaptive/`) watches how the trainee treats each suggestion
+(a rolling history of the last 20 outcomes; "accepted" means the ruling matched the suggestion):
+
+- **Two flawed suggestions accepted in a row:** flaws get subtler (level +1, up to 3). Flaw kinds are
+  ranked from obvious to subtle (misread fact, misstated law, improper factor, omitted factor) and drawn
+  with weight (1 + rank)^level, so level 0 is even and higher levels favour the subtle kinds.
+- **Two sound suggestions rejected in a row:** the next suggestion explains its reasoning in detail.
+
+The plan still decides which points are flawed; the controller picks only the flaw kind and the
+explanation detail. A toast announces each change, the log gets an `adaptation` record, and the state is
+saved per trainee at `<persistentDataPath>/trainees/<id>.json` (Inspector: **Trainee Id**, **Adaptive**).
+A live run with `qwen3.5:9b` is in `docs/evidence/phase-b-adaptive-playtest.md`.
+
+## Trust scores (Phase C, in progress)
+
+The debrief reports two percentages, each with a one-line plain-English reading (50% or more is high,
+25% or more moderate, otherwise low):
+
+- **Over-trust** = flawed suggestions accepted ÷ flawed suggestions shown.
+- **Under-trust** = sound suggestions rejected ÷ sound suggestions shown.
 
 ### Claude (optional)
 
@@ -105,21 +149,23 @@ before a headless run, and reopen it to use MCP again.
 
 | Suite | How to run | Needs Unity |
 | --- | --- | --- |
-| Core (435 NUnit tests, coverage gate 80%) | `pwsh tools/verify-core.ps1` | No |
-| Everything in Unity, headless: compile, regenerate scene, EditMode + PlayMode, coverage gate 80% | `pwsh tools/unity.ps1 -Coverage` | Yes (installed, no GUI) |
+| Core (512 NUnit tests, coverage gate 80%) | `pwsh tools/verify-core.ps1` | No |
+| Everything in Unity, headless: compile, regenerate scene, EditMode + PlayMode, coverage gate 80% | `pwsh tools/unity.ps1 -Task all -Coverage` | Yes (installed, no GUI) |
+| One real case against the local model, headless, with a transcript | `pwsh tools/unity.ps1 -Task live` | Yes, plus Ollama |
 | Same suites interactively | Window → General → Test Runner | Yes |
 
 `tools/unity.ps1` runs Unity in batch mode, so close any Editor that has this project open first
 (including one left open for MCP for Unity).
-Current line coverage is **92%** across all CourtSim assemblies in Unity (440 EditMode and 39 PlayMode tests), and **98.7%** for Core under .NET.
+Latest results: Core **512/512** under .NET (**98.75%** line coverage); Unity EditMode **517/517** and
+PlayMode **39/39** (**91.5%** line coverage across all CourtSim assemblies).
 
 ## Repository layout
 
 ```
 Assets/
   Scripts/Core/      CourtSim.Core: pure C#, no UnityEngine (events, layout, decisions, cases,
-                     advice, Ollama and Claude clients, HTTP abstraction, logging,
-                     sessions, JSON)
+                     advice, adaptive difficulty, Ollama and Claude clients, HTTP abstraction,
+                     logging, sessions, JSON)
   Scripts/Runtime/   CourtSim.Runtime: bootstrap, session controller, case loading, HTTP transport,
                      courtroom builder, player, interaction, UI
   Scripts/Editor/    CourtSim.Editor: scene generator, material assets
@@ -128,8 +174,10 @@ Assets/
   Tests/PlayMode/    Runtime integration tests (builder, UI flow, player, bootstrap)
   Tests/Editor/      Editor tooling tests (scene generator)
   Scenes/ Materials/ Generated by CourtSim → Generate CourtRoom Scene (committed)
-docs/                Architecture, case format, AI advisor, style guide, Phase 0 audit
+docs/                Architecture, case format, AI advisor, viva cheat sheet, style guide,
+                     Phase 0 audit; evidence/ holds live playtest transcripts
 tools/               verify-core.ps1 (core under .NET) and unity.ps1 (headless Unity driver)
+demo.bat             One-click demo: starts Ollama, preloads the model, builds and launches
 .mcp.json            MCP for Unity server for Claude Code
 ```
 

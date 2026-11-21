@@ -29,12 +29,13 @@ packages distributed under the Unity Companion License
 
 The default AI advisor talks over HTTP to a local Ollama server. Neither Ollama nor any model weights are
 included in this repository or in builds; each user installs them (`winget install Ollama.Ollama`,
-`ollama pull qwen3.5:0.8b`). CourtSim contains no code from either, only a client for Ollama's HTTP API.
+`ollama pull qwen3.5:9b`, or `qwen3.5:0.8b` on smaller GPUs). CourtSim contains no code from either, only a
+client for Ollama's HTTP API.
 
 | Component | License |
 | --- | --- |
 | [Ollama](https://github.com/ollama/ollama) | MIT |
-| [Qwen 3.5](https://huggingface.co/Qwen/Qwen3.5-0.8B) model weights (default `qwen3.5:0.8b`; also `4b`, `9b`) by the Qwen team, Alibaba Cloud | Apache-2.0, per the Qwen model card (0.8B confirmed; check the card for any other tag you use) |
+| [Qwen 3.5](https://huggingface.co/Qwen/Qwen3.5-9B) model weights (default `qwen3.5:9b`; optional `qwen3.5:0.8b`, also `4b`) by the Qwen team, Alibaba Cloud | Apache-2.0, per the Qwen model cards ([9B](https://huggingface.co/Qwen/Qwen3.5-9B) and [0.8B](https://huggingface.co/Qwen/Qwen3.5-0.8B) confirmed, 2026-11-21; check the card for any other tag you use) |
 
 Anyone redistributing Ollama or the weights alongside CourtSim must follow those licences themselves.
 The optional Claude backend uses Anthropic's API under Anthropic's terms; nothing from Anthropic is bundled.

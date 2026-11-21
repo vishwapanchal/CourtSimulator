@@ -251,6 +251,18 @@ namespace CourtSim.Core.Logging
         /// <summary>Share of flawed advice the trainee did not follow, or null if none was shown.</summary>
         public double? FlawDetectionRate => FlawedAdviceSeen == 0 ? (double?)null : (double)FlawsCaught / FlawedAdviceSeen;
 
+        /// <summary>
+        /// Over-trust: flawed suggestions accepted ÷ flawed suggestions shown (null if none were shown).
+        /// "Accepted" means the ruling matched the suggestion. High over-trust means the trainee follows the AI blindly.
+        /// </summary>
+        public double? OverTrust => FlawedAdviceSeen == 0 ? (double?)null : (double)TimesMisled / FlawedAdviceSeen;
+
+        /// <summary>
+        /// Under-trust: sound suggestions rejected ÷ sound suggestions shown (null if none were shown).
+        /// High under-trust means the trainee dismisses good advice.
+        /// </summary>
+        public double? UnderTrust => SoundAdviceSeen == 0 ? (double?)null : (double)SoundAdviceOverridden / SoundAdviceSeen;
+
         public static SessionSummary From(IEnumerable<DecisionLogEntry> entries)
         {
             var summary = new SessionSummary();
@@ -305,8 +317,15 @@ namespace CourtSim.Core.Logging
                 .Set("timesMisled", TimesMisled)
                 .Set("soundAdviceSeen", SoundAdviceSeen)
                 .Set("soundAdviceOverridden", SoundAdviceOverridden);
-            json.Set("flawDetectionRate", FlawDetectionRate.HasValue ? JsonValue.Number(Math.Round(FlawDetectionRate.Value, 3)) : JsonValue.Null);
+            json.Set("flawDetectionRate", Rate(FlawDetectionRate));
+            json.Set("overTrust", Rate(OverTrust));
+            json.Set("underTrust", Rate(UnderTrust));
             return json;
+        }
+
+        private static JsonValue Rate(double? value)
+        {
+            return value.HasValue ? JsonValue.Number(Math.Round(value.Value, 3)) : JsonValue.Null;
         }
     }
 

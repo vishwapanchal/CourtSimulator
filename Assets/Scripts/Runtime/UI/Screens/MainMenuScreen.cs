@@ -40,7 +40,7 @@ namespace CourtSim.Runtime.UI.Screens
             RectTransform tags = Factory.CreateRect("Tags", column);
             UIFactory.AddHorizontalLayout(tags.gameObject, new RectOffset(0, 0, 2, 10), 8f);
             Color tagBackground = Theme.SurfaceRaised;
-            Factory.CreateChip("Phase", tags, "PHASE 1 · ENVIRONMENT PREVIEW", tagBackground, Theme.TextSecondary, out _);
+            Factory.CreateChip("Phase", tags, "LOCAL AI ADVISOR · ADAPTIVE", tagBackground, Theme.TextSecondary, out _);
             Factory.CreateChip("Mode", tags, "DESKTOP MODE", tagBackground, Theme.TextSecondary, out _);
 
             RectTransform actions = Factory.CreateRect("Actions", column);

@@ -5,10 +5,41 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added: Phase B (adaptive difficulty)
+- `AdaptiveController` (`Core/Adaptive`) keeps a rolling history of the trainee's last 20 advice outcomes
+  and applies two rules. Two flawed suggestions accepted (ruling followed) in a row raise **subtlety** by
+  one (max 3); flaw kinds are ranked `ObviousToSubtle` (misread fact, misstated law, improper factor,
+  omitted factor) and drawn with weight (1 + rank)^subtlety from the kinds the case authored. Two sound
+  suggestions rejected in a row make the next suggestion use `ExplanationDetail.Detailed`.
+- `CaseSession.UseAdaptation`: the plan still decides which points are flawed; the controller picks the
+  flaw kind and explanation detail when advice is requested. `session_start.plan` reads `"flawed"` for
+  those points, each `decision` record's `advice.detail` is `standard` or `detailed`, and a rule firing
+  writes an `adaptation` record (`afterIndex`, `note`, `state`) and raises `Adapted`.
+- Detailed explanations: the model brief asks for four to six sentences explaining each cited factor in
+  plain words; `ScriptedAdvisor` appends the cited factors to the authored rationale.
+- `CaseSessionController`: **Trainee Id** and **Adaptive** fields. State is saved per trainee at
+  `<persistentDataPath>/trainees/<id>.json` (only when file logging is on) and restored on the next run;
+  each adaptation shows a toast in game.
+- Live playtest evidence with `qwen3.5:9b`: `docs/evidence/phase-b-adaptive-playtest.md`.
+
+### Added: Phase C (trust scores and debrief polish, in progress)
+- `SessionSummary.OverTrust` (flawed suggestions accepted ÷ flawed suggestions shown) and `UnderTrust`
+  (sound suggestions rejected ÷ sound suggestions shown); "accepted" means the ruling matched the
+  suggestion. Logged as `overTrust` and `underTrust` in `session_end.summary`.
+- The debrief shows both as percentages, each with a one-line plain-English interpretation (50% or more
+  high, 25% or more moderate, otherwise low), and polished debrief layout.
+- Screenshot tour: running the built player with `-courtsimScreenshots <dir>` captures each screen to
+  `<dir>` and quits, for documentation and visual checks without clicking through the game.
+
 ### Added
+- `demo.bat` (`start` | `rebuild` | `editor`): starts Ollama, pulls and preloads the model on the GPU,
+  builds `Builds/Windows/CourtSim.exe` if needed and launches it.
+- Model-reply guards in `AdviceReply`: a flawed rationale that admits its own flaw ("flaw", "mistake",
+  "incorrect", "misapplied" and similar) or any rationale that contains an internal option or factor id
+  is rejected, and the authored advice is shown instead.
 - Local model backend, now the default: `OllamaClient` (`Core/Ollama`) calls a model running in Ollama on
   `http://127.0.0.1:11434/api/chat` with a JSON-schema `format`, `think: false`, `keep_alive` 15 min and a
-  180 s timeout. Default model `qwen3.5:0.8b` (~1.3 GB): no API key, no internet, no cost. Errors say what
+  180 s timeout. First shipped with `qwen3.5:0.8b` as the default (now `qwen3.5:9b`; see Changed): no API key, no internet, no cost. Errors say what
   to do (start Ollama, `ollama pull <model>`). `LocalModelAdvisor` sends the same prompt and schema as
   Claude; its advice is logged with `"source": "local"`.
 - `AdviceReply`: one validator for replies from either model.
@@ -18,6 +49,9 @@ versions follow [Semantic Versioning](https://semver.org/).
   (`-liveBackend local|claude`, `-liveModel <name>`); a key is needed only for Claude.
 
 ### Changed
+- Default local model is now `qwen3.5:9b` with `num_ctx` 4096 (was `qwen3.5:0.8b` with 8192). The 9B model
+  at 4k context fits 100% in an 8 GB GPU (RTX 5050 Laptop): about 30 s first load, then about 4–7 s per
+  suggestion, with clearly better reasoning. `qwen3.5:0.8b` remains the fast, light option.
 - Claude is optional. **Use Claude** is replaced by **Use Model** (off: authored offline advice only).
   With **Backend** `Claude` and no key, the controller logs a warning and uses the offline advice. The
   offline advice remains the fallback for both backends.
@@ -27,11 +61,16 @@ versions follow [Semantic Versioning](https://semver.org/).
 - Fallback messages and the card footnote say "AI model" instead of "Claude": `adviceError` reads
   `AI model unavailable, used offline advice: ...`.
 
-### Planned: Phase 3 (adaptation and XR)
-- Adaptive difficulty policy in Core, driven by the decision log: picks the next case, the number of
-  flawed suggestions and the flaw kinds to emphasise.
-- XR Interaction Toolkit rig implementing `IPlayerInputSource`.
+### Known issues
+- Small models occasionally contradict themselves in flawed rationales. The ruling and flaw are still
+  enforced by the plan and validation, so grading is unaffected.
+- Only three cases ship.
+
+### Planned: Phase D (XR)
+- XR Interaction Toolkit / OpenXR rig implementing `IPlayerInputSource`, teleport locomotion and
+  world-space UI.
 - Migrate UI text from legacy `UI.Text` to TextMeshPro.
+- Adaptation of case choice and flawed-advice count (today the controller adapts flaw kind and detail).
 
 ## [0.2.0] - 2026-11-20
 

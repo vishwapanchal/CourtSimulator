@@ -69,6 +69,7 @@ namespace CourtSim.Runtime.UI
             factory.CreateChip("Tag", header, "ADVISORY", tagBackground, theme.Warning, out _);
 
             Text message = factory.CreateText("Message", card.rectTransform, string.Empty, TextStyle.Body);
+            message.supportRichText = true; // our own bold/italic markup; model text is passed through UIFactory.Plain
             factory.CreateText("Caution", card.rectTransform, Caution, TextStyle.Caption, TextAnchor.UpperLeft, theme.Warning);
 
             RectTransform actions = factory.CreateRect("Actions", card.rectTransform);
@@ -132,7 +133,7 @@ namespace CourtSim.Runtime.UI
                 case AdviceState.Ready:
                     Advice advice = session.CurrentAdvice;
                     string label = session.CurrentPoint.Definition.FindOption(advice.RecommendedOptionId)?.Label ?? advice.RecommendedOptionId;
-                    return $"<b>Suggested ruling: {label}</b>\n{advice.Rationale}\n<i>Confidence: {AdviceConfidences.ToWireName(advice.Confidence)}</i>";
+                    return $"<b>Suggested ruling: {UIFactory.Plain(label)}</b>\n{UIFactory.Plain(advice.Rationale)}\n<i>Confidence: {AdviceConfidences.ToWireName(advice.Confidence)}</i>";
                 case AdviceState.Failed:
                     return "I could not prepare advice for this ruling. Rule on the record and the submissions.";
                 default:

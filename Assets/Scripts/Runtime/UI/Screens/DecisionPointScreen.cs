@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Text;
-using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Decisions;
 using CourtSim.Core.Logging;
@@ -29,12 +28,13 @@ namespace CourtSim.Runtime.UI.Screens
         private AssistantCardView _assistant;
         private RectTransform _debrief;
         private Text _debriefText;
+        private DebriefView _debriefView;
         private Button _restartButton;
 
         public override ScreenId Id => ScreenId.DecisionPoint;
 
         /// <summary>The debrief text currently shown, for tests.</summary>
-        public string DebriefText => _debriefText != null ? _debriefText.text : string.Empty;
+        public string DebriefText => _debriefView != null && _debriefView.Root.gameObject.activeSelf ? _debriefView.Text : (_debriefText != null ? _debriefText.text : string.Empty);
 
         /// <summary>The assistant's current message, for tests.</summary>
         public string AssistantMessage => _assistant != null ? _assistant.Message : string.Empty;
@@ -56,6 +56,7 @@ namespace CourtSim.Runtime.UI.Screens
             UIFactory.GetOrAddLayoutElement(left.gameObject).flexibleWidth = 1f;
             _prompt = Factory.CreateText("Prompt", left, string.Empty, TextStyle.Body, TextAnchor.UpperLeft, Theme.TextSecondary);
             _submissions = Factory.CreateText("Submissions", left, string.Empty, TextStyle.Caption);
+            _submissions.supportRichText = true;
             _options = Factory.CreateRect("Options", left);
             UIFactory.AddVerticalLayout(_options.gameObject, new RectOffset(0, 0, 4, 4), 10f);
 
@@ -71,6 +72,7 @@ namespace CourtSim.Runtime.UI.Screens
 
             _debrief = Factory.CreateRect("Debrief", body);
             UIFactory.AddVerticalLayout(_debrief.gameObject, new RectOffset(0, 0, 0, 0), Theme.Spacing);
+            _debriefView = new DebriefView(Factory, _debrief);
             _debriefText = Factory.CreateText("Text", _debrief, string.Empty, TextStyle.Body);
             _restartButton = Factory.CreateButton("Restart", _debrief, "Start the next case", ButtonVariant.Primary, OnRestart, 260f);
 
@@ -125,9 +127,16 @@ namespace CourtSim.Runtime.UI.Screens
             _columns.gameObject.SetActive(false);
             _debrief.gameObject.SetActive(true);
             SetHeader("SESSION COMPLETE · DEBRIEF", session != null ? session.Case.Title : "All rulings recorded");
-            _debriefText.text = session != null
-                ? BuildDebrief(session)
-                : "You have ruled on every decision point. No case file was loaded, so there is no debrief.";
+            _debriefView.Root.gameObject.SetActive(session != null);
+            _debriefText.gameObject.SetActive(session == null);
+            if (session != null)
+            {
+                _debriefView.Show(session);
+            }
+            else
+            {
+                _debriefText.text = "You have ruled on every decision point. No case file was loaded, so there is no debrief.";
+            }
         }
 
         private static string FormatSubmissions(CaseDecisionPoint point)
@@ -135,7 +144,7 @@ namespace CourtSim.Runtime.UI.Screens
             var text = new StringBuilder();
             if (point.ProsecutionSubmission.Length > 0)
             {
-                text.Append("<b>Prosecution:</b> ").Append(point.ProsecutionSubmission);
+                text.Append("<b>Prosecution:</b> ").Append(UIFactory.Plain(point.ProsecutionSubmission));
             }
 
             if (point.DefenceSubmission.Length > 0)
@@ -145,36 +154,10 @@ namespace CourtSim.Runtime.UI.Screens
                     text.Append("\n\n");
                 }
 
-                text.Append("<b>Defence:</b> ").Append(point.DefenceSubmission);
+                text.Append("<b>Defence:</b> ").Append(UIFactory.Plain(point.DefenceSubmission));
             }
 
             return text.ToString();
-        }
-
-        private static string BuildDebrief(CaseSession session)
-        {
-            var text = new StringBuilder();
-            text.Append(Debrief.Headline(session.Summary)).Append('\n');
-            foreach (DebriefItem item in Debrief.Build(session))
-            {
-                text.Append("\n<b>").Append(item.Title).Append(":</b> ").Append(item.RulingLabel)
-                    .Append(" (").Append(Debrief.QualityLabel(item.Quality)).Append(")\n");
-                if (item.Quality != OptionQuality.Sound && !string.IsNullOrEmpty(item.SoundLabel))
-                {
-                    text.Append("Sound ruling: ").Append(item.SoundLabel).Append(". ");
-                }
-
-                text.Append(item.Feedback).Append('\n');
-                text.Append(Debrief.DescribeOutcome(item));
-                if (item.AdviceFlaw != FlawKind.None)
-                {
-                    text.Append(" <i>").Append(FlawKinds.Describe(item.AdviceFlaw)).Append(' ').Append(item.FlawExplanation).Append("</i>");
-                }
-
-                text.Append('\n');
-            }
-
-            return text.ToString().TrimEnd();
         }
 
         private void SetOptionCount(int count)

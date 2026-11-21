@@ -69,6 +69,8 @@ namespace CourtSim.Runtime.App
             {
                 _sessions.Initialize(_ui);
             }
+
+            ScreenshotTour.AttachIfRequested(this);
         }
 
         /// <summary>
