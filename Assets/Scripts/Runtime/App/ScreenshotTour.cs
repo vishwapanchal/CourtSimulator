@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Sessions;
@@ -21,6 +22,7 @@ namespace CourtSim.Runtime.App
 
         private CourtSimBootstrap _bootstrap;
         private string _folder;
+        private bool _sampling;
 
         /// <summary>Adds the tour to the bootstrap object if the command line asks for it.</summary>
         public static void AttachIfRequested(CourtSimBootstrap bootstrap)
@@ -50,6 +52,7 @@ namespace CourtSim.Runtime.App
 
             ui.CloseAll();
             yield return Capture("03-courtroom-hud");
+            yield return SampleFrames("courtroom (no UI open)", 3f);
             ui.SetAssistantVisible(true);
             yield return WaitForAdvice();
             yield return Capture("04-assistant-panel");
@@ -63,6 +66,8 @@ namespace CourtSim.Runtime.App
 
             // Rule on every point: follow the first suggestion, reject the rest, so the debrief has variety.
             CaseSession session = _bootstrap.Sessions != null ? _bootstrap.Sessions.Session : null;
+            _sampling = true; // frame times while the AI writes advice must stay smooth: requests never block the main thread
+            StartCoroutine(SampleWhile("rulings while the AI generates advice"));
             while (session != null && !session.IsComplete)
             {
                 yield return WaitForAdvice();
@@ -71,6 +76,8 @@ namespace CourtSim.Runtime.App
                     : FirstOtherOption(session);
                 ui.SubmitDecision(choice);
             }
+
+            _sampling = false;
 
             ui.CloseAll();
             ui.Open(ScreenId.DecisionPoint);
@@ -81,6 +88,50 @@ namespace CourtSim.Runtime.App
 
             Debug.Log("[screenshots] Tour complete: " + _folder);
             Application.Quit();
+        }
+
+        /// <summary>Records frame times for a few seconds and logs average, 99th percentile and worst frame.</summary>
+        private IEnumerator SampleFrames(string label, float seconds)
+        {
+            var times = new List<float>();
+            float end = Time.realtimeSinceStartup + seconds;
+            while (Time.realtimeSinceStartup < end)
+            {
+                yield return null;
+                times.Add(Time.unscaledDeltaTime * 1000f);
+            }
+
+            LogFrameStats(label, times);
+        }
+
+        private IEnumerator SampleWhile(string label)
+        {
+            var times = new List<float>();
+            while (_sampling)
+            {
+                yield return null;
+                times.Add(Time.unscaledDeltaTime * 1000f);
+            }
+
+            LogFrameStats(label, times);
+        }
+
+        private static void LogFrameStats(string label, List<float> times)
+        {
+            if (times.Count == 0)
+            {
+                return;
+            }
+
+            times.Sort();
+            float total = 0f;
+            foreach (float t in times)
+            {
+                total += t;
+            }
+
+            float p99 = times[System.Math.Min(times.Count - 1, (int)(times.Count * 0.99f))];
+            Debug.Log($"[perf] {label}: {times.Count} frames, avg {total / times.Count:F1} ms ({1000f * times.Count / total:F0} fps), p99 {p99:F1} ms, worst {times[times.Count - 1]:F1} ms");
         }
 
         private IEnumerator WaitForAdvice()
