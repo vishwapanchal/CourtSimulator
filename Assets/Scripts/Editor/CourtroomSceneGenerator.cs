@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CourtSim.Core.Courtroom;
 using CourtSim.Runtime.App;
+using CourtSim.Runtime.Characters;
 using CourtSim.Runtime.Courtroom;
 using CourtSim.Runtime.Player;
 using CourtSim.Runtime.UI;
@@ -88,11 +89,12 @@ namespace CourtSim.EditorTools
             CourtroomLighting.Build(courtroom.transform, roomSize);
             CourtroomLighting.ApplyAmbient();
             CourtroomAmbience.Build(courtroom.transform, roomSize, materials);
+            CourtroomCast.Build(courtroom.transform, materials);
             foreach (MeshRenderer renderer in courtroom.GetComponentsInChildren<MeshRenderer>(true))
             {
-                if (renderer.GetComponentInParent<CeilingFan>() != null)
+                if (renderer.GetComponentInParent<CeilingFan>() != null || renderer.GetComponentInParent<CharacterAnimator>() != null)
                 {
-                    continue; // fans spin, so they must not be static
+                    continue; // fans spin and people move, so they must not be static
                 }
 
                 GameObjectUtility.SetStaticEditorFlags(renderer.gameObject, StaticFlags);

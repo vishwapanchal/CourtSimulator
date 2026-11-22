@@ -224,7 +224,7 @@ namespace CourtSim.Runtime.App
         private IEnumerator Rule(int decision)
         {
             _input.PressInteract();
-            yield return WaitWhile(() => UI.CurrentScreen != ScreenId.DecisionPoint, 5f);
+            yield return WaitForHearing(decision);
             yield return Say(decision == 0
                 ? "The AI assistant types its suggested ruling and reads it aloud. Some suggestions are deliberately flawed."
                 : "A new matter. The assistant advises again; the judge must test it against the record.", 0f);
@@ -244,6 +244,25 @@ namespace CourtSim.Runtime.App
             string optionId = followAdvice && Session.CurrentAdvice != null ? Session.CurrentAdvice.RecommendedOptionId : SoundOption(point);
             UI.SubmitDecision(optionId);
             yield return Hold(2f);
+        }
+
+        /// <summary>Waits while the advocates argue; recording pauses only while a voice is being synthesised.</summary>
+        private IEnumerator WaitForHearing(int decision)
+        {
+            HearingDirector hearing = _bootstrap.Hearing;
+            if (hearing != null && decision == 0)
+            {
+                yield return Say("A hearing: the Public Prosecutor and the defence advocate each argue their side.", 0f);
+            }
+
+            float deadline = Time.realtimeSinceStartup + 240f;
+            while (UI.CurrentScreen != ScreenId.DecisionPoint && Time.realtimeSinceStartup < deadline)
+            {
+                _recording = !_record || hearing == null || !hearing.IsPreparingSpeech;
+                yield return null;
+            }
+
+            _recording = true;
         }
 
         private IEnumerator VisitEvidence(Vector3 benchSpot)

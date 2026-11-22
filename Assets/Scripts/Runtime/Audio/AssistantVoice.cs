@@ -51,6 +51,9 @@ namespace CourtSim.Runtime.Audio
         /// </summary>
         public static bool SpeechAllowed { get; set; } = true;
 
+        private bool _female;
+        private int _rate;
+
         /// <summary>Whether this voice speaks. Turning it off stops any speech in progress.</summary>
         public bool Enabled
         {
@@ -78,6 +81,15 @@ namespace CourtSim.Runtime.Audio
         /// <param name="plainText">Text without rich-text tags (see <see cref="RichTextTyping.StripTags"/>).</param>
         public void Speak(string plainText)
         {
+            Speak(plainText, false, 1);
+        }
+
+        /// <summary>Says <paramref name="plainText"/> in a chosen voice: female or male, and a speaking rate (-10 to 10).</summary>
+        /// <remarks>Used by the courtroom characters so each speaker sounds different.</remarks>
+        public void Speak(string plainText, bool female, int rate)
+        {
+            _female = female;
+            _rate = Mathf.Clamp(rate, -10, 10);
             Stop();
             if (!_enabled || !SpeechAllowed || string.IsNullOrWhiteSpace(plainText))
             {
@@ -193,7 +205,7 @@ namespace CourtSim.Runtime.Audio
                 var info = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"" + BuildScript(_textPath, _wavPath) + "\"",
+                    Arguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"" + BuildScript(_textPath, _wavPath, _female, _rate) + "\"",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
@@ -225,7 +237,7 @@ namespace CourtSim.Runtime.Audio
         /// The PowerShell commands, as one line. Paths are put in single quotes, where PowerShell treats
         /// everything literally except a doubled quote.
         /// </summary>
-        private static string BuildScript(string textPath, string wavPath)
+        private static string BuildScript(string textPath, string wavPath, bool female, int rate)
         {
             string text = "'" + textPath.Replace("'", "''") + "'";
             string wav = "'" + wavPath.Replace("'", "''") + "'";
@@ -233,9 +245,12 @@ namespace CourtSim.Runtime.Audio
                 + "Add-Type -AssemblyName System.Speech; "
                 + "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
                 + "try { "
-                + "$v = $s.GetInstalledVoices() | Where-Object { $_.Enabled -and $_.VoiceInfo.Culture.Name -eq 'en-IN' } | Select-Object -First 1; "
+                + "$g = '" + (female ? "Female" : "Male") + "'; "
+                + "$all = $s.GetInstalledVoices() | Where-Object { $_.Enabled }; "
+                + "$v = $all | Where-Object { $_.VoiceInfo.Culture.Name -eq 'en-IN' -and $_.VoiceInfo.Gender -eq $g } | Select-Object -First 1; "
+                + "if (-not $v) { $v = $all | Where-Object { $_.VoiceInfo.Gender -eq $g } | Select-Object -First 1 }; "
                 + "if ($v) { $s.SelectVoice($v.VoiceInfo.Name) }; "
-                + "$s.Rate = 0; "
+                + "$s.Rate = " + rate.ToString(System.Globalization.CultureInfo.InvariantCulture) + "; "
                 + "$s.SetOutputToWaveFile(" + wav + "); "
                 + "$s.Speak([System.IO.File]::ReadAllText(" + text + ", [System.Text.Encoding]::UTF8)) "
                 + "} finally { $s.Dispose() }";

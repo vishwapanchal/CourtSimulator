@@ -27,6 +27,19 @@ namespace CourtSim.Runtime.Courtroom
         FileCover,    // pink-red cloth-bound case files ("basta")
         TubeLight,    // wall-mounted fluorescent tubes
         Metal,        // ceiling fans and fittings
+
+        // People (see CourtSim.Runtime.Characters). Skin and cloth are matte so the low-poly figures read softly.
+        SkinLight,    // lighter South Asian skin tone
+        SkinMedium,   // mid warm brown
+        SkinDark,     // deep warm brown
+        Hair,         // near-black hair, eyes and shoes
+        BlackCoat,    // advocates' black coat and trousers
+        WhiteShirt,   // shirts and the white advocates' bands at the collar
+        Khaki,        // police uniform
+        ClothBlue,    // kurtas, sarees and shirts worn by the public
+        ClothOlive,
+        ClothMaroon,
+        ClothCream,
     }
 
     /// <summary>Supplies one shared material per surface kind.</summary>
@@ -156,6 +169,50 @@ namespace CourtSim.Runtime.Courtroom
                     albedo = new Color(0.33f, 0.33f, 0.35f);
                     smoothness = 0.5f;
                     metallic = 0.6f;
+                    break;
+                case SurfaceKind.SkinLight:
+                    albedo = new Color(0.80f, 0.60f, 0.46f);
+                    smoothness = 0.2f;
+                    break;
+                case SurfaceKind.SkinMedium:
+                    albedo = new Color(0.62f, 0.43f, 0.30f);
+                    smoothness = 0.2f;
+                    break;
+                case SurfaceKind.SkinDark:
+                    albedo = new Color(0.42f, 0.27f, 0.18f);
+                    smoothness = 0.2f;
+                    break;
+                case SurfaceKind.Hair:
+                    albedo = new Color(0.06f, 0.05f, 0.05f);
+                    smoothness = 0.25f;
+                    break;
+                case SurfaceKind.BlackCoat:
+                    albedo = new Color(0.08f, 0.08f, 0.09f);
+                    smoothness = 0.15f;
+                    break;
+                case SurfaceKind.WhiteShirt:
+                    albedo = new Color(0.93f, 0.93f, 0.90f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.Khaki:
+                    albedo = new Color(0.62f, 0.53f, 0.34f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.ClothBlue:
+                    albedo = new Color(0.20f, 0.32f, 0.55f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.ClothOlive:
+                    albedo = new Color(0.40f, 0.42f, 0.22f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.ClothMaroon:
+                    albedo = new Color(0.50f, 0.12f, 0.16f);
+                    smoothness = 0.1f;
+                    break;
+                case SurfaceKind.ClothCream:
+                    albedo = new Color(0.88f, 0.82f, 0.68f);
+                    smoothness = 0.1f;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, "Unknown surface kind.");

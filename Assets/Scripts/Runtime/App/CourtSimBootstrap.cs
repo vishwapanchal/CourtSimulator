@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CourtSim.Core.Courtroom;
+using CourtSim.Runtime.Characters;
 using CourtSim.Runtime.Courtroom;
 using CourtSim.Runtime.Interaction;
 using CourtSim.Runtime.Player;
@@ -21,6 +22,7 @@ namespace CourtSim.Runtime.App
         [SerializeField] private FirstPersonController _player;
         [SerializeField] private UIManager _ui;
         [SerializeField] private CaseSessionController _sessions;
+        [SerializeField] private CourtroomCast _cast;
         [Tooltip("Build the courtroom, player and UI at runtime if they are not assigned.")]
         [SerializeField] private bool _assembleMissingParts = true;
 
@@ -34,6 +36,12 @@ namespace CourtSim.Runtime.App
         public UIManager UI => _ui;
 
         public CaseSessionController Sessions => _sessions;
+
+        /// <summary>The people in the courtroom (advocates, accused, clerk, public), or null.</summary>
+        public CourtroomCast Cast => _cast;
+
+        /// <summary>Plays the advocates' submissions before each ruling.</summary>
+        public HearingDirector Hearing { get; private set; }
 
         /// <summary>The input source shared by the player, the interaction probe and the UI.</summary>
         public IPlayerInputSource InputSource => _input;
@@ -69,6 +77,14 @@ namespace CourtSim.Runtime.App
             {
                 _sessions.Initialize(_ui);
             }
+
+            if (_cast == null && _courtroom != null)
+            {
+                _cast = _courtroom.GetComponentInChildren<CourtroomCast>(true);
+            }
+
+            Hearing = gameObject.AddComponent<HearingDirector>();
+            Hearing.Initialize(_ui, _sessions, _cast);
 
             ScreenshotTour.AttachIfRequested(this);
             DemoRecorder.AttachIfRequested(this);
@@ -123,6 +139,7 @@ namespace CourtSim.Runtime.App
                 CourtroomLighting.Build(_courtroom.transform, new Vector3(layout.RoomSize.X, layout.RoomSize.Y, layout.RoomSize.Z));
                 CourtroomLighting.ApplyAmbient();
                 CourtroomAmbience.Build(_courtroom.transform, new Vector3(layout.RoomSize.X, layout.RoomSize.Y, layout.RoomSize.Z), _runtimeMaterials);
+                _cast = CourtroomCast.Build(_courtroom.transform, _runtimeMaterials);
             }
 
             if (_player == null)

@@ -278,6 +278,12 @@ namespace CourtSim.Runtime.UI
             ShowToast(_session != null ? $"New session: {_session.Case.Title}" : "New session started");
         }
 
+        /// <summary>
+        /// Called when the judge asks for the next ruling at the bench. If it returns true, something else (the hearing)
+        /// takes over and opens the decision dialog later.
+        /// </summary>
+        public Func<bool> BeforeDecisionPoint { get; set; }
+
         /// <summary>Raised by the main menu's "Watch guided demo" button; the bootstrap starts the demo.</summary>
         public event Action GuidedDemoRequested;
 
@@ -538,7 +544,12 @@ namespace CourtSim.Runtime.UI
             switch (evt.Action)
             {
                 case InteractionAction.OpenDecisionPoint:
-                    Open(ScreenId.DecisionPoint);
+                    // A hearing (advocates arguing) may play first; it opens the dialog itself when it ends.
+                    if (BeforeDecisionPoint == null || !BeforeDecisionPoint())
+                    {
+                        Open(ScreenId.DecisionPoint);
+                    }
+
                     break;
                 case InteractionAction.OpenEvidence:
                     Open(ScreenId.Evidence);

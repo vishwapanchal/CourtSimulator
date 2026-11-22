@@ -53,6 +53,20 @@ namespace CourtSim.Runtime.App
             ui.CloseAll();
             yield return Capture("03-courtroom-hud");
             yield return SampleFrames("courtroom (no UI open)", 3f);
+
+            // The hearing: ask for the first ruling at the bench, as pressing E would, and capture both advocates.
+            CourtSim.Runtime.App.GameServices.Events.Publish(new CourtSim.Core.Events.InteractionRequested(CourtSim.Core.Interaction.InteractionAction.OpenDecisionPoint));
+            yield return WaitUntilSpeaking(() => _bootstrap.Cast != null ? _bootstrap.Cast.Prosecutor : null);
+            yield return Capture("03b-hearing-prosecutor");
+            yield return WaitUntilSpeaking(() => _bootstrap.Cast != null ? _bootstrap.Cast.Defence : null);
+            yield return Capture("03c-hearing-defence");
+            float hearingDeadline = Time.realtimeSinceStartup + 120f;
+            while (ui.CurrentScreen != ScreenId.DecisionPoint && Time.realtimeSinceStartup < hearingDeadline)
+            {
+                yield return null;
+            }
+
+            ui.CloseAll();
             ui.SetAssistantVisible(true);
             yield return WaitForAdvice();
             yield return Capture("04-assistant-panel");
@@ -132,6 +146,17 @@ namespace CourtSim.Runtime.App
 
             float p99 = times[System.Math.Min(times.Count - 1, (int)(times.Count * 0.99f))];
             Debug.Log($"[perf] {label}: {times.Count} frames, avg {total / times.Count:F1} ms ({1000f * times.Count / total:F0} fps), p99 {p99:F1} ms, worst {times[times.Count - 1]:F1} ms");
+        }
+
+        private static IEnumerator WaitUntilSpeaking(System.Func<CourtSim.Runtime.Characters.CharacterAnimator> who)
+        {
+            float deadline = Time.realtimeSinceStartup + 60f;
+            while (Time.realtimeSinceStartup < deadline && (who() == null || !who().IsSpeaking))
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSecondsRealtime(1.5f);
         }
 
         private IEnumerator WaitForAdvice()
