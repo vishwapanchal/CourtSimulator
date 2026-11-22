@@ -1,0 +1,185 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-darshan-hegde",
+  "title": "State v. Darshan Hegde",
+  "summary": "A mobile phone was snatched from a nursing student at Kesarnagar Old Bus Stand. Passers-by caught the accused a short distance away with the phone in his pocket, and a shopkeeper filmed the chase on his own phone.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, together with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Darshan Hegde",
+    "age": 23,
+    "background": "A food-delivery rider who lives with his widowed mother at the same address in Kesarnagar where the family has lived for twelve years."
+  },
+  "charges": [
+    "Snatching (section 304(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 20:10 on 22 April 2025 Hegde grabbed a mobile phone worth Rs. 16,500 from the hand of Priya Naik, a nursing student waiting at Kesarnagar Old Bus Stand, and ran. She was not hurt." },
+    { "id": "F2", "text": "Passers-by chased Hegde and caught him about 150 metres away. The phone was found in his trouser pocket and returned to Priya Naik undamaged the same night. He was arrested at the spot." },
+    { "id": "F3", "text": "Mohan Joshi, who runs a shop facing the bus stand, recorded a 40-second video of the snatching and the chase on his own mobile phone. He kept the phone and later produced it in court." },
+    { "id": "F4", "text": "In 2022 Hegde was convicted by the Judicial Magistrate First Class, Kesarnagar, of theft of a bicycle under section 379 of the Indian Penal Code and fined Rs. 2,000. He attended every hearing in that case and paid the fine." },
+    { "id": "F5", "text": "Hegde has been in judicial custody since 22 April. The charge-sheet was filed on 30 May; the phone, the video and the witnesses' statements are all with the court. Priya Naik uses the Old Bus Stand every day to travel to college." },
+    { "id": "F6", "text": "A local newspaper has run an editorial on the rise in snatchings at the bus stand. After trial the court convicted Hegde under section 304(2). Priya Naik's father, a municipal corporator, has written to the court asking for the maximum sentence." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Mohan Joshi's mobile phone with the video of the snatching",
+      "description": "A 40-second video, recorded at 20:10 on 22 April 2025, showing a young man grabbing a phone from a woman at the bus stand and running, and passers-by catching him near the vegetable market.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by Mohan Joshi on his own phone, which has stayed with him since. He brought the phone to court, said in the witness box that he owns and uses it and recorded the video himself, and the video was played from the phone in court. No section 63 BSA certificate has been filed.",
+      "objection": "The defence advocate says no certificate under section 63 of the Bharatiya Sakshya Adhiniyam has been filed, so the video is inadmissible."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "After the charge-sheet, Hegde applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The APP opposes, pointing to his 2022 conviction.",
+      "submissions": {
+        "prosecution": "He has a previous theft conviction and snatched a phone in a crowded bus stand. Snatchings are in the news every week. He should stay in custody.",
+        "defence": "The investigation is over and the phone was returned. He has lived here twelve years and attended every date in his old case. Conditions can protect the complainant."
+      },
+      "factors": [
+        { "id": "ties", "text": "He has lived with his mother at the same Kesarnagar address for twelve years and works as a delivery rider." },
+        { "id": "prior", "text": "A 2022 conviction for theft of a bicycle, punished with a fine of Rs. 2,000; he attended every hearing in that case." },
+        { "id": "investigation_done", "text": "The charge-sheet has been filed, and the phone, the video and the witness statements are all before the court." },
+        { "id": "victim_witness", "text": "The complainant uses the same bus stand every day." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977): custody is justified only by a real risk of flight, reoffending or interference with witnesses that conditions cannot manage." },
+        { "id": "mandatory_conditions", "text": "Snatching is an offence under Chapter XVII BNS, so section 480(3) BNSS requires conditions that he attend, not commit a similar offence and not induce or threaten any witness; the court may add other conditions in the interests of justice." },
+        { "id": "editorial", "text": "A local newspaper editorial has called for tough action on snatchings at the bus stand." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the mandatory section 480(3) conditions", "quality": "defensible", "feedback": "Bail is right, but with a previous theft conviction and a complainant who uses the same bus stand daily, a surety and a no-contact direction are a better fit." },
+        { "id": "bail.grant_conditions", "label": "Release on a bond with one local surety, the mandatory conditions, fortnightly reporting and no contact with the complainant", "quality": "sound", "feedback": "The investigation is complete and he has deep local roots, so custody is not needed. The earlier conviction and the daily contact risk are met by a surety, reporting and a no-contact direction on top of the statutory conditions." },
+        { "id": "bail.deny", "label": "Refuse bail and keep him in judicial custody", "quality": "unsound", "feedback": "The evidence is secured, he attended every date in his earlier case and has lived here for twelve years. Nothing shows a risk that conditions cannot manage, and press coverage is not a ground for custody." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "high",
+          "rationale": "I would release Mr Hegde on a bond with a local surety. The investigation is complete, he has lived here for twelve years and he attended every date in his earlier case, so the rule of bail, not jail, applies. Because he has a previous theft conviction and the complainant uses the same bus stand daily, I would add fortnightly reporting and a no-contact direction to the mandatory conditions.",
+          "cites": ["ties", "prior", "investigation_done", "victim_witness", "bail_rule", "mandatory_conditions"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Snatchings at the Old Bus Stand have become a matter of public concern, and the local press is calling for firm action. Releasing a man caught with the phone in his pocket would send the wrong message while the trial is pending.",
+          "cites": ["editorial", "investigation_done"],
+          "flawExplanation": "Public opinion and press coverage are not grounds for refusing bail. The question is whether there is a real risk of flight, reoffending or interference that conditions cannot manage, and the record (F4, F5) shows none."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would keep Mr Hegde in custody. He was convicted in 2022 and absconded during that case, so his attendance cannot be trusted. Conditions will not secure a man who has already failed to appear.",
+          "cites": ["prior", "ties"],
+          "flawExplanation": "The record says the opposite: in the 2022 case he attended every hearing and paid his fine (F4). The advice invents a history of absconding and builds the case for custody on it."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the shopkeeper's video",
+      "prompt": "The APP tenders exhibit P-1, Mohan Joshi's own phone containing the video, which he has produced in the witness box. The defence objects that no section 63 BSA certificate has been filed.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "This is the phone the video was recorded on, produced by its owner, who has testified that he shot it. That is the original, and no certificate is needed.",
+        "defence": "Every electronic record needs a section 63 certificate. None has been filed, so the video must be kept out."
+      },
+      "factors": [
+        { "id": "original_device", "text": "The video is on the phone it was recorded on, and that phone has been produced in court." },
+        { "id": "owner_testifies", "text": "Mohan Joshi said in the witness box that he owns and uses the phone and recorded the video himself, and he can be cross-examined on it." },
+        { "id": "primary_rule", "text": "Section 57 BSA: primary evidence means the document itself produced for the inspection of the court." },
+        { "id": "s63_rule", "text": "Section 63 BSA makes computer output, such as a copy or printout of an electronic record, admissible without the original if its conditions are met, and section 63(4) requires a certificate for it." },
+        { "id": "khotkar", "text": "The certificate is unnecessary if the original is itself produced, for example by the owner of a mobile phone stepping into the witness box and proving that the device on which the information was first stored is owned or operated by him (Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal, 2020, on the old section 65B)." },
+        { "id": "no_certificate", "text": "No section 63 certificate has been filed." },
+        { "id": "probative", "text": "The video shows the snatching and the chase, and is directly relevant to identity." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the video played from Joshi's phone", "quality": "sound", "feedback": "The original device was produced by its owner, who proved he recorded the video. That is primary evidence, and the section 63 certificate, which is for copies, is not needed." },
+        { "id": "evidence.admit_limited", "label": "Admit the video only after the prosecution files a section 63 certificate", "quality": "defensible", "feedback": "A certificate would do no harm, but it is not required when the original phone is produced and proved by its owner. Insisting on one delays the trial for no legal reason." },
+        { "id": "evidence.exclude", "label": "Exclude the video", "quality": "unsound", "feedback": "Exclusion treats the certificate as needed for every electronic record. It is needed for computer output, not where the original device is produced and proved by its owner." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the video. Mr Joshi has produced the very phone it was recorded on and told the court he owns it and shot the video, so this is the original, not a copy. The certificate is required for copies and printouts, and is unnecessary when the owner proves the original device in the witness box.",
+          "cites": ["original_device", "owner_testifies", "primary_rule", "khotkar"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the video. A section 63 certificate is a mandatory condition for admitting any electronic record, whether it is the original or a copy. None has been filed, so the video cannot be received even though the phone is in court.",
+          "cites": ["no_certificate", "s63_rule"],
+          "flawExplanation": "The certificate is required for computer output such as copies and printouts. Where the owner produces the original phone and proves it in the witness box (F3), the video is primary evidence and no certificate is needed (Khotkar)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the video only once a section 63 certificate is filed. The video is an electronic record and the prosecution has not filed one. The certificate can still be produced before the trial ends, so the prosecution should be given time.",
+          "cites": ["no_certificate", "s63_rule", "probative"],
+          "flawExplanation": "The advice overlooks that the original phone has been produced by its owner, who testified that he recorded the video (F3). That makes the video primary evidence, so no certificate is needed and the video can be admitted now."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Hegde has been convicted under section 304(2) BNS (snatching: imprisonment up to three years, and fine). He is 23 and has a 2022 conviction for theft. The complainant's father has written asking for the maximum.",
+      "submissions": {
+        "prosecution": "He is not a first offender. He snatched a phone from a young woman in a crowded bus stand. A real prison term is needed.",
+        "defence": "The phone was back with her within minutes and no one was hurt. He supports his mother. We ask for probation, or at most a short term."
+      },
+      "factors": [
+        { "id": "prior_conviction", "text": "A 2022 conviction for theft of a bicycle, for which he was fined Rs. 2,000." },
+        { "id": "recovery", "text": "The phone was recovered within minutes and returned undamaged." },
+        { "id": "no_injury", "text": "Priya Naik was not hurt." },
+        { "id": "family", "text": "He is 23 and supports his widowed mother." },
+        { "id": "range", "text": "Section 304(2) BNS: imprisonment of either description up to three years, and he shall also be liable to fine." },
+        { "id": "probation_rule", "text": "Section 4 of the Probation of Offenders Act, 1958 allows release on probation of good conduct for an offence not punishable with death or life imprisonment, where the nature of the offence and the character of the offender make it expedient." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows the court to apply part of a fine to compensate the victim." },
+        { "id": "influence", "text": "The complainant's father, a municipal corporator, has written to the court asking for the maximum sentence." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct for two years under section 4, with compensation to the complainant", "quality": "defensible", "feedback": "Legally available, but he has already been convicted of theft once and was fined. A second offence against property, this time snatching from a person, makes probation hard to justify." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for six months and a fine of Rs. 5,000, of which Rs. 3,000 is paid to the complainant", "quality": "sound", "feedback": "A short term reflects that this is his second property offence and that it was taken from a person, while the quick recovery, the absence of injury and his age keep it at the low end." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for three years, the maximum, and a fine", "quality": "unsound", "feedback": "The maximum is for the worst cases. A phone recovered within minutes, no injury and one earlier fine do not put the case there, and a letter from an influential relative is not a sentencing factor." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for six months with a fine of Rs. 5,000, paying Rs. 3,000 of it to Ms Naik. Mr Hegde already has a theft conviction, so probation is not a good fit for a second offence, this time taken from a person. But the phone was back within minutes, no one was hurt and he is 23 with a mother to support, so the term should be short.",
+          "cites": ["prior_conviction", "probation_rule", "recovery", "no_injury", "family", "range", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Hegde on probation of good conduct for two years with compensation. He is a 23-year-old first offender with no previous conviction, the phone was returned within minutes, and nobody was hurt. Probation gives him a chance to stay out of prison and keep supporting his mother.",
+          "cites": ["prior_conviction", "recovery", "no_injury", "family", "probation_rule"],
+          "flawExplanation": "Hegde is not a first offender: he was convicted of theft in 2022 and fined Rs. 2,000 (F4). That earlier conviction is the main reason probation is a weak choice here."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose the maximum of three years' rigorous imprisonment with a fine. Mr Hegde has a previous conviction, and the complainant's family, through her father, has asked the court for the maximum. The sentence should reflect the weight of that request.",
+          "cites": ["influence", "prior_conviction"],
+          "flawExplanation": "A letter from the complainant's influential father (F6) is not a lawful sentencing consideration. Sentence must rest on the offence and the offender, and a recovered phone with no injury does not call for the maximum."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-naveen-kulkarni",
+  "title": "State v. Naveen Kulkarni",
+  "summary": "Six residents lost Rs. 3,40,000 to fake 'bank KYC' calls that tricked them into reading out OTPs. The money landed in a student's bank account, and the caller, tried jointly with him, has confessed to a Magistrate and named him.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Information Technology Act, 2000 and the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Naveen Kulkarni",
+    "age": 22,
+    "background": "A final-year BCom student at the time of the offence, who lives with his widowed mother in Gandhi Chowk, Kesarnagar, and worked part-time as a delivery rider."
+  },
+  "charges": [
+    "Cheating and dishonestly inducing delivery of property, in furtherance of common intention (section 318(4) read with section 3(5), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Between 10 and 24 January 2025 six residents of Kesarnagar received calls from a man claiming to be from their bank's 'KYC department', who said their accounts would be frozen unless they read out the OTP just sent to them. Each did, and Rs. 3,40,000 in all was transferred out of their accounts. The largest loss, Rs. 1,90,000, was the savings of Shantamma Hosamani, 68, a retired schoolteacher." },
+    { "id": "F2", "text": "Every transfer went to a savings account that Kulkarni had opened in his own name at a private bank in Kesarnagar in December 2024. Bank records show cash withdrawn at Kesarnagar ATMs with the account's debit card within hours of each credit, and ATM camera footage shows Kulkarni at three of the withdrawals. The bank froze the Rs. 1,10,000 that remained." },
+    { "id": "F3", "text": "The calls were made from a SIM card used by Rakesh Gowda, 29, a gym acquaintance of Kulkarni, who was arrested on 2 February 2025. Gowda is tried jointly with Kulkarni and is also charged with cheating by personation (section 319(2) BNS) and with cheating by personation using a communication device (section 66D, Information Technology Act, 2000)." },
+    { "id": "F4", "text": "On 10 February 2025 Gowda made a confession before a Judicial Magistrate under section 183 BNSS, after the warnings that section requires: \"I made the calls. Naveen gave me his account and his card and took Rs. 8,000 a week. He knew it was fraud money.\" Gowda has not retracted it." },
+    { "id": "F5", "text": "Kulkarni was arrested on 4 February 2025. He told the police he 'lent' his account to Gowda for a weekly payment and did not ask why. He has no previous convictions or pending cases. The charge-sheet was filed on 28 March 2025; two men believed to be Gowda's associates have not been traced." },
+    { "id": "F6", "text": "Kulkarni was released on bail on 5 April 2025 after two months in custody and complied with every condition. He completed his degree and now works at a logistics firm in Kesarnagar." },
+    { "id": "F7", "text": "Both accused were convicted under section 318(4) read with section 3(5) BNS; Gowda was also convicted under section 319(2) BNS and section 66D of the IT Act. Before sentencing, Kulkarni's mother pledged her jewellery and he deposited Rs. 2,30,000 in court, which with the Rs. 1,10,000 frozen by the bank makes good all six victims' losses in full. The probation officer's report is favourable. Shantamma Hosamani told the court she accepts the repayment." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-5",
+      "title": "Confession of co-accused Rakesh Gowda recorded under section 183 BNSS",
+      "description": "The Judicial Magistrate's record of Gowda's confession, with the memorandum certifying that the warnings were given and that the confession appeared voluntary. It admits the calls and says Kulkarni supplied his account and card for Rs. 8,000 a week, knowing it was fraud money.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by a Judicial Magistrate on 10 February 2025 in the course of investigation, after the warnings required by section 183(2) BNSS; signed by Gowda. Not retracted.",
+      "objection": "The defence advocate says a co-accused's confession is evidence only against the person who made it and cannot be used against Kulkarni at all."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "After the charge-sheet, Kulkarni applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The APP opposes, pointing to the untraced associates.",
+      "submissions": {
+        "prosecution": "This is an organised fraud with two of the gang still free, and a student who rents out his account can open another tomorrow. He should stay in custody.",
+        "defence": "He is 22, a student with no record living with his mother, and the investigation is complete. Any fear of new accounts can be met by conditions."
+      },
+      "factors": [
+        { "id": "record", "text": "Aged 22, no previous convictions or pending cases; lives with his widowed mother in Kesarnagar and is in his final year of study." },
+        { "id": "investigation", "text": "The charge-sheet has been filed; the bank records and ATM footage are already seized." },
+        { "id": "reoffend_risk", "text": "His role was to supply a bank account and card to a fraud network, two of whose members are untraced." },
+        { "id": "loss", "text": "Rs. 3,40,000 was taken from six victims; Rs. 1,10,000 has been frozen and the rest is unrecovered." },
+        { "id": "s480_scope", "text": "Section 480(1)(ii) BNSS restricts bail only where the accused has previous convictions of the kinds it lists; the punishment for the present offence does not by itself bar bail." },
+        { "id": "mandatory_conditions", "text": "Section 318(4) is in Chapter XVII of the BNS and punishable with up to seven years, so section 480(3) BNSS requires conditions that he attend, not commit a similar offence and not threaten or induce any witness; the court may add other conditions in the interests of justice." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977). Custody is justified where there is a real risk of flight, reoffending or intimidating witnesses that conditions cannot manage." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the conditions in section 480(3)", "quality": "defensible", "feedback": "Release is right for a young first offender, but the specific risk is that he lends another account, and the standard conditions do not address bank accounts or SIM cards." },
+        { "id": "bail.grant_conditions", "label": "Release with one surety, the section 480(3) conditions, no opening or operating of any bank account or SIM card other than one declared to the IO, no contact with Gowda or the victims, and fortnightly reporting", "quality": "sound", "feedback": "The presumption of bail applies to a student with no record whose investigation is complete, and the real risk, renting out another account, is met directly by account and SIM conditions backed by the power to cancel bail." },
+        { "id": "bail.deny", "label": "Refuse bail and remand to judicial custody", "quality": "defensible", "feedback": "The untraced associates give the concern some substance, but nothing links Kulkarni to them beyond Gowda, and targeted conditions can manage the risk of a new account. Custody is stronger than necessary." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on conditions. Mr Kulkarni is 22 with no record, he lives with his mother, and the charge-sheet has been filed, so the rule of bail, not jail, applies. The genuine risk is that he lends another account to the same network, and conditions forbidding any undeclared bank account or SIM card, with no contact with Mr Gowda, meet it directly.",
+          "cites": ["record", "investigation", "reoffend_risk", "mandatory_conditions", "bail_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Cheating under section 318(4) carries up to seven years, and for an offence of that gravity section 480(1)(ii) stops the Magistrate from releasing the accused without a special reason. A student's exams are not such a reason, and the untraced associates make the risk real.",
+          "cites": ["s480_scope", "reoffend_risk"],
+          "flawExplanation": "Section 480(1)(ii) depends on the accused's previous convictions, not on the punishment for the present offence. Kulkarni has none (F5), so ordinary bail principles apply."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.grant",
+          "confidence": "medium",
+          "rationale": "I would release Mr Kulkarni on a personal bond with the standard conditions. He is a 22-year-old student with no record, the investigation is complete, and the whole Rs. 3,40,000 has been frozen in his account, so the victims are protected. No special conditions are needed.",
+          "cites": ["record", "investigation", "loss"],
+          "flawExplanation": "Only Rs. 1,10,000 was frozen; the rest had been withdrawn in cash (F2). With most of the money gone and a network still active, the risk of a new account calls for specific conditions."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Use of the co-accused's confession",
+      "prompt": "The APP tenders exhibit P-5 and asks the court to treat Gowda's statement that Kulkarni \"knew it was fraud money\" as proof of Kulkarni's knowledge. The defence objects that it cannot be used against Kulkarni at all.",
+      "exhibitId": "P-5",
+      "submissions": {
+        "prosecution": "A Magistrate recorded it after every warning, and Gowda has never retracted. It proves that Kulkarni knew exactly what his account was for.",
+        "defence": "A confession binds only its maker, and Gowda is shifting blame to a student. It cannot be used against my client in any way."
+      },
+      "factors": [
+        { "id": "recorded_properly", "text": "The confession was recorded by a Judicial Magistrate under section 183 BNSS after the required warnings, and Gowda has not retracted it." },
+        { "id": "joint_trial", "text": "Gowda and Kulkarni are being tried jointly for the same offence under section 318(4) read with section 3(5) BNS." },
+        { "id": "s24_rule", "text": "Section 24 BSA: where persons are tried jointly for the same offence and a confession by one affecting himself and another is proved, the court may take it into consideration against the other." },
+        { "id": "weak_evidence", "text": "A co-accused's confession is not substantive evidence; the court must first assess the other evidence and may use the confession only to lend assurance to a conclusion that evidence supports (Haricharan Kurmi v. State of Bihar, 1964)." },
+        { "id": "independent", "text": "Independent evidence: Kulkarni opened the account, every transfer went into it, and ATM footage shows him at three cash withdrawals within hours of the credits." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the confession and treat it as proof of Kulkarni's knowledge", "quality": "unsound", "feedback": "A co-accused's confession may be considered against Kulkarni, but it is not substantive evidence and cannot itself prove his knowledge." },
+        { "id": "evidence.admit_limited", "label": "Take the confession into consideration against Kulkarni only to lend assurance to the independent evidence", "quality": "sound", "feedback": "This applies section 24 BSA as the courts read it: the bank records and ATM footage must carry the case, and the confession may only add assurance to what they show." },
+        { "id": "evidence.exclude", "label": "Exclude the confession as against Kulkarni altogether", "quality": "unsound", "feedback": "Section 24 BSA expressly permits the court to take a co-accused's proved confession into consideration in a joint trial for the same offence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would take Mr Gowda's confession into consideration against Mr Kulkarni, but only to lend assurance to the other evidence. They are tried jointly for the same offence, so the law allows it to be considered, but it is not substantive evidence. The account opening, the transfers and the ATM footage must carry the case on their own.",
+          "cites": ["joint_trial", "s24_rule", "weak_evidence", "independent"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the confession as against Mr Kulkarni. A confession is evidence only against the person who makes it, however carefully the Magistrate recorded it. The prosecution must prove Mr Kulkarni's knowledge from the bank records and the ATM footage alone.",
+          "cites": ["recorded_properly", "independent"],
+          "flawExplanation": "Section 24 BSA allows a proved confession of a co-accused tried jointly for the same offence to be taken into consideration against the other accused (F3, F4). It is weak evidence, but it is not excluded."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.admit",
+          "confidence": "medium",
+          "rationale": "I would admit the confession as proof of Mr Kulkarni's knowledge. It was recorded by a Magistrate after all the warnings and has never been retracted, and because the two are tried jointly for the same offence the law lets the court consider it against him. It says in terms that he knew the money was fraud money.",
+          "cites": ["recorded_properly", "joint_trial", "s24_rule"],
+          "flawExplanation": "The advice ignores that a co-accused's confession is not substantive evidence and can only lend assurance to other evidence (Haricharan Kurmi). It cannot by itself prove Kulkarni's knowledge."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Kulkarni has been convicted under section 318(4) read with section 3(5) BNS (imprisonment up to seven years and fine) by the Chief Judicial Magistrate, Kesarnagar.",
+      "submissions": {
+        "prosecution": "OTP fraud runs on accounts like his, and a retired teacher lost her savings. Repayment after conviction should not buy him his freedom.",
+        "defence": "He is 22, has no record, has repaid every rupee with his mother's jewellery and now has a degree and a job. We ask for probation."
+      },
+      "factors": [
+        { "id": "role", "text": "He supplied his account and card and withdrew the money for Rs. 8,000 a week; he did not make the calls." },
+        { "id": "harm", "text": "Six victims, including a 68-year-old retired teacher who lost Rs. 1,90,000 of savings." },
+        { "id": "restitution", "text": "All six victims' losses have been made good in full, and Shantamma Hosamani accepts the repayment." },
+        { "id": "young_first", "text": "Aged 22, no previous convictions; he completed his degree, is employed and complied with bail." },
+        { "id": "probation_report", "text": "The probation officer's report is favourable." },
+        { "id": "prevalence", "text": "OTP frauds are widespread and depend on people who rent out their bank accounts." },
+        { "id": "probation_rule", "text": "Release on probation under section 4 of the Probation of Offenders Act, 1958 is available because the offence is not punishable with death or life imprisonment, where the circumstances, the nature of the offence and the offender's character make it expedient; section 5 allows costs and compensation orders at the same time." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct for two years, with costs and a direction recording the restitution as compensation", "quality": "sound", "feedback": "A 22-year-old first offender in a subordinate role who has repaid every victim in full, completed his studies and has a favourable probation report is the kind of offender the Act is meant for." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for one year and a fine of Rs. 20,000", "quality": "defensible", "feedback": "Deterring account renting is a legitimate aim, and a reasonable court could impose a short term. But it gives little weight to full restitution, his youth and a favourable probation report." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years and a fine", "quality": "unsound", "feedback": "Five years treats a paid account holder who has repaid everything as if he ran the scheme. Nothing in his role or record supports a term near the top of the range." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Kulkarni on probation of good conduct for two years. Renting out his account caused real harm, but every victim has now been repaid in full, he is 22 with no record, and he has finished his degree and found work. The probation officer supports release, and the Act was designed for an offender like this.",
+          "cites": ["role", "harm", "restitution", "young_first", "probation_report", "probation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for one year and a fine of Rs. 20,000. OTP frauds depend on people willing to rent out their accounts, and a retired teacher lost her savings because Mr Kulkarni did so for Rs. 8,000 a week. His youth and clean record keep the term short, but a custodial sentence is needed to deter others.",
+          "cites": ["prevalence", "harm", "role", "young_first"],
+          "flawExplanation": "The advice leaves out that every victim's loss has been made good in full and that the probation officer's report is favourable (F7). Those are the factors that make probation expedient here."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for five years. Mr Kulkarni was not a bystander: he made the calls posing as a bank officer and drew the OTPs out of six victims himself. Repaying the money after conviction does not undo a deliberate fraud of that kind.",
+          "cites": ["role", "harm", "prevalence"],
+          "flawExplanation": "The record says Gowda made the calls (F3, F4); Kulkarni supplied his account and card and withdrew the cash (F2). The advice gives him the caller's role to justify a term near the top."
+        }
+      ]
+    }
+  ]
+}

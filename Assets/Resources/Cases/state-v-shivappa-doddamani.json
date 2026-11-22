@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-shivappa-doddamani",
+  "title": "State v. Shivappa Doddamani",
+  "summary": "A farmer walked into his neighbour's house during a boundary quarrel in Hulikere village, Kesarnagar taluk, and pushed her, causing a cut that needed three stitches.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, together with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Shivappa Doddamani",
+    "age": 52,
+    "background": "A farmer who has lived all his life in Hulikere village, where he cultivates three acres of family land."
+  },
+  "charges": [
+    "House-trespass (section 329(4), Bharatiya Nyaya Sanhita, 2023)",
+    "Voluntarily causing hurt (section 115(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Doddamani and his neighbour Gowramma Patil, 47, have quarrelled for two years over the boundary stones between their fields. On the evening of 9 June 2025 he walked through her open front door into the front room of her house, shouting that she had moved the stones." },
+    { "id": "F2", "text": "When Gowramma told him to leave, he pushed her. She fell against the door frame and cut her forehead. The medical officer at the primary health centre put in three stitches, certified the injury as simple and discharged her the same evening. Her medical bills came to Rs. 4,200." },
+    { "id": "F3", "text": "Doddamani was arrested on 10 June and produced before the Judicial Magistrate First Class on 11 June. He has no previous conviction. His elder brother was convicted of assault in 2019." },
+    { "id": "F4", "text": "On 12 June the Investigating Officer recorded a statement under section 180 BNSS from Lakshmi Hiremath, who said she saw the push from the lane. Lakshmi moved to Pune in August 2025. The prosecution has not summoned her and she has not given evidence." },
+    { "id": "F5", "text": "At trial Gowramma and the medical officer gave evidence. The court convicted Doddamani on both charges. At the hearing on sentence he apologised and offered to pay her medical bills. The boundary question is still unresolved." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Statement of Lakshmi Hiremath recorded under section 180 BNSS",
+      "description": "A one-page statement written by the IO on 12 June 2025, recording that Lakshmi saw Doddamani push Gowramma inside the front room of her house.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by the IO during the investigation and kept in the case diary. Lakshmi has moved to Pune and has not been examined as a witness.",
+      "objection": "The defence advocate says a statement made to the police during investigation cannot be used as evidence at the trial."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Doddamani is produced before the Judicial Magistrate First Class and applies for bail. The APP asks for two sureties of Rs. 50,000 each because of the boundary feud.",
+      "submissions": {
+        "prosecution": "House-trespass is a cognizable offence and the feud is still alive. He should give two heavy sureties, or stay in custody.",
+        "defence": "Both offences are bailable. He is entitled to bail under section 478. He has never been convicted and farms his own land in the village."
+      },
+      "factors": [
+        { "id": "bailable", "text": "The First Schedule to the BNSS classifies house-trespass under section 329(4) as cognizable and bailable, and voluntarily causing hurt under section 115(2) as non-cognizable and bailable." },
+        { "id": "bail_right", "text": "Section 478(1) BNSS: a person accused of a bailable offence who is prepared to give bail shall be released on bail." },
+        { "id": "ties", "text": "He has lived all his life in Hulikere and cultivates his family land there." },
+        { "id": "record", "text": "No previous conviction." },
+        { "id": "feud", "text": "The boundary dispute with the complainant has run for two years and is unresolved." },
+        { "id": "injury", "text": "The injury was a simple cut, treated with three stitches; she went home the same evening." },
+        { "id": "brother", "text": "His elder brother was convicted of assault in 2019." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release him on a bail bond under section 478", "quality": "sound", "feedback": "Both offences are bailable, so release on bail is his right. He has deep roots and no record, and nothing calls for more." },
+        { "id": "bail.grant_conditions", "label": "Release him on a bond with one surety and a direction not to go to the complainant's house", "quality": "defensible", "feedback": "Release is right, and a surety is permitted. A no-approach direction is understandable given the feud, but in a bailable case it goes further than the law requires." },
+        { "id": "bail.deny", "label": "Refuse bail unless he gives two sureties of Rs. 50,000 each", "quality": "unsound", "feedback": "Both offences are bailable. Setting sureties a farmer is unlikely to raise turns a right to bail into custody, which section 478 does not allow." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Doddamani on a bail bond. Both house-trespass and simple hurt are bailable offences, so section 478 entitles him to bail. He has lived all his life in the village and has never been convicted, so there is no reason for heavier terms.",
+          "cites": ["bailable", "bail_right", "ties", "record"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would insist on two substantial sureties. House-trespass is a cognizable offence, so bail is at the court's discretion rather than a right. With a two-year feud still alive, heavy sureties are the only real protection for the complainant.",
+          "cites": ["feud", "bailable"],
+          "flawExplanation": "Whether an offence is cognizable decides police powers of arrest, not the right to bail. The First Schedule lists both offences as bailable, so section 478 entitles him to release, and sureties he cannot meet would defeat that right."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would release Mr Doddamani, but on a surety and a direction to keep away from the complainant's house. His elder brother has a conviction for assault, which suggests the family settles disputes with force. Firm terms are needed while the feud continues.",
+          "cites": ["brother", "feud"],
+          "flawExplanation": "A relative's conviction (F3) says nothing about this accused, who has no record of his own. Relying on it to impose extra terms is improper."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the police statement of an absent witness",
+      "prompt": "The APP tenders exhibit P-1, Lakshmi Hiremath's statement recorded by the IO under section 180 BNSS, and asks that it be read as evidence because she has moved to Pune. The defence objects.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "She is an eyewitness and has moved away. The IO wrote her statement down the day after the incident, so it should be read in evidence.",
+        "defence": "A statement to the police during investigation cannot be used at trial except to contradict a witness who testifies. She has not testified."
+      },
+      "factors": [
+        { "id": "police_statement", "text": "The statement was made to the IO during the investigation and recorded under section 180 BNSS." },
+        { "id": "not_called", "text": "Lakshmi has not been examined as a witness; the prosecution has not summoned her from Pune." },
+        { "id": "s181_rule", "text": "Section 181(1) BNSS: no statement made to a police officer in the course of an investigation, or any record of it, may be used for any purpose at the trial, except as the section provides." },
+        { "id": "contradiction_only", "text": "The proviso to section 181(1) BNSS: when the person is called as a prosecution witness, the statement may be used by the accused, and with the court's permission by the prosecution, to contradict the witness." },
+        { "id": "other_evidence", "text": "Gowramma and the medical officer have given evidence." },
+        { "id": "prompt_record", "text": "The IO recorded the statement the day after the incident." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the statement as evidence of what Lakshmi saw", "quality": "unsound", "feedback": "Section 181 BNSS bars using a police statement as evidence at the trial. The witness's absence does not change that." },
+        { "id": "evidence.admit_limited", "label": "Admit the statement only to corroborate Gowramma's evidence", "quality": "unsound", "feedback": "Corroboration is a use, and section 181 forbids any use except to contradict a witness who is called. Lakshmi has not been called." },
+        { "id": "evidence.exclude", "label": "Exclude the statement", "quality": "sound", "feedback": "A statement to the police during investigation cannot be used as evidence. If the prosecution wants Lakshmi's account, it must call her." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the statement. It was made to the IO during the investigation, and the law forbids using such a statement at the trial except to contradict a witness who gives evidence. Lakshmi has not been called, so there is nothing for it to contradict.",
+          "cites": ["police_statement", "not_called", "s181_rule", "contradiction_only"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the statement. A police statement may be read as evidence when the witness has left the State and cannot be produced without delay. Lakshmi has moved to Pune, and the IO recorded her account the very next day, so it is reliable.",
+          "cites": ["not_called", "prompt_record"],
+          "flawExplanation": "There is no exception for an absent witness. Section 181(1) BNSS bars any use of a police statement at the trial except to contradict a witness who is called (F4), however promptly it was recorded."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the statement for a limited purpose. Lakshmi has already given evidence that she saw the push, and her earlier statement to the IO is consistent with it. I would use it only to support her account and Gowramma's.",
+          "cites": ["not_called", "other_evidence"],
+          "flawExplanation": "Lakshmi has not given evidence; she moved to Pune and was never summoned (F4). Even for a witness who testifies, section 181 allows a police statement only to contradict, not to corroborate."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Doddamani has been convicted under section 329(4) BNS (house-trespass: up to one year, or fine up to Rs. 5,000, or both) and section 115(2) BNS (simple hurt: up to one year, or fine up to Rs. 10,000, or both). He has no previous conviction.",
+      "submissions": {
+        "prosecution": "He walked into a woman's home and pushed her. The feud continues, and the village needs to see that this is not tolerated.",
+        "defence": "He is 52, has never been convicted and has apologised. He will pay her medical bills. We ask for probation with a bond to keep the peace."
+      },
+      "factors": [
+        { "id": "first_offender", "text": "No previous conviction." },
+        { "id": "injury_minor", "text": "A simple cut, treated with three stitches; she was discharged the same evening." },
+        { "id": "feud_ongoing", "text": "The boundary dispute is unresolved, so the parties will keep living side by side." },
+        { "id": "probation_rule", "text": "Section 4 of the Probation of Offenders Act, 1958 allows release on probation of good conduct, on a bond of up to three years to keep the peace and be of good behaviour, for an offence not punishable with death or life imprisonment." },
+        { "id": "compensation_rule", "text": "Section 5 of the Act allows the court, when releasing an offender under section 3 or 4, to order compensation for loss or injury caused to the victim." },
+        { "id": "remorse", "text": "He apologised and offered to pay her medical bills of Rs. 4,200." },
+        { "id": "home_entered", "text": "He entered her house and pushed her inside her own front room." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Probation of good conduct for one year under section 4 on a bond to keep the peace, with Rs. 4,200 compensation under section 5", "quality": "sound", "feedback": "A first offender, a simple injury, an apology and an offer to pay. A good-conduct bond also addresses the real risk, a continuing feud, by putting him under an obligation to keep the peace." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for three months and a fine", "quality": "defensible", "feedback": "Within the court's powers, since he entered her home, but a short jail term does nothing to calm the feud and is heavy for a first offender who caused a simple injury and has apologised." },
+        { "id": "sentence.custodial_upper", "label": "Simple imprisonment for one year on each count, to run concurrently", "quality": "unsound", "feedback": "The maximum for a first offence causing a simple cut is disproportionate, and it ignores his apology, his offer to pay and the availability of probation." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Doddamani on probation of good conduct for one year, on a bond to keep the peace, and order him to pay Rs. 4,200 to Mrs Patil. He has no previous conviction, the injury was simple and he has apologised and offered to pay. Since the boundary dispute is still alive, a bond that binds him to keep the peace protects her better than a short jail term.",
+          "cites": ["first_offender", "injury_minor", "feud_ongoing", "probation_rule", "compensation_rule", "remorse"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for three months with a fine. Probation is not available for house-trespass because it is a cognizable offence committed inside a dwelling. A short term marks the seriousness of entering her home.",
+          "cites": ["home_entered", "first_offender"],
+          "flawExplanation": "Section 4 of the Probation of Offenders Act applies to any offence not punishable with death or life imprisonment. Whether the offence is cognizable is irrelevant, so probation is fully available here."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose the maximum of one year on each count, concurrently. Mrs Patil suffered a serious head injury and spent days in hospital, all inside her own home. That level of harm calls for the full term despite his clean record.",
+          "cites": ["injury_minor", "home_entered"],
+          "flawExplanation": "The record shows a simple cut, three stitches and discharge the same evening (F2). The advice inflates the injury and the sentence with it."
+        }
+      ]
+    }
+  ]
+}

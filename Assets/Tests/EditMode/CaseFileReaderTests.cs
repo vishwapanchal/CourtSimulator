@@ -39,7 +39,7 @@ namespace CourtSim.Core.Tests
         [Test]
         public void ShippedCaseIds_AllHaveFiles()
         {
-            Assert.That(TestCases.ShippedCaseIds.Count, Is.EqualTo(3));
+            Assert.That(TestCases.ShippedCaseIds.Count, Is.EqualTo(21));
             foreach (string caseId in TestCases.ShippedCaseIds)
             {
                 Assert.That(File.Exists(TestCases.ShippedCasePath(caseId)), Is.True, caseId);

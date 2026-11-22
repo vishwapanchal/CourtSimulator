@@ -133,7 +133,7 @@
     {
       "kind": "sentencing",
       "title": "Sentence",
-      "prompt": "Rathod has been convicted under section 117(2) BNS (voluntarily causing grievous hurt: imprisonment up to seven years and fine) and acquitted under section 232(1).",
+      "prompt": "At trial before the Chief Judicial Magistrate (who may pass up to seven years), Rathod has been convicted under section 117(2) BNS (voluntarily causing grievous hurt: imprisonment up to seven years and fine) and acquitted under section 232(1).",
       "submissions": {
         "prosecution": "He beat a 52-year-old man and kicked him on the ground, breaking his jaw. He has paid nothing towards Rs. 62,000 of medical bills. A real custodial sentence is needed.",
         "defence": "He is 41 with no record, a family depends on his stall, and he was provoked by abuse of his mother. He regrets what happened. We ask for probation."

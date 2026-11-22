@@ -1,0 +1,184 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-naveen-upadhya",
+  "title": "State v. Naveen Upadhya",
+  "summary": "A village accountant was caught in a Lokayukta trap accepting Rs. 15,000 for a mutation entry. The charge-sheet was filed in time but without the sanction order, and the recording of the demand survives only as a pen-drive copy with no section 63 certificate.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Prevention of Corruption Act, 1988. Not legal advice.",
+  "defendant": {
+    "name": "Naveen Upadhya",
+    "age": 38,
+    "background": "Village accountant in the Revenue Department at Hosur hobli, Kesarnagar district, married with two school-going children; suspended from service since his arrest."
+  },
+  "charges": [
+    "Public servant obtaining an undue advantage to perform a public duty improperly (section 7, Prevention of Corruption Act, 1988)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "On 3 March 2025 farmer Shivappa Hiremath went to Upadhya's office about a mutation entry for land he had inherited. He says Upadhya told him the entry would be made only on payment of Rs. 15,000. Hiremath recorded the conversation on his mobile phone and complained to the Lokayukta police on 7 March." },
+    { "id": "F2", "text": "On 10 March 2025 the Lokayukta police laid a trap. Hiremath handed over Rs. 15,000 in notes treated with phenolphthalein powder. A shadow witness who accompanied Hiremath heard Upadhya ask, \"Have you brought the amount?\" The notes were recovered from Upadhya's table drawer, his hand wash turned pink, and he was arrested the same day." },
+    { "id": "F3", "text": "Before the trap, Hiremath had the recording copied from his phone onto a pen drive at a mobile-phone shop and gave the pen drive to the Investigating Officer (IO). Hiremath sold the phone in August 2025, the shop has since closed, and no one has given a certificate under section 63 of the Bharatiya Sakshya Adhiniyam for the copy." },
+    { "id": "F4", "text": "The charge-sheet was filed on 5 May 2025, the 56th day of Upadhya's custody, with every witness statement and the FSL report on the hand wash, but without the order sanctioning prosecution, which was still pending with the Deputy Commissioner. The sanction order was received on 20 June 2025." },
+    { "id": "F5", "text": "On 8 May 2025, after the charge-sheet had been filed, Upadhya applied for default bail under section 187(3) BNSS, arguing that a charge-sheet without sanction is incomplete. In the alternative he sought regular bail. The application was heard on 12 May 2025, when he had spent 63 days in custody." },
+    { "id": "F6", "text": "On 25 April 2025 Hiremath told the IO that Upadhya's brother had telephoned him and asked him to \"settle the matter quietly\". No threat was made, and nothing further has been reported." },
+    { "id": "F7", "text": "Upadhya has no previous convictions and no other case or departmental proceeding against him. He has lived in Kesarnagar all his life." },
+    { "id": "F8", "text": "At trial Hiremath and the shadow witness proved the demand at the trap and the recovery, and the hand-wash evidence was accepted. Upadhya was convicted under section 7 of the Prevention of Corruption Act. At the hearing on sentence he said his family depends on him." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-2",
+      "title": "Pen drive with the audio recording of 3 March 2025, and the IO's transcript",
+      "description": "A pen drive holding an audio file said to record Upadhya demanding Rs. 15,000 from Hiremath, with a typed transcript the IO prepared by listening to it.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded on Hiremath's mobile phone, copied onto the pen drive at a mobile-phone shop and handed to the IO on 7 March 2025. The phone was sold in August 2025 and has not been produced. No certificate under section 63 BSA has been filed, and the shop that made the copy has closed.",
+      "objection": "The defence advocate says the pen drive is a copy of an electronic record with no section 63 certificate, so neither it nor the transcript made from it can be admitted."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Application for default bail, or in the alternative regular bail",
+      "prompt": "Upadhya applies to the Special Judge (Prevention of Corruption Act), Kesarnagar, for default bail under section 187(3) BNSS, or in the alternative for regular bail. He has spent 63 days in custody. The Special Public Prosecutor opposes both.",
+      "submissions": {
+        "prosecution": "The charge-sheet was filed on day 56, so no right to default bail ever arose. On merits, his brother has already approached the complainant, and releasing a bribe-taker caught red-handed sends the wrong message.",
+        "defence": "A charge-sheet without sanction is incomplete, so the 60 days ran out and default bail follows. Even otherwise, the investigation is over, he has no record, and conditions can protect the complainant."
+      },
+      "factors": [
+        { "id": "default_period", "text": "Section 7 of the PC Act carries a maximum of seven years, so under section 187(3)(ii) BNSS the limit on custody during investigation is sixty days; the right to default bail arises only if no charge-sheet is filed by then." },
+        { "id": "chargesheet_timing", "text": "The charge-sheet was filed on the 56th day of custody, and the default bail application was made three days later, on 8 May 2025." },
+        { "id": "sanction_rule", "text": "Sanction under section 19 of the PC Act is a bar to the court taking cognizance, not part of the investigation. A charge-sheet filed in time without sanction does not entitle the accused to default bail (Suresh Kumar Bhikamchand Jain v. State of Maharashtra, 2013)." },
+        { "id": "investigation_done", "text": "The investigation is complete: every witness statement and the FSL report are on file, and the trap evidence is fixed in documents." },
+        { "id": "complainant_contact", "text": "Upadhya's brother telephoned the complainant once to ask him to settle the matter; there was no threat and nothing since." },
+        { "id": "personal_ties", "text": "No previous convictions or other proceedings, a lifelong resident with a wife and two children, and suspended from his post." },
+        { "id": "public_message", "text": "The Special Public Prosecutor says releasing a public servant caught red-handed would send the wrong message to the public." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on default bail under section 187(3) BNSS", "quality": "unsound", "feedback": "No right to default bail arose. The charge-sheet was filed on day 56, inside the sixty-day limit, and pending sanction does not make it incomplete." },
+        { "id": "bail.grant_conditions", "label": "Refuse default bail but grant regular bail: bond with two sureties, no contact with the complainant or the shadow witness directly or through family, and no entry to the Hosur hobli office", "quality": "sound", "feedback": "Default bail fails because the charge-sheet was in time, but on merits the investigation is complete, he is rooted and has no record, and the one contact through his brother is met by a no-contact condition backed by cancellation." },
+        { "id": "bail.deny", "label": "Refuse bail altogether", "quality": "defensible", "feedback": "The brother's call to the complainant is a legitimate concern, so refusal is within reason. But it was a single approach without a threat, the evidence is documentary and fixed, and conditions can manage the risk." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would refuse default bail and grant regular bail on conditions. The charge-sheet was filed on day 56, within the sixty-day limit, and the absence of sanction goes to cognizance, not to whether the investigation is complete. On merits the investigation is over, Mr Upadhya has no record and strong roots, and a no-contact condition meets the concern raised by his brother's call.",
+          "cites": ["default_period", "chargesheet_timing", "sanction_rule", "investigation_done", "personal_ties", "complainant_contact"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Upadhya on default bail. A charge-sheet in a corruption case is not complete until the sanction order is filed with it, because the court cannot act on it without one. The sanction came only on 20 June, well after the sixty days ran out on 9 May, so his right to default bail accrued and cannot be defeated.",
+          "cites": ["default_period", "chargesheet_timing"],
+          "flawExplanation": "Sanction under section 19 of the PC Act concerns cognizance, not investigation. A charge-sheet filed within the period without sanction defeats default bail (Suresh Kumar Bhikamchand Jain, 2013). Here it was filed on day 56 (F4), and the application came only after that (F5)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Mr Upadhya was caught with the marked notes in his drawer, and releasing a public servant in those circumstances would tell the public that bribery carries no consequences. Bail should wait until the trial is over.",
+          "cites": ["public_message", "investigation_done"],
+          "flawExplanation": "Bail is not a punishment and cannot be refused to send a message to the public. The only real risk on this record, the brother's single call (F6), can be managed by conditions, and the advice gives no reason why conditions would fail."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the pen-drive recording",
+      "prompt": "At the close of its evidence the Special Public Prosecutor tenders exhibit P-2, the pen drive and the IO's transcript, as proof of the demand on 3 March. He concedes that no section 63 certificate exists or can now be obtained. The defence objects.",
+      "exhibitId": "P-2",
+      "submissions": {
+        "prosecution": "The voice is plainly the accused's and he has never denied the conversation. The certificate is a technicality, and the court should at least read the transcript as corroboration of the complainant.",
+        "defence": "The pen drive is a copy and the phone is gone. Without a section 63 certificate the recording is inadmissible, and a transcript of an inadmissible recording is no better."
+      },
+      "factors": [
+        { "id": "copy_only", "text": "The pen drive is a copy made at a mobile-phone shop; the phone that made the original recording was sold in August 2025 and has not been produced." },
+        { "id": "no_certificate", "text": "No certificate under section 63 BSA has been filed, and the prosecution concedes none can now be obtained." },
+        { "id": "s63_rule", "text": "Section 63(4) BSA: an electronic record tendered as evidence must be accompanied by a certificate in the Schedule, signed by the person in charge of the device and by an expert, identifying the record and the device." },
+        { "id": "khotkar_rule", "text": "The certificate is a condition precedent to admitting a copy of an electronic record; it is unnecessary only where the original device itself is produced (Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal, 2020)." },
+        { "id": "other_proof", "text": "The demand can still be proved by the complainant's and the shadow witness's oral evidence of the trap, the recovery and the hand-wash test." },
+        { "id": "voice_undisputed", "text": "The prosecution says the voice is recognisably Upadhya's and he has not specifically denied the conversation." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the recording and the transcript as proof of the demand", "quality": "unsound", "feedback": "A copy of an electronic record without a section 63 certificate is inadmissible, and the original phone has not been produced. Recognisable voices do not cure the defect." },
+        { "id": "evidence.admit_limited", "label": "Exclude the recording but admit the IO's transcript as corroboration of the complainant", "quality": "unsound", "feedback": "The transcript is only the IO's account of what the inadmissible recording contains. Letting it in as corroboration admits the recording's contents by another route." },
+        { "id": "evidence.exclude", "label": "Exclude the pen drive and the transcript; the demand must be proved by the other evidence", "quality": "sound", "feedback": "The certificate is a condition precedent for a copy, the original device is gone, and none can be obtained. The demand stands or falls on the oral and trap evidence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude both the pen drive and the transcript. The pen drive is only a copy, the phone that made the recording has been sold, and there is no section 63 certificate and no prospect of one, so the condition for admitting it is not met. The transcript simply repeats the recording's contents, and the prosecution must prove the demand through the trap witnesses and the recovery.",
+          "cites": ["copy_only", "no_certificate", "s63_rule", "khotkar_rule", "other_proof"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the recording. The complainant has produced the phone on which he made it, and where the original device is before the court no section 63 certificate is needed. The pen drive and the transcript are just convenient ways of playing and reading what the phone holds.",
+          "cites": ["khotkar_rule", "s63_rule", "voice_undisputed"],
+          "flawExplanation": "The phone has not been produced: Hiremath sold it in August 2025 (F3). Only the pen-drive copy is before the court, so the certificate is required and there is none."
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would exclude the recording itself but admit the IO's transcript as corroboration. The section 63 certificate is needed only when an electronic record is used as primary proof of a fact, not when its contents are used to support oral testimony already given. Here the complainant has described the demand in the witness box, and the transcript is consistent with it.",
+          "cites": ["no_certificate", "other_proof", "voice_undisputed"],
+          "flawExplanation": "Section 63 BSA makes the certificate a condition for admitting the electronic record at all, whatever use is made of it. A transcript of an uncertified copy carries the same defect, so it cannot come in as corroboration either."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Upadhya has been convicted under section 7 of the Prevention of Corruption Act for obtaining Rs. 15,000 to make a mutation entry. The offence carries imprisonment of not less than three years and up to seven years, and a fine.",
+      "submissions": {
+        "prosecution": "Petty corruption at the village office hits the poorest hardest. We ask for a sentence well above the minimum.",
+        "defence": "He is a first offender who has lost his job, and his family depends on him. We ask for a fine only, or at most the minimum term."
+      },
+      "factors": [
+        { "id": "statutory_range", "text": "Section 7 of the PC Act: imprisonment of not less than three years, up to seven years, and a fine. The court cannot go below three years' imprisonment." },
+        { "id": "offence_scale", "text": "A single demand of Rs. 15,000 for one mutation entry, recovered in full at the trap." },
+        { "id": "clean_record", "text": "No previous conviction and no other case or departmental proceeding against him." },
+        { "id": "family_hardship", "text": "He is suspended from service and his wife and two children depend on him." },
+        { "id": "custody_setoff", "text": "Section 468 BNSS: the time he spent in custody before trial is set off against any term of imprisonment." },
+        { "id": "public_trust", "text": "The prosecution says petty corruption at village offices falls hardest on poor farmers." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "A fine only, without imprisonment", "quality": "unsound", "feedback": "Section 7 prescribes a minimum of three years' imprisonment. A fine alone is not a sentence the court can pass." },
+        { "id": "sentence.custodial_lower", "label": "Imprisonment for three years and a fine of Rs. 50,000, with the time already spent in custody set off", "quality": "sound", "feedback": "The minimum term is unavoidable, and nothing on the record pushes a single Rs. 15,000 demand by a first offender above it. The fine marks the breach of trust." },
+        { "id": "sentence.custodial_upper", "label": "Imprisonment for six years and a fine of Rs. 1,00,000", "quality": "defensible", "feedback": "Within the statutory range, and public trust is a real concern, but six years for a single modest demand by a first offender sits closer to the top than the facts justify." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose three years' imprisonment and a fine of Rs. 50,000, setting off the time already served. Three years is the statutory minimum, so a fine alone is not open to the court. A single demand of Rs. 15,000 by a man with no record, who has already lost his post, does not call for more than the minimum, and the fine reflects the harm to public trust.",
+          "cites": ["statutory_range", "offence_scale", "clean_record", "family_hardship", "custody_setoff", "public_trust"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would impose a fine only. The three-year term in section 7 is the ordinary minimum, but the court may substitute a fine where the bribe is small and the offender has no record. Mr Upadhya has already lost his post, and his wife and children would suffer most from his imprisonment.",
+          "cites": ["offence_scale", "clean_record", "family_hardship"],
+          "flawExplanation": "Section 7 of the PC Act prescribes imprisonment of not less than three years with no exception for small amounts. The court has no power to replace it with a fine."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose six years' imprisonment and a fine of Rs. 1,00,000. Mr Upadhya was already the subject of a departmental inquiry into bribery before this trap, so this was not a lapse but a practice. Corruption of that kind at a village office falls hardest on poor farmers.",
+          "cites": ["clean_record", "public_trust", "statutory_range"],
+          "flawExplanation": "The record shows no other case or departmental proceeding against him (F7). The advice invents a prior inquiry and uses it to push the sentence toward the maximum."
+        }
+      ]
+    }
+  ]
+}

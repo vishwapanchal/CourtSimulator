@@ -1,0 +1,182 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-manjunath-wadeyar",
+  "title": "State v. Manjunath Wadeyar",
+  "summary": "Five men robbed a gold workshop at night after tying up the watchman. One of them turned approver and names the accused as the planner; the prosecution wants to read the approver's earlier statement to a Magistrate as proof of guilt.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Manjunath Wadeyar",
+    "age": 27,
+    "background": "Casual labourer from Kallahalli village, Kesarnagar district, with a 2021 conviction for theft."
+  },
+  "charges": [
+    "Dacoity (section 310(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 01:30 on 7 September 2024 five masked men entered the Lakshmi gold workshop in Kesarnagar, tied up the night watchman and threatened him with a knife. They took Rs. 4,20,000 in cash and gold ornaments. The watchman was not injured and could not identify anyone." },
+    { "id": "F2", "text": "Wadeyar was arrested on 20 September 2024 with two others. One co-accused, Ravi Patil, accepted a pardon tendered by the Chief Judicial Magistrate under section 343 BNSS on condition of full and true disclosure. Before that, on 4 November 2024, a Judicial Magistrate had recorded Patil's statement under section 183 BNSS naming Wadeyar as the planner who carried the knife." },
+    { "id": "F3", "text": "Under section 343(4)(b) BNSS Patil is detained in custody until the trial ends. When Wadeyar's bail application was heard in June 2025 Patil had not yet given evidence, and Patil's father had reported that a man claiming to be Wadeyar's friend warned him that his son should \"forget the names\"." },
+    { "id": "F4", "text": "Wadeyar was convicted of theft in 2021. In that case he failed to appear for four months while on bail, and a non-bailable warrant was issued before he was produced." },
+    { "id": "F5", "text": "Co-accused Suresh, said to have kept watch outside, was granted bail by this court in April 2025. The prosecution does not say he entered the workshop or carried a weapon." },
+    { "id": "F6", "text": "At trial Patil testified that Wadeyar planned the dacoity and threatened the watchman with the knife. A licensed pawnbroker independently testified that on 9 September 2024 Wadeyar pledged a gold bangle, which the workshop owner identified as one of the stolen ornaments." },
+    { "id": "F7", "text": "Wadeyar was convicted of dacoity. About Rs. 1,10,000 worth of the gold has been recovered. No one was injured." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-4",
+      "title": "Statement of the approver Ravi Patil recorded under section 183 BNSS",
+      "description": "A statement recorded by a Judicial Magistrate on 4 November 2024 in which Patil describes the dacoity and names Wadeyar as the planner who carried the knife.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by a Judicial Magistrate at Kesarnagar before Patil accepted the pardon. Patil has since given evidence at trial consistent with it and has been cross-examined.",
+      "objection": "The defence advocate says a statement under section 183 is not substantive evidence and cannot be read as proof of guilt, and that an approver's own earlier statement cannot corroborate him."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Wadeyar applies to the Court of Session, Kesarnagar, for regular bail. He has spent nine months in custody, the charge-sheet has been filed, and the approver has not yet testified. The Public Prosecutor opposes bail.",
+      "submissions": {
+        "prosecution": "He is the planner who carried the knife, he jumped bail in his last case, and the approver's father has already been warned. The approver has not testified yet.",
+        "defence": "Co-accused Suresh was bailed by this very court, and parity demands the same. Nine months is long, and the case rests only on an approver."
+      },
+      "factors": [
+        { "id": "parity_rule", "text": "Parity with a co-accused is relevant only where the roles and circumstances are comparable; it is not a right to the same order." },
+        { "id": "role_difference", "text": "Suresh is said only to have kept watch outside; Wadeyar is said to have planned the dacoity and carried the knife." },
+        { "id": "absconding_history", "text": "In his 2021 theft case Wadeyar failed to appear for four months while on bail, and a non-bailable warrant was issued." },
+        { "id": "witness_pressure", "text": "The approver has not yet testified, and his father reported a warning from a man claiming to be Wadeyar's friend." },
+        { "id": "approver_custody", "text": "Under section 343(4)(b) BNSS the approver is in custody until the trial ends, but his family lives in the same district." },
+        { "id": "custody_length", "text": "Nine months in custody; the charge-sheet has been filed." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a bond, on parity with Suresh", "quality": "unsound", "feedback": "Parity needs comparable roles. Suresh kept watch; Wadeyar is said to have planned the crime and carried the knife, and he has a record of jumping bail." },
+        { "id": "bail.grant_conditions", "label": "Release with two sureties, daily reporting and no contact with the approver's family", "quality": "defensible", "feedback": "Conditions are the usual answer to witness risk, so this is not unreasonable. But a past failure to appear on bail and a fresh warning to the approver's family before he testifies make conditions a weak guarantee." },
+        { "id": "bail.deny", "label": "Refuse bail for now, with liberty to apply again after the approver has testified", "quality": "sound", "feedback": "A record of absconding on bail, a reported warning to the key witness's family, and a role unlike the co-accused's justify custody until the approver's evidence is recorded." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail for now, with liberty to apply again once the approver has testified. Parity does not help, because Suresh kept watch outside while Mr Wadeyar is said to have planned the crime and carried the knife. He failed to appear for four months when last on bail, and the approver's father has reported a warning, so conditions are unlikely to protect the trial.",
+          "cites": ["parity_rule", "role_difference", "absconding_history", "witness_pressure"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Wadeyar on a bond. This court has already granted bail to Suresh on the same charge sheet, and once a co-accused facing the same charge is bailed, parity requires the same order for the others. He has also been in custody for nine months.",
+          "cites": ["parity_rule", "custody_length"],
+          "flawExplanation": "Parity is not automatic. It applies only where the roles are comparable, and here Suresh kept watch while Wadeyar is said to have planned the dacoity and carried the knife (F5, F2)."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. The approver has already given his evidence and been cross-examined, so the risk of pressure on him has passed. Sureties and daily reporting will deal with any risk that Mr Wadeyar fails to attend.",
+          "cites": ["approver_custody", "custody_length", "absconding_history"],
+          "flawExplanation": "The approver had not yet testified when bail was heard (F3), and his father had just reported a warning. The main risk the advice says has passed is still live."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Use of the approver's statement to the Magistrate",
+      "prompt": "After Patil has testified, the Public Prosecutor tenders exhibit P-4, Patil's statement under section 183 BNSS, as substantive evidence that Wadeyar planned the dacoity. The defence objects.",
+      "exhibitId": "P-4",
+      "submissions": {
+        "prosecution": "A Magistrate recorded it, so it is a judicial record. It proves what he says and corroborates his evidence.",
+        "defence": "A section 183 statement is not substantive evidence. At most it shows Patil has been consistent, and an accomplice cannot corroborate himself."
+      },
+      "factors": [
+        { "id": "s160_use", "text": "Section 160 BSA: to corroborate a witness's testimony, a former statement by the witness about the same fact, made at about the time or before an authority legally competent to investigate it, may be proved." },
+        { "id": "not_substantive", "text": "A statement recorded under section 183 BNSS from a witness is not substantive evidence; it may be used to corroborate or contradict the maker's testimony in court." },
+        { "id": "accomplice_rule", "text": "Section 138 BSA: an accomplice is a competent witness, and a conviction is not illegal if it proceeds on his corroborated testimony. Under section 119, illustration (b), the court may presume an accomplice unworthy of credit unless corroborated in material particulars." },
+        { "id": "self_corroboration", "text": "The approver's own earlier statement shows consistency but is not independent corroboration connecting the accused to the crime." },
+        { "id": "magistrate_record", "text": "The statement was recorded by a Judicial Magistrate before the pardon was tendered." },
+        { "id": "independent_link", "text": "Independent evidence exists: the pawnbroker's testimony that Wadeyar pledged a stolen bangle two days after the dacoity." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the statement as substantive evidence of Wadeyar's guilt", "quality": "unsound", "feedback": "A section 183 statement is not substantive evidence, and treating it as such lets an accomplice's account stand on itself." },
+        { "id": "evidence.admit_limited", "label": "Admit the statement only to corroborate Patil's testimony as consistent; it is not substantive evidence or independent corroboration", "quality": "sound", "feedback": "Section 160 BSA allows its use to show consistency, but the accomplice rule still needs independent corroboration in material particulars, here the pawnbroker's evidence." },
+        { "id": "evidence.exclude", "label": "Exclude the statement entirely", "quality": "defensible", "feedback": "Harmless in result, because it adds little, but section 160 BSA does permit a former statement to be proved to corroborate the witness, so complete exclusion goes further than the law requires." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would admit the statement for one purpose only: to show that Mr Patil's evidence in court is consistent with what he told the Magistrate. It is not substantive evidence. Because it comes from the same accomplice, it cannot supply the independent corroboration that his testimony needs; that must come from evidence like the pawnbroker's.",
+          "cites": ["s160_use", "not_substantive", "self_corroboration", "accomplice_rule", "independent_link"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the statement as substantive evidence. It was recorded by a Judicial Magistrate, so it is a judicial record and stands as proof of its contents in the same way as testimony. It names Mr Wadeyar as the planner who carried the knife and fully supports Mr Patil's account in court.",
+          "cites": ["magistrate_record", "accomplice_rule"],
+          "flawExplanation": "Being recorded by a Magistrate does not make a witness's section 183 statement substantive evidence. It can only corroborate or contradict the maker, and an accomplice's earlier statement is not independent corroboration."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the statement entirely. The law presumes an accomplice unworthy of credit unless he is corroborated in material particulars, and his own earlier statement is no corroboration at all. Admitting it would only give an appearance of support that the law says it cannot provide.",
+          "cites": ["accomplice_rule", "self_corroboration"],
+          "flawExplanation": "The advice leaves out section 160 BSA, which expressly permits a former statement to be proved to corroborate the witness's testimony. The statement may be used for consistency, though not as independent corroboration."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Wadeyar has been convicted of dacoity under section 310(2) BNS. The offence carries imprisonment for life, or rigorous imprisonment for up to ten years, and a fine.",
+      "submissions": {
+        "prosecution": "He planned an armed night raid and has a previous conviction. The approver walks free, so the planner must bear the full weight. We ask for life.",
+        "defence": "No one was hurt and some of the gold has come back. He is 27. We ask for probation, or a modest term."
+      },
+      "factors": [
+        { "id": "s310_range", "text": "Section 310(2) BNS: imprisonment for life, or rigorous imprisonment for up to ten years, and a fine." },
+        { "id": "probation_bar", "text": "Section 4 of the Probation of Offenders Act, 1958 and section 401 BNSS apply only to offences not punishable with death or imprisonment for life, so probation is not available for dacoity." },
+        { "id": "planner_role", "text": "He planned the dacoity and threatened the watchman with a knife." },
+        { "id": "harm_level", "text": "No one was injured; about Rs. 1,10,000 of the Rs. 4,20,000 taken has been recovered." },
+        { "id": "prior_record", "text": "One previous conviction, for theft in 2021." },
+        { "id": "approver_pardon", "text": "The approver Ravi Patil received a pardon in return for his evidence." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct", "quality": "unsound", "feedback": "Dacoity is punishable with imprisonment for life, so probation is not available, and he has a previous conviction in any event." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for seven years and a fine of Rs. 30,000, with the time already spent in custody set off", "quality": "sound", "feedback": "Reflects his leading role, the knife and his record, while recognising that no one was hurt. A substantial term short of the maximum." },
+        { "id": "sentence.custodial_upper", "label": "Imprisonment for life", "quality": "unsound", "feedback": "Life suits dacoity marked by grave violence. Here no one was injured, and the approver's pardon is no reason to load extra punishment on the accused." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for seven years and a fine of Rs. 30,000, setting off the time already served. Probation is not available because dacoity is punishable with life imprisonment. Mr Wadeyar planned the raid, threatened the watchman with a knife and has a previous conviction, which justifies a substantial term, but no one was hurt, so life is not warranted.",
+          "cites": ["s310_range", "probation_bar", "planner_role", "harm_level", "prior_record"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Wadeyar on probation of good conduct. Dacoity carries a maximum of ten years' rigorous imprisonment, so it is within the Probation of Offenders Act, and no one was injured. At 27 he can still be reformed under supervision.",
+          "cites": ["harm_level", "s310_range"],
+          "flawExplanation": "Section 310(2) BNS provides imprisonment for life as well as a term of up to ten years. An offence punishable with life imprisonment is outside section 4 of the Probation of Offenders Act and section 401 BNSS."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose imprisonment for life. The approver has escaped punishment through his pardon, so the sentence on Mr Wadeyar must carry the weight of the whole gang's crime. He planned the raid and carried the knife, and he has offended before.",
+          "cites": ["approver_pardon", "planner_role", "prior_record"],
+          "flawExplanation": "The sentence must be proportionate to Wadeyar's own offence and circumstances. The approver's pardon is a statutory bargain for evidence, not a reason to punish the accused for others' share."
+        }
+      ]
+    }
+  ]
+}

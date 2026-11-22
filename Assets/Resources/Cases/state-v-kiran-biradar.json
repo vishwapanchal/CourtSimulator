@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-kiran-biradar",
+  "title": "State v. Kiran Biradar",
+  "summary": "A college student altered the month on his city-bus student pass from July to September and kept using it. A ticket inspector spotted the overwriting and seized the pass.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, together with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Kiran Biradar",
+    "age": 22,
+    "background": "A final-year BCom student at the Government First Grade College, Kesarnagar, who lives with his parents."
+  },
+  "charges": [
+    "Forgery (section 336(2), Bharatiya Nyaya Sanhita, 2023)",
+    "Using as genuine a forged document (section 340(2) read with section 336(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Biradar held a Kesarnagar City Transport (KCT) student monthly pass valid for July 2025. On 4 September 2025 a KCT ticket inspector checked it on a route 12 bus and saw that the month \"07\" had been overwritten in blue ink to read \"09\". He seized the pass under a seizure memo signed by the conductor." },
+    { "id": "F2", "text": "The inspector handed the pass to the KCT depot manager, who lodged a complaint at Kesarnagar Town police station. KCT estimates the fares lost for August and September at Rs. 1,240." },
+    { "id": "F3", "text": "Biradar was not arrested. He answered the police notice, went to the police station when asked, and appeared before the Judicial Magistrate First Class on summons after the charge-sheet was filed. He has no previous conviction." },
+    { "id": "F4", "text": "The IO took a photocopy of the pass for the case file but did not seize the original, which remains in the KCT depot's vigilance file. The depot manager is listed as a prosecution witness and has not yet given evidence. The prosecution has tendered only the photocopy (exhibit P-1)." },
+    { "id": "F5", "text": "KCT's divisional office has written to the court saying forged passes cost it lakhs every year and asking that an example be made. On the first hearing about twenty of Biradar's classmates gathered outside the court in his support." },
+    { "id": "F6", "text": "After trial the court convicted Biradar on both charges. He admitted the alteration at the hearing on sentence, apologised, and offered to pay KCT the Rs. 1,240." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Photocopy of the KCT student pass",
+      "description": "A black-and-white photocopy of Biradar's KCT student monthly pass, on which the month appears as \"09\" with signs of overwriting.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Made by the IO from the original pass at the KCT depot. The original was not seized and is still in the depot's vigilance file. The depot manager, who holds it, is yet to give evidence.",
+      "objection": "The defence advocate says a photocopy is secondary evidence and cannot be received when the original is available and has not been produced."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail on first appearance",
+      "prompt": "Biradar appears before the Judicial Magistrate First Class on summons and offers bail under section 478 of the Bharatiya Nagarik Suraksha Sanhita. The APP does not oppose bail but asks for a surety and weekly reporting.",
+      "submissions": {
+        "prosecution": "We do not oppose bail, but KCT has asked the court to take this seriously. We ask for a surety and weekly reporting at the police station.",
+        "defence": "Both offences are bailable. He came to the police station whenever called and is here on summons. A simple bond is enough."
+      },
+      "factors": [
+        { "id": "bailable", "text": "The First Schedule to the BNSS classifies forgery under section 336(2) and using a forged document under section 340(2), where it is punishable as forgery under section 336(2), as bailable." },
+        { "id": "bail_right", "text": "Section 478(1) BNSS: a person accused of a bailable offence who appears before a court and is prepared to give bail shall be released on bail." },
+        { "id": "appeared", "text": "He answered the police notice, went to the police station whenever asked and appeared in court on summons." },
+        { "id": "ties", "text": "He lives with his parents in Kesarnagar and attends college daily." },
+        { "id": "record", "text": "No previous conviction." },
+        { "id": "kct_letter", "text": "KCT's divisional office has written asking that an example be made of him." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release him on a bail bond under section 478", "quality": "sound", "feedback": "Both offences are bailable, so release on bail is his right, and his record of turning up whenever called shows nothing more is needed." },
+        { "id": "bail.grant_conditions", "label": "Release him on a bond with one surety and weekly reporting at the police station", "quality": "defensible", "feedback": "Release is right, and a surety is permitted, but weekly reporting for a student who has turned up every time adds a burden with no purpose." },
+        { "id": "bail.deny", "label": "Remand him to judicial custody for a week", "quality": "unsound", "feedback": "In a bailable offence the court cannot refuse bail to an accused who is prepared to give it, and a complainant's wish to make an example is not a ground." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Biradar on a bail bond. Both offences are bailable, so section 478 entitles him to bail. He answered the police notice, came whenever he was asked and is here on summons, so a plain bond is enough.",
+          "cites": ["bailable", "bail_right", "appeared", "ties", "record"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would remand Mr Biradar to judicial custody for a week. KCT has told the court that forged passes cost it heavily and has asked that an example be made, and a short remand will show students that this is not a prank.",
+          "cites": ["kct_letter", "record"],
+          "flawExplanation": "Making an example of an accused is not a purpose of bail, and a complainant's letter (F5) is not a ground for custody. The offences are bailable, so release is his right."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would release Mr Biradar on a surety with weekly reporting. He ignored the police notice and had to be traced before he came to the station, so some supervision is needed to make sure he attends the trial.",
+          "cites": ["appeared", "bail_right"],
+          "flawExplanation": "The record says the opposite: he answered the police notice, went whenever asked and appeared on summons (F3). Nothing suggests he needs supervision to attend."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the photocopy of the pass",
+      "prompt": "The APP tenders exhibit P-1, a photocopy of the altered pass. The defence objects that the original is in the KCT depot's file and has not been produced.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "The IO made this copy himself from the original. The overwriting is plain to see, and the copy is a faithful one.",
+        "defence": "A document must be proved by the original. The original is sitting in the depot. No ground for secondary evidence exists."
+      },
+      "factors": [
+        { "id": "photocopy", "text": "Exhibit P-1 is a photocopy made by the IO; it is secondary evidence of the pass." },
+        { "id": "original_available", "text": "The original pass is in the KCT depot's vigilance file, held by the depot manager, who is a prosecution witness yet to give evidence." },
+        { "id": "primary_rule", "text": "Section 57 BSA: primary evidence means the document itself produced for the inspection of the court." },
+        { "id": "s59_rule", "text": "Section 59 BSA: documents must be proved by primary evidence except in the cases set out in the Adhiniyam." },
+        { "id": "s60_cases", "text": "Section 60 BSA allows secondary evidence only in listed cases, such as where the original is lost or destroyed, is held by the opposing party or someone beyond the court's process, or cannot easily be moved." },
+        { "id": "alteration", "text": "Whether the month was overwritten, and in what ink, is best judged on the original." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the photocopy", "quality": "unsound", "feedback": "No section 60 ground exists: the original is available with a prosecution witness. A copy made by the IO is still secondary evidence." },
+        { "id": "evidence.admit_limited", "label": "Decline the photocopy and direct production of the original through the depot manager, admitting the original when produced", "quality": "sound", "feedback": "Section 59 requires the original, and the original is within easy reach. Directing its production through the witness who holds it is the correct course." },
+        { "id": "evidence.exclude", "label": "Reject the photocopy and refuse the prosecution time to produce the original", "quality": "defensible", "feedback": "Rejecting the photocopy is right, but refusing time when the original is with a witness still to be examined shuts out the best evidence for no good reason." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would not receive the photocopy, but I would direct the prosecution to produce the original through the depot manager. Documents must be proved by the original unless a recognised exception applies, and none does: the pass is in the depot's file with a witness still to be examined. The alteration is also best judged on the original itself.",
+          "cites": ["photocopy", "original_available", "s59_rule", "s60_cases", "alteration"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the photocopy. A copy made by the Investigating Officer, a public servant, from the original is admissible secondary evidence in its own right. The overwriting is clearly visible on it.",
+          "cites": ["photocopy", "alteration"],
+          "flawExplanation": "Who made the copy does not matter. Section 60 BSA allows secondary evidence only in listed cases, and none applies because the original is available with the depot manager (F4)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would reject the photocopy and refuse further time. It is secondary evidence, documents must be proved by the original, and no exception allows a copy here. The prosecution chose to rely on a copy and must bear the consequences.",
+          "cites": ["photocopy", "s59_rule", "s60_cases"],
+          "flawExplanation": "The advice ignores that the original is in the KCT depot's file and the depot manager who holds it has yet to testify (F4). The right course is to direct its production, not to shut out the best evidence."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Biradar has been convicted of forgery and of using the forged pass, punishable under section 336(2) BNS with imprisonment up to two years, or fine, or both. He is 22 and has no previous conviction.",
+      "submissions": {
+        "prosecution": "KCT loses heavily to forged passes, and his classmates crowded the court as if this were a joke. A jail term will deter others.",
+        "defence": "He is a first offender, the loss is Rs. 1,240 and he will pay it today. He admits it and apologises. We ask for release after admonition."
+      },
+      "factors": [
+        { "id": "admonition_rule", "text": "Section 3 of the Probation of Offenders Act, 1958: where a person is found guilty of an offence punishable with imprisonment for not more than two years, or fine, or both, and no previous conviction is proved, the court may release him after due admonition if it is expedient having regard to the circumstances, the nature of the offence and his character." },
+        { "id": "compensation_rule", "text": "Section 5 of the Act allows the court, when releasing an offender under section 3 or 4, to order compensation for the loss caused." },
+        { "id": "first_offender", "text": "No previous conviction." },
+        { "id": "small_loss", "text": "KCT's loss is Rs. 1,240 in fares, which he has offered to pay." },
+        { "id": "remorse", "text": "He admitted the alteration and apologised." },
+        { "id": "deterrence", "text": "KCT says forged passes cost it lakhs every year." },
+        { "id": "supporters", "text": "About twenty of his classmates gathered outside the court in his support." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release after due admonition under section 3, with Rs. 1,240 compensation to KCT under section 5", "quality": "sound", "feedback": "The offence carries no more than two years, he has no previous conviction, the loss is small and repaid, and he has apologised. Admonition with compensation fits exactly." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for one month and a fine of Rs. 2,000", "quality": "defensible", "feedback": "Within the range, but jail for a first offender who altered one pass, admitted it and repaid the loss is heavier than needed when admonition is available." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for two years, the maximum", "quality": "unsound", "feedback": "The maximum for a Rs. 1,240 fare fraud by a remorseful first offender is grossly disproportionate, and the conduct of his classmates is not his offence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "high",
+          "rationale": "I would release Mr Biradar after due admonition and order him to pay KCT Rs. 1,240. The offence carries no more than two years and he has no previous conviction, so admonition is available. He has admitted what he did, apologised and offered to make good a small loss, which makes it the expedient course.",
+          "cites": ["admonition_rule", "compensation_rule", "first_offender", "small_loss", "remorse"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for one month with a fine of Rs. 2,000. Release after admonition is limited to theft and cheating cases of the kind named in the Act, so it is not open for forgery. A short term with a fine is the lightest sentence available.",
+          "cites": ["admonition_rule", "deterrence", "first_offender"],
+          "flawExplanation": "Section 3 of the Probation of Offenders Act also covers any offence punishable with imprisonment for not more than two years, or fine, or both. Forgery under section 336(2) BNS falls within it, so admonition is available."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose the maximum of two years' rigorous imprisonment. His classmates crowded the court as though forgery were a joke, and a firm sentence is needed to show students that the law will not bend to a show of support.",
+          "cites": ["supporters", "deterrence"],
+          "flawExplanation": "The conduct of his classmates outside court (F5) is not his offence and cannot add to his sentence. On a first offence with a Rs. 1,240 loss that he has offered to repay (F6), the maximum is grossly excessive."
+        }
+      ]
+    }
+  ]
+}

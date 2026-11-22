@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-pradeep-lamani",
+  "title": "State v. Pradeep Lamani",
+  "summary": "A taxi driver speeding through a school zone hit a retired postman on a zebra crossing and drove him to hospital, where a head constable recorded the dying man's account. The driver, too poor to find sureties, is still in jail on a bailable offence.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Pradeep Lamani",
+    "age": 34,
+    "background": "A taxi driver earning about Rs. 18,000 a month who rents a room in Kesarnagar and supports his wife and daughter in his village, 200 km away."
+  },
+  "charges": [
+    "Causing death by negligence (section 106(1), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 8.40 am on 21 July 2025 the taxi driven by Lamani hit Gopal Deshpande, 64, a retired postman, on the zebra crossing on MG Road outside Kesarnagar Government School, where a 30 km/h school-zone sign is posted. The pedestrian signal was green." },
+    { "id": "F2", "text": "Traffic police camera footage, analysed frame by frame by the IO, puts the taxi's speed at about 65 km/h. The school's security guard and a fruit vendor both saw the taxi come through the crossing without slowing." },
+    { "id": "F3", "text": "Lamani stopped at once, lifted Deshpande into his taxi with the guard's help, drove him to Kesarnagar District Hospital and waited there until the police arrived." },
+    { "id": "F4", "text": "At 11.30 am, after the duty doctor endorsed on the record that Deshpande was conscious and fit to make a statement, Head Constable Nagaraj recorded his statement in the casualty ward in the doctor's presence: \"I was crossing on the zebra crossing when our signal was green. A white taxi came very fast and did not stop.\" No Magistrate was called. Deshpande died of his head injuries on 23 July." },
+    { "id": "F5", "text": "Lamani was arrested on 21 July. At first production the Judicial Magistrate granted bail on two sureties of Rs. 50,000 each. Ten days later he has not been able to furnish them and remains in custody. He has held a driving licence for twelve years; in 2024 he paid two on-the-spot over-speeding fines, and he has no conviction." },
+    { "id": "F6", "text": "Residents and the school's parents' association held a meeting demanding that the driver be kept in jail." },
+    { "id": "F7", "text": "At trial before the Judicial Magistrate First Class, Lamani was convicted under section 106(1). He apologised to Deshpande's widow, Kamala, 60, in court. A claim against the taxi's insurer is pending before the Motor Accident Claims Tribunal. Kamala asks for compensation now. Lamani spent twelve days in custody before he was released on bail." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-2",
+      "title": "Dying declaration of Gopal Deshpande recorded by Head Constable Nagaraj",
+      "description": "Deshpande's statement in the casualty ward describing the green pedestrian signal and a white taxi that came very fast and did not stop, with the duty doctor's endorsement that he was conscious and fit to make a statement.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by Head Constable Nagaraj at 11.30 am on 21 July 2025 in the presence of the duty doctor, who endorsed Deshpande's fitness beforehand. No Magistrate was requisitioned. Deshpande died on 23 July.",
+      "objection": "The defence advocate says this is a statement to a police officer during investigation, which section 181 BNSS forbids using at trial, and that a dying declaration not recorded by a Magistrate cannot be relied on."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Application for release on a personal bond",
+      "prompt": "Lamani was granted bail on two sureties of Rs. 50,000 each but has not been able to furnish them in ten days. He applies to the Judicial Magistrate First Class to be released on his own bond without sureties. The APP opposes.",
+      "submissions": {
+        "prosecution": "A man died on a school crossing and parents are demanding action. He should stay in custody until he furnishes the sureties the court set.",
+        "defence": "The offence is bailable, and he has been in jail ten days only because he is poor and his family is 200 km away. The law requires his release on his own bond."
+      },
+      "factors": [
+        { "id": "bailable", "text": "Section 106(1) BNS is a bailable offence under the First Schedule to the BNSS, so under section 478 he shall be released on bail." },
+        { "id": "indigent_rule", "text": "The proviso to section 478(1) BNSS: the court shall discharge an indigent person who cannot furnish surety on his own bond; under the Explanation, inability to give bail bond within a week of arrest is sufficient ground to presume he is indigent." },
+        { "id": "ten_days", "text": "He has been unable to furnish the sureties for ten days; he earns about Rs. 18,000 a month and his family lives 200 km away." },
+        { "id": "conduct", "text": "He stopped, took Deshpande to hospital himself and waited for the police." },
+        { "id": "seriousness", "text": "A pedestrian was killed on a school-zone crossing at 65 km/h in a 30 km/h zone." },
+        { "id": "public_demand", "text": "Residents and the school's parents' association demanded that he be kept in jail." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Discharge him on his own bond without sureties", "quality": "sound", "feedback": "The offence is bailable, and ten days without sureties raises the statutory presumption of indigence. The proviso to section 478(1) then requires release on his own bond." },
+        { "id": "bail.grant_conditions", "label": "Reduce the sureties to one surety of Rs. 25,000 and order him not to drive until the trial ends", "quality": "defensible", "feedback": "Reducing the surety helps, but it still conditions release on a surety the presumption says he cannot find, and a driving ban is not a condition that section 478 contemplates for a bailable offence." },
+        { "id": "bail.deny", "label": "Keep him in custody until he furnishes the sureties already ordered", "quality": "unsound", "feedback": "This keeps a man in jail on a bailable offence because he is poor, which is exactly what the proviso to section 478(1) forbids." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would discharge Mr Lamani on his own bond. The offence is bailable, so release is his right, and after ten days without sureties the law presumes he is indigent. A driver who took the victim to hospital himself and waited for the police poses no risk that justifies keeping him in jail for want of money.",
+          "cites": ["bailable", "indigent_rule", "ten_days", "conduct"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would reduce the security to one surety of Rs. 25,000 and order him not to drive until the trial ends. The offence is bailable, but the court may dispense with sureties only where the accused proves his indigence by documents, and Mr Lamani has filed none. A lower surety and a driving ban balance his position against the death on the crossing.",
+          "cites": ["bailable", "ten_days", "seriousness"],
+          "flawExplanation": "No documentary proof is needed. Under the Explanation to section 478(1) BNSS, inability to give bail bond within a week of arrest is itself a sufficient ground to presume indigence, and the proviso then requires discharge on his own bond (F5)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would keep Mr Lamani in custody until he furnishes the sureties already ordered. A man was killed on a school crossing at more than twice the speed limit, and the parents of the school have demanded action. Releasing him without security now would shake the community's confidence in the court.",
+          "cites": ["seriousness", "public_demand"],
+          "flawExplanation": "Public demand is not a lawful ground for keeping anyone in custody (F6), and the offence is bailable. Detaining him because he cannot find sureties is what the indigence proviso to section 478(1) forbids."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the dying declaration",
+      "prompt": "The APP tenders exhibit P-2. The defence objects that it is a statement to the police barred by section 181 BNSS and that a dying declaration recorded without a Magistrate cannot be relied on.",
+      "exhibitId": "P-2",
+      "submissions": {
+        "prosecution": "The doctor certified him fit and stood beside him, and the law does not require a Magistrate. It is the dead man's own account and must be read.",
+        "defence": "It was taken by a policeman during the investigation. Section 181 bars it, and the police could easily have called a Magistrate but did not."
+      },
+      "factors": [
+        { "id": "s26a_rule", "text": "Section 26(a) BSA: a statement by a person who has died, as to the cause of his death or the circumstances of the transaction that resulted in it, is relevant where the cause of death is in question, whether or not he expected to die." },
+        { "id": "s181_carveout", "text": "Section 181(2) BNSS: the bar in section 181 on using statements made to the police does not apply to a statement falling within section 26(a) BSA." },
+        { "id": "no_magistrate_rule", "text": "There is no requirement of law that a dying declaration be recorded by a Magistrate; what matters is that the declarant was fit to make it and that it is true and voluntary (Laxman v. State of Maharashtra, 2002)." },
+        { "id": "fitness", "text": "The duty doctor endorsed that Deshpande was conscious and fit before the statement, and was present while it was recorded." },
+        { "id": "recorded_by_police", "text": "The statement was recorded by a head constable, and no Magistrate was requisitioned although Deshpande lived for two more days." },
+        { "id": "corroboration", "text": "The camera footage and two eyewitnesses independently describe the taxi going through the crossing at speed." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the dying declaration and assess its weight with the footage and the eyewitnesses", "quality": "sound", "feedback": "It is relevant under section 26(a) BSA, section 181(2) BNSS lifts the police-statement bar for exactly this kind of statement, and a doctor-certified declaration needs no Magistrate. Recording by the police calls for careful scrutiny, not exclusion." },
+        { "id": "evidence.admit_limited", "label": "Admit it only as corroboration, not as substantive evidence", "quality": "defensible", "feedback": "Admitting it is right, but a dying declaration found true and voluntary is substantive evidence. Reducing it to corroboration understates its legal status, though on these facts the footage and eyewitnesses make the difference small." },
+        { "id": "evidence.exclude", "label": "Exclude the dying declaration", "quality": "unsound", "feedback": "Exclusion misapplies section 181, which expressly does not apply to a section 26(a) statement, and invents a requirement that a Magistrate record it." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the dying declaration. Mr Deshpande's account of how he came to be hit is relevant because the cause of his death is in issue, and the bar on police statements expressly does not reach it. The law does not require a Magistrate; the doctor certified him fit, and the footage and eyewitnesses will let the court test its truth.",
+          "cites": ["s26a_rule", "s181_carveout", "no_magistrate_rule", "fitness", "corroboration"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the statement. It was recorded by a head constable during the investigation, and a statement made to the police in the course of investigation cannot be used at trial for any purpose other than contradiction. Mr Deshpande lived for two more days, so the police had every chance to call a Magistrate.",
+          "cites": ["recorded_by_police"],
+          "flawExplanation": "Section 181(2) BNSS expressly provides that the bar does not apply to a statement within section 26(a) BSA. A dying declaration is admissible whoever recorded it; who recorded it goes to weight."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the statement but treat it only as corroboration. The doctor did not certify that Mr Deshpande was fit to make a statement, so the court cannot be sure of his state of mind and should not rest anything on his words alone. The footage and the eyewitnesses can carry the case.",
+          "cites": ["fitness", "corroboration"],
+          "flawExplanation": "The record says the opposite: the duty doctor endorsed that Deshpande was conscious and fit before the statement and was present while it was recorded (F4)."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Lamani has been convicted under section 106(1) BNS (imprisonment up to five years and fine). The Judicial Magistrate First Class may impose up to three years' imprisonment and a fine of up to Rs. 50,000.",
+      "submissions": {
+        "prosecution": "He drove at more than twice the limit past a school at 8.40 in the morning and a man died. Professional drivers must know the court will send them to prison.",
+        "defence": "He stopped, took Mr Deshpande to hospital and waited for the police, and he has no conviction. We ask for probation and compensation."
+      },
+      "factors": [
+        { "id": "speed_zone", "text": "About 65 km/h in a 30 km/h school zone at school time, hitting a pedestrian on a zebra crossing with a green pedestrian signal." },
+        { "id": "after_conduct", "text": "He stopped, took the victim to hospital himself, waited for the police and apologised to the widow." },
+        { "id": "record", "text": "No conviction in twelve years of driving; two on-the-spot over-speeding fines paid in 2024." },
+        { "id": "family", "text": "He earns about Rs. 18,000 a month and supports his wife and daughter." },
+        { "id": "deterrence_rule", "text": "Courts should not, as a normal rule, extend probation to drivers convicted of causing death by rash or negligent driving (Dalbir Singh v. State of Haryana, 2000, on the identical old section 304A IPC)." },
+        { "id": "compensation_rule", "text": "Section 395(1)(c) BNSS allows a fine to be applied to compensate those entitled to damages for the death; a Motor Accident Claims Tribunal claim against the insurer is pending." },
+        { "id": "set_off", "text": "Section 468 BNSS: his twelve days in custody before bail will be set off against any term." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct with compensation of Rs. 50,000 to Kamala", "quality": "defensible", "feedback": "Lawful, and his conduct after the accident is real mitigation. But a professional driver at more than twice the limit through a school crossing is the kind of case in which courts decline probation as a normal rule." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for one year and a fine of Rs. 40,000, all of it paid to Kamala, with set-off for time in custody", "quality": "sound", "feedback": "A custodial term reflects grossly excessive speed at a school crossing by a professional driver, while his immediate help to the victim and clean record keep it well below the court's limit." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for three years, the most this court can impose", "quality": "unsound", "feedback": "The court's maximum ignores the strong mitigation of stopping, taking the victim to hospital and waiting for the police, and his lack of any conviction." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for one year and a fine of Rs. 40,000, all of it to go to Mrs Deshpande. A professional driver going at more than twice the limit through a school crossing should expect a custodial sentence, and probation is not the normal course in such cases. His stopping to take Mr Deshpande to hospital and his clean record keep the term short, with his time in custody set off.",
+          "cites": ["speed_zone", "after_conduct", "record", "deterrence_rule", "compensation_rule", "set_off"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for three years. Mr Lamani has a previous conviction for dangerous driving and has plainly learned nothing from it, and this time he went through a school crossing at more than twice the limit. Anything less than this court's maximum would fail the family and the public.",
+          "cites": ["speed_zone", "record"],
+          "flawExplanation": "Lamani has no conviction (F5). His two over-speeding fines were paid on the spot and are not convictions, so the advice invents a record to justify the court's maximum."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Lamani on probation of good conduct and order Rs. 50,000 compensation to Mrs Deshpande. He stopped, took Mr Deshpande to hospital and waited for the police, he has no conviction, and his wife and daughter depend on him. Compensation now will help the widow more than his imprisonment.",
+          "cites": ["after_conduct", "record", "family", "compensation_rule"],
+          "flawExplanation": "The advice ignores that courts should not, as a normal rule, grant probation to drivers who cause death by rash or negligent driving (Dalbir Singh), and the gravity of 65 km/h through a school-zone crossing (F1, F2)."
+        }
+      ]
+    }
+  ]
+}

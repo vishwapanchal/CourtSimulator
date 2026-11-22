@@ -15,7 +15,7 @@ namespace CourtSim.Core.Tests
     {
         public const string CaseId = "test-case";
 
-        public static readonly IReadOnlyList<string> ShippedCaseIds = new[] { "state-v-sahil-kadam", "state-v-mahesh-rathod", "state-v-kunal-bisht" };
+        public static readonly IReadOnlyList<string> ShippedCaseIds = new[] { "state-v-sahil-kadam", "state-v-mahesh-rathod", "state-v-kunal-bisht", "state-v-arif-mulla", "state-v-basavaraj-angadi", "state-v-darshan-hegde", "state-v-girish-rao", "state-v-joseph-varghese", "state-v-kiran-biradar", "state-v-lokesh-naik", "state-v-manjunath-patil", "state-v-manjunath-wadeyar", "state-v-naveen-kulkarni", "state-v-naveen-upadhya", "state-v-pradeep-lamani", "state-v-prakash-shetty", "state-v-ramesh-gaonkar", "state-v-rohan-desai", "state-v-santosh-talwar", "state-v-shivanand-ingale", "state-v-shivappa-doddamani" };
 
         /// <summary>
         /// Point 0 (bail) has flaw misread_fact; point 1 (evidence, exhibit P-1) has misstated_law and omitted_factor;

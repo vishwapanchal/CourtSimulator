@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-lokesh-naik",
+  "title": "State v. Lokesh Naik",
+  "summary": "A man with a scar over one eyebrow collected 'protection money' from shopkeepers on Old Market Road. He has two previous extortion convictions, a threat was made to a witness after the FIR, and the witnesses saw his photograph before the identification parade.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Lokesh Naik",
+    "age": 33,
+    "background": "A former nightclub bouncer, now a casual labourer, who lives with his ailing mother near Old Market, Kesarnagar."
+  },
+  "charges": [
+    "Extortion (section 308(2), Bharatiya Nyaya Sanhita, 2023)",
+    "Criminal intimidation (section 351(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Between September and November 2025 two men on a motorcycle visited shops on Old Market Road, Kesarnagar, demanding Rs. 2,000 a week \"for protection\" and saying shutters would be smashed otherwise. Ravindra Bhandari, who runs a mobile phone shop, paid Rs. 2,000 on three occasions, handing the money each time to the pillion rider face to face. Sudhir Bhat, who runs a sweet stall, refused; on 18 November the pillion rider smashed his glass counter, worth Rs. 18,000, and said, \"Next time it will be you.\"" },
+    { "id": "F2", "text": "Bhandari's FIR of 19 November described the pillion rider as a tall man with a scar across his left eyebrow; he did not know his name." },
+    { "id": "F3", "text": "On 21 November Bhat received a call: \"Withdraw the case or your stall will burn.\" The call was traced to a SIM card registered in the name of Naik's cousin. Naik was arrested on 25 November; the rider of the motorcycle has not been traced." },
+    { "id": "F4", "text": "Naik was convicted of extortion in 2019 and again in 2022 by the Judicial Magistrate, Kesarnagar, each time for collecting money from traders; the offence was cognizable and then punishable with up to three years' imprisonment. He was sentenced to six months and then to one year, and was released in January 2024." },
+    { "id": "F5", "text": "On 26 November a local television channel broadcast Naik's photograph taken at the police station, and Bhandari says the IO also showed him the photograph on a phone \"to confirm\". On 3 December, on the court's direction under section 54 BNSS, the Taluk Executive Magistrate held a test identification parade; Bhandari and Bhat each picked out Naik from eight men. The memorandum records no step taken to cover or match the scar over his eyebrow." },
+    { "id": "F6", "text": "At trial before the Chief Judicial Magistrate, Kesarnagar, Bhandari and Bhat identified Naik in court. He was convicted under section 308(2) for the Rs. 6,000 taken from Bhandari and under section 351(2) for the threat to Bhat on 18 November. No charge was framed for the 21 November call. He has paid no compensation." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Test identification parade memorandum",
+      "description": "The Taluk Executive Magistrate's memorandum of the parade of 3 December 2025, recording that Bhandari and Bhat each identified Naik from among eight men.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Parade held on the court's direction under section 54 BNSS. The memorandum records no step to cover or match the scar over Naik's left eyebrow. Before the parade a television channel had broadcast his photograph, and Bhandari says the IO showed him the photograph on a phone.",
+      "objection": "The defence advocate says the parade is worthless because both witnesses had seen Naik's photograph and his scar was left uncovered, so the memorandum must be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "On 28 November 2025 Naik applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The APP opposes, relying on his record and the call to Bhat.",
+      "submissions": {
+        "prosecution": "This is his third extortion case, and three days after the FIR a witness was told from his cousin's SIM that his stall would burn. Released, he will go straight back to Old Market Road.",
+        "defence": "His mother is ill and he is her only carer, and the call came from someone else's phone. Strict conditions can keep him away from the market."
+      },
+      "factors": [
+        { "id": "prior_convictions", "text": "Two previous convictions for extortion, in 2019 and 2022, each a cognizable offence then punishable with up to three years." },
+        { "id": "s480_bar", "text": "Section 480(1)(ii) BNSS: a person accused of a cognizable offence shall not be released if he has been previously convicted on two or more occasions of a cognizable offence punishable with three years or more but less than seven years, unless the accused is a child, a woman, or sick or infirm, or the court finds some other special reason." },
+        { "id": "threat_call", "text": "On 21 November, three days after the FIR, Bhat was told to withdraw the case or his stall would burn, in a call from a SIM registered to Naik's cousin." },
+        { "id": "mother", "text": "His mother is ill and he says he is her only carer." },
+        { "id": "identification_proviso", "text": "The third proviso to section 480(1): that the accused may be needed for identification by witnesses is not by itself a ground to refuse bail if he is otherwise entitled to it." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977), but custody is justified by a real risk of reoffending or intimidating witnesses that conditions cannot manage." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with the section 480(3) conditions", "quality": "unsound", "feedback": "This ignores the statutory restriction on a twice-convicted accused and a threat to a witness within days of the FIR." },
+        { "id": "bail.grant_conditions", "label": "Release with two sureties, no entry to Old Market Road, no contact with any trader there, and daily reporting", "quality": "defensible", "feedback": "Strict conditions are a serious attempt to manage the risk, but section 480(1)(ii) applies and no special reason is shown; a mother's illness is not one of the listed exceptions, and the call to Bhat suggests conditions would not hold." },
+        { "id": "bail.deny", "label": "Refuse bail and remand to judicial custody", "quality": "sound", "feedback": "Two previous extortion convictions bring him within section 480(1)(ii), none of the exceptions applies, and the threat to a witness three days after the FIR shows a real risk that conditions cannot manage." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Mr Naik has two previous convictions for extortion, which brings him within the statutory restriction on release, and his mother's illness is not one of the exceptions it allows. The threat to Mr Bhat three days after the FIR, from his cousin's SIM card, shows a real risk to witnesses that conditions are unlikely to contain.",
+          "cites": ["prior_convictions", "s480_bar", "threat_call", "mother", "bail_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant_conditions",
+          "confidence": "high",
+          "rationale": "I would grant bail on strict conditions. The restriction in section 480(1)(ii) applies only to an accused previously convicted of an offence punishable with seven years or more, and his two extortion convictions carried only three. On ordinary principles, sureties, a ban on entering Old Market Road and daily reporting can manage the risk.",
+          "cites": ["prior_convictions", "s480_bar", "bail_rule"],
+          "flawExplanation": "Section 480(1)(ii) also covers a person previously convicted on two or more occasions of a cognizable offence punishable with three years or more but less than seven years, which is exactly Naik's record (F4)."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. His two convictions bring him within section 480(1)(ii), but the court may still release him for a special reason, and the only suggested risk to witnesses is a call to Mr Bhat from an unknown number with no link to him. Sureties, a ban on Old Market Road and daily reporting are enough, and the pending parade cannot by itself justify custody.",
+          "cites": ["prior_convictions", "s480_bar", "threat_call", "identification_proviso"],
+          "flawExplanation": "The call was traced to a SIM card registered in the name of Naik's cousin (F3). With that link, the threat to Bhat three days after the FIR is a concrete risk to witnesses, and no special reason for release remains."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the identification parade",
+      "prompt": "The APP tenders exhibit P-1 as proof that Naik was the pillion rider. The defence objects that the parade was tainted by the photograph and the uncovered scar and must be excluded.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "A Magistrate conducted the parade on the court's direction, and both witnesses picked him out of eight men. It proves who the extortionist was.",
+        "defence": "Both men had seen his photograph, and his scar was the very feature in the FIR. Any witness could pick out the only scarred man in a line."
+      },
+      "factors": [
+        { "id": "s7_rule", "text": "Section 7 BSA: facts that establish the identity of a person whose identity is relevant are relevant, so the parade is relevant evidence." },
+        { "id": "tip_nature", "text": "A test identification parade is not substantive evidence; the substantive evidence is the witness's identification in court, and the parade may only corroborate it (Malkhansingh v. State of M.P., 2003)." },
+        { "id": "photo_exposure", "text": "Before the parade a television channel broadcast Naik's photograph, and Bhandari says the IO showed it to him on a phone." },
+        { "id": "scar", "text": "The memorandum records no step to cover or match the scar that the FIR described." },
+        { "id": "opportunity", "text": "Bhandari handed money to the pillion rider face to face on three occasions over several weeks, and Bhat confronted him at his stall." },
+        { "id": "magistrate_held", "text": "The parade was held by the Taluk Executive Magistrate on the court's direction under section 54 BNSS." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the memorandum as proof that Naik was the pillion rider", "quality": "unsound", "feedback": "A parade is not substantive evidence of identity, whoever conducts it. Treating it as proof also ignores the photograph and the uncovered scar, which sharply reduce its value." },
+        { "id": "evidence.admit_limited", "label": "Admit the memorandum only to corroborate the identification in court, giving due weight to the photograph and the uncovered scar", "quality": "sound", "feedback": "The parade is relevant and admissible, but only as corroboration, and the prior exposure and uncovered scar go to how much it can corroborate. The witnesses' repeated face-to-face dealings are what the identification really rests on." },
+        { "id": "evidence.exclude", "label": "Exclude the memorandum entirely", "quality": "defensible", "feedback": "A court might give this parade little or no corroborative value after the photograph and the uncovered scar, but it remains relevant under section 7 BSA. The defects go to weight, and excluding it outright is a weaker way to deal with them." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the memorandum, but only as corroboration of the identification in court. The witnesses had seen Mr Naik's photograph and his scar was left uncovered, so the parade can add little on its own. What matters is that Mr Bhandari dealt with him face to face three times and Mr Bhat confronted him, which is what their identification in court rests on.",
+          "cites": ["s7_rule", "tip_nature", "photo_exposure", "scar", "opportunity"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the memorandum as proof of identity. The parade was held by a Magistrate on the court's own direction, and an identification made at a parade conducted under section 54 is substantive evidence of who committed the offence. Both witnesses independently chose him from eight men.",
+          "cites": ["magistrate_held", "s7_rule"],
+          "flawExplanation": "A test identification parade is not substantive evidence, even when held by a Magistrate under section 54 BNSS; it can only corroborate identification in court (Malkhansingh). Its value here is also reduced by the photograph and the uncovered scar (F5)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the memorandum. Both witnesses had seen Mr Naik's photograph before the parade, and nobody covered the scar that the FIR described, so picking him out proved nothing. A parade that cannot test the witnesses' memory has no place in the evidence.",
+          "cites": ["photo_exposure", "scar"],
+          "flawExplanation": "The advice ignores that the parade remains relevant under section 7 BSA and that its defects go to weight. It also leaves out Bhandari's three face-to-face payments (F1), which give the identification an independent basis."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Naik has been convicted under section 308(2) BNS (imprisonment up to seven years, or fine, or both) and section 351(2) BNS (imprisonment up to two years, or fine, or both). The Chief Judicial Magistrate may impose up to seven years.",
+      "submissions": {
+        "prosecution": "This is his third extortion conviction, and neither six months nor a year stopped him. Shopkeepers need to know the court will protect them.",
+        "defence": "The sum was Rs. 6,000, nobody was hurt and he cares for his sick mother. A fine and a warning would be enough."
+      },
+      "factors": [
+        { "id": "offence", "text": "Rs. 6,000 extorted from Bhandari over three visits, and the smashing of Bhat's Rs. 18,000 counter with a threat to his person." },
+        { "id": "prior_record", "text": "Two previous extortion convictions, with sentences of six months and one year, the second ending in January 2024." },
+        { "id": "victims", "text": "Small traders targeted on their own premises; no compensation has been paid." },
+        { "id": "mother", "text": "His mother is ill and he says he is her only carer." },
+        { "id": "uncharged_call", "text": "The 21 November call to Bhat was never charged or proved against Naik." },
+        { "id": "probation_rule", "text": "Section 401 BNSS permits release on probation only where no previous conviction is proved against the offender." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows a fine to be applied as compensation to the person who suffered loss." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Fine of Rs. 25,000 and release on probation of good conduct", "quality": "unsound", "feedback": "A third extortion conviction after two custodial sentences cannot be met with a fine, and section 401 BNSS does not apply where previous convictions are proved." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for three years under section 308(2) and one year under section 351(2), concurrent, with a fine of Rs. 25,000 paid to Bhandari and Bhat", "quality": "sound", "feedback": "A clear step up from his earlier sentences marks persistent extortion of traders, while the modest sums and absence of injury keep it well short of the maximum. The fine compensates both victims." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for seven years under section 308(2) and two years under section 351(2), consecutive", "quality": "defensible", "feedback": "His record justifies a firm sentence, but the maximum, run consecutively, is disproportionate to Rs. 6,000 and a smashed counter, and leaves no room for worse cases." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for three years for the extortion and one year for the intimidation, concurrent, with a fine of Rs. 25,000 to go to Mr Bhandari and Mr Bhat. Two earlier custodial sentences have not stopped him from preying on small traders, so a clear step up is needed. The modest sums and the absence of injury keep it well short of the maximum.",
+          "cites": ["offence", "prior_record", "victims", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would impose a fine of Rs. 25,000 and release Mr Naik on probation of good conduct. Section 401 allows probation for any offender over twenty-one convicted of an offence punishable with seven years or less, and his earlier convictions bear only on the length of the bond. His sick mother depends on him.",
+          "cites": ["probation_rule", "mother", "offence"],
+          "flawExplanation": "Section 401 BNSS applies only where no previous conviction is proved against the offender. Naik has two (F4), so it is not available."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose the maximum of seven years for the extortion and two years for the intimidation, consecutive. Mr Naik extorted traders for the third time, and three days after the FIR he had Mr Bhat told that his stall would burn if the case went on. A man who threatens witnesses has earned no leniency.",
+          "cites": ["prior_record", "uncharged_call"],
+          "flawExplanation": "The 21 November call was never charged or proved against Naik (F3, F6). Sentencing him for it as if proved punishes conduct the court has not found."
+        }
+      ]
+    }
+  ]
+}

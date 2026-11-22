@@ -1,0 +1,185 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-arif-mulla",
+  "title": "State v. Arif Mulla",
+  "summary": "A locked house was broken into at night and Rs. 3,60,000 in gold and cash taken. Nothing was recovered; the case rests on a thumbprint on the almirah, matched by a district fingerprint inspector, and on a man with two previous convictions for house theft.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Arif Mulla",
+    "age": 38,
+    "background": "A welder who has lived on Station Road, Kesarnagar, for fifteen years with his wife and three school-going children."
+  },
+  "charges": [
+    "House-breaking by night in order to commit theft (section 331(4), Bharatiya Nyaya Sanhita, 2023)",
+    "Theft in a dwelling house (section 305(a), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "On the night of 6 to 7 January 2025 the house of Suma Joshi, a schoolteacher who was away at a family wedding, in Basaveshwara Nagar, Kesarnagar, was broken into. The grille of a rear window was cut, a steel almirah was forced open, and gold jewellery worth about Rs. 3,20,000 and Rs. 40,000 in cash were taken." },
+    { "id": "F2", "text": "On the morning of 7 January the fingerprint unit of the District Crime Records Bureau lifted three chance prints from the almirah's door. Fingerprint Inspector Mahantesh Kori compared one of them with Mulla's thumb impression on record and, after his arrest, with specimen prints, and reported fourteen matching ridge characteristics. The report is signed by Inspector Kori alone; he is not the Director of the State Finger Print Bureau, and no notification under section 329(4)(g) BNSS covers him." },
+    { "id": "F3", "text": "Mulla was arrested on 15 January 2025. Nothing was recovered from him or his home, and no one saw the break-in. He denies having been in the house." },
+    { "id": "F4", "text": "Mulla was convicted of theft in a dwelling house in 2016 and of house-breaking by night with theft in 2020; theft in a dwelling house was then, as now, punishable with up to seven years. He served two years for the 2020 conviction and was released in 2022." },
+    { "id": "F5", "text": "The Judicial Magistrate refused bail on 20 January 2025 under section 480(1)(ii) BNSS. The charge-sheet, filed on 10 April 2025, relies on the fingerprint report and his record. By October 2025 he had been in custody for nine months, charges had been framed, and no witness had yet been examined." },
+    { "id": "F6", "text": "At trial before the Chief Judicial Magistrate, Kesarnagar, Inspector Kori was examined and cross-examined, and Mulla was convicted on both charges. None of the property has been recovered. Mulla was in custody for nine and a half months before bail and kept every bail condition. He has lived on Station Road for fifteen years; his wife works as a domestic help, and their three children are in school." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-6",
+      "title": "Fingerprint comparison report of the District Crime Records Bureau",
+      "description": "Inspector Kori's report that a chance print lifted from the almirah door matches Mulla's right thumb impression on fourteen ridge characteristics, with photographs of the lifted print and the specimen.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Prints lifted on 7 January 2025 by the DCRB fingerprint unit. Comparison report signed by Fingerprint Inspector Mahantesh Kori alone; he is not the Director of the State Finger Print Bureau and no notification under section 329(4)(g) BNSS covers him.",
+      "objection": "The defence advocate says the report cannot be read as evidence without the inspector entering the witness box, and asks that the fingerprint evidence be excluded altogether."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "In October 2025 Mulla applies to the Sessions Court, Kesarnagar, for bail under section 483 of the Bharatiya Nagarik Suraksha Sanhita, after nine months in custody. The Public Prosecutor opposes, relying on his two previous convictions.",
+      "submissions": {
+        "prosecution": "He has two convictions for house theft and was released only in 2022, and nine months is nothing against a fourteen-year maximum. He will break into another house.",
+        "defence": "Nine months in jail, not one witness examined, and no recovery, only a print. He has a family and a trade on Station Road and will keep any condition."
+      },
+      "factors": [
+        { "id": "prior_convictions", "text": "Two previous convictions, in 2016 and 2020, for theft from dwelling houses, the second with house-breaking by night." },
+        { "id": "bar_scope", "text": "The restriction in section 480(1)(ii) BNSS binds courts other than the High Court and Court of Session; a Sessions Court may grant bail under section 483, though his record remains a weighty consideration." },
+        { "id": "custody_delay", "text": "He has been in custody for nine months, charges have been framed and no witness has yet been examined." },
+        { "id": "evidence_nature", "text": "The case rests on a fingerprint report; nothing was recovered and there is no eyewitness." },
+        { "id": "roots", "text": "A welder who has lived on Station Road for fifteen years with his wife and three children." },
+        { "id": "mandatory_conditions", "text": "The offences are in Chapter XVII of the BNS, so on release the court may impose the conditions in section 480(3) and any others needed for those purposes (section 483(1)(a))." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977). Custody is justified where there is a real risk of flight, reoffending or intimidating witnesses that conditions cannot manage." },
+        { "id": "poverty", "text": "He lives in a rented room in a settlement on Station Road and owns no property." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with the section 480(3) conditions only", "quality": "defensible", "feedback": "Release is supportable after nine months without a witness examined, but a man with two convictions for house theft calls for stronger safeguards than the standard conditions." },
+        { "id": "bail.grant_conditions", "label": "Release with two local sureties, the section 480(3) conditions, residence on Station Road, no leaving the district without permission, and weekly reporting", "quality": "sound", "feedback": "His record is a real risk, but nine months without a single witness examined, a case resting on one report and fifteen years in one place make continued custody hard to justify. Sureties, residence and reporting conditions answer the risk of reoffending." },
+        { "id": "bail.deny", "label": "Refuse bail and continue judicial custody", "quality": "defensible", "feedback": "His record gives the concern about reoffending real weight, so refusal is within reason. But with nine months served, no witness examined and strong local roots, the risk can be managed by conditions." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. Mr Mulla's two convictions for house theft are a real concern, but this court is not bound by the Magistrate's restriction, he has spent nine months in custody without a single witness being examined, and the case rests on one report. Two local sureties, residence on Station Road and weekly reporting answer the risk of reoffending.",
+          "cites": ["prior_convictions", "bar_scope", "custody_delay", "evidence_nature", "roots", "mandatory_conditions"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Mr Mulla has two previous convictions for theft from homes, and under section 480(1)(ii) no court may release a person with such a record unless he is sick, infirm or otherwise within its exceptions. Nine months in custody does not make him one.",
+          "cites": ["prior_convictions", "bar_scope"],
+          "flawExplanation": "Section 480(1)(ii) restricts courts other than the High Court and Court of Session. The Sessions Court hears this application under section 483 and may grant bail, treating his record as a factor rather than a bar (F5)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. Mr Mulla rents a room in a settlement, owns nothing, and has two convictions for stealing from homes, so he has little to lose by disappearing. The jewellery has never been found, and a man in his position has every reason to go back to the trade he knows.",
+          "cites": ["poverty", "prior_convictions"],
+          "flawExplanation": "Poverty and the lack of property are not grounds for refusing bail. Mulla has lived on Station Road for fifteen years with his family (F6), and the risk from his record can be met by sureties and conditions."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the fingerprint report",
+      "prompt": "The APP tenders exhibit P-6 and asks the court to read it as evidence under section 329 BNSS without calling Inspector Kori. The defence objects that the report cannot be read without the inspector and asks that the fingerprint evidence be excluded altogether.",
+      "exhibitId": "P-6",
+      "submissions": {
+        "prosecution": "This is a government fingerprint expert's report. Section 329 lets it be used without formal proof, and the defence can ask the court to summon him later.",
+        "defence": "Inspector Kori is not one of the experts section 329 names, so he must face cross-examination. Without that, the print proves nothing."
+      },
+      "factors": [
+        { "id": "s329_rule", "text": "Section 329 BNSS allows a report of a listed Government scientific expert to be used as evidence without formal proof; the list includes the Director of the Finger Print Bureau and any expert notified under section 329(4)(g)." },
+        { "id": "signatory", "text": "The report is signed only by Fingerprint Inspector Kori of the District Crime Records Bureau, who is not the Director of the State Finger Print Bureau and is not covered by any notification." },
+        { "id": "s39_rule", "text": "Section 39 BSA: the opinion of a person specially skilled in questions of identity of finger impressions is a relevant fact, proved by examining the expert as a witness." },
+        { "id": "lifted", "text": "The prints were lifted from the almirah door on the morning of 7 January, when the break-in was discovered." },
+        { "id": "only_link", "text": "The print is the only evidence placing Mulla in the house; nothing was recovered and no one saw the break-in." },
+        { "id": "availability", "text": "Inspector Kori is posted at the District Crime Records Bureau in Kesarnagar and can be summoned." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Read the report as evidence under section 329 BNSS without calling the inspector", "quality": "unsound", "feedback": "Section 329 covers only the listed experts and those notified. A district fingerprint inspector is neither, so his report needs formal proof." },
+        { "id": "evidence.admit_limited", "label": "Receive the report only through Inspector Kori's testimony as an expert, with the defence free to cross-examine him", "quality": "sound", "feedback": "The opinion is relevant under section 39 BSA, but because section 329 does not cover this signatory it must be proved by examining him. That also gives the defence its chance to test the only evidence against Mulla." },
+        { "id": "evidence.exclude", "label": "Exclude the fingerprint evidence altogether", "quality": "unsound", "feedback": "The defect is only in the mode of proof. A fingerprint expert's opinion is relevant, and the inspector is available to be examined." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would receive the report only through Inspector Kori's own testimony. Section 329 covers named experts such as the Director of the Finger Print Bureau, and a district inspector is not among them, so the report cannot be read without formal proof. His opinion is relevant, he is available, and because the print is the only link to the house the defence must be able to cross-examine him.",
+          "cites": ["s329_rule", "signatory", "s39_rule", "only_link", "availability"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would read the report as evidence under section 329 without calling the inspector. The section applies to the reports of government fingerprint experts generally, and Inspector Kori is the State's fingerprint examiner for the district. If the defence wants to question him, it can apply for him to be summoned.",
+          "cites": ["s329_rule", "signatory"],
+          "flawExplanation": "Section 329 BNSS applies only to the experts it lists, such as the Director of the Finger Print Bureau, and to those notified under section 329(4)(g). Inspector Kori is neither (F2), so his report needs formal proof."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the fingerprint evidence. The prints were lifted three days after the break-in, by which time neighbours and the police had handled the almirah, so the print cannot fairly be tied to the night of the theft. It is the only evidence against Mr Mulla, and it is too unreliable to go before the court.",
+          "cites": ["lifted", "only_link"],
+          "flawExplanation": "The record says the prints were lifted on the morning of 7 January, just after the break-in (F2). Nothing suggests the almirah was handled by others first, and in any case reliability would go to weight once the inspector is examined."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Mulla has been convicted under section 331(4) BNS (house-breaking by night to commit theft: imprisonment up to fourteen years and fine) and section 305(a) BNS (imprisonment up to seven years and fine). The Chief Judicial Magistrate may impose up to seven years.",
+      "submissions": {
+        "prosecution": "This is his third conviction for breaking into homes, two years did not stop him, and Rs. 3,60,000 is lost for good. A long term is needed.",
+        "defence": "He has three children in school and a wife who cleans houses, and he kept every bail condition. We ask for the shortest term the court thinks right."
+      },
+      "factors": [
+        { "id": "planning", "text": "A house known to be empty was targeted at night, a window grille cut and an almirah forced." },
+        { "id": "loss", "text": "Gold and cash worth about Rs. 3,60,000 taken; none of it has been recovered." },
+        { "id": "prior_record", "text": "Two previous convictions for theft from dwelling houses, in 2016 and 2020; his two-year sentence for the second ended in 2022." },
+        { "id": "family", "text": "His wife works as a domestic help and their three children are in school." },
+        { "id": "bail_conduct", "text": "He kept every condition of bail." },
+        { "id": "probation_rule", "text": "Section 401 BNSS is not available where a previous conviction is proved; probation under section 4 of the Probation of Offenders Act, 1958 depends on the offender's character and antecedents making it expedient." },
+        { "id": "set_off", "text": "Section 468 BNSS: his nine and a half months in custody before bail will be set off against any term." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct for three years", "quality": "unsound", "feedback": "Probation for a third conviction for house-breaking, after a two-year sentence failed to deter, cannot be expedient on these antecedents, and section 401 BNSS does not apply at all." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for eighteen months on each charge, concurrent, and a fine of Rs. 10,000", "quality": "defensible", "feedback": "His family's position deserves weight, but eighteen months is shorter than the two years that failed to deter him last time, for a planned night burglary with a large unrecovered loss." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years under section 331(4) and three years under section 305(a), concurrent, a fine of Rs. 50,000 for Mrs Joshi, and set-off", "quality": "sound", "feedback": "A substantial step up from his last sentence reflects a third, planned night burglary with a large unrecovered loss, while staying below the court's limit in recognition of his family and his conduct on bail." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for five years for the house-breaking and three years for the theft, concurrent, with a fine of Rs. 50,000 for Mrs Joshi and set-off for his time in custody. This was a planned night burglary of an empty house, the loss is large and unrecovered, and a two-year sentence did not stop him last time. His family and his conduct on bail keep it below the court's limit.",
+          "cites": ["planning", "loss", "prior_record", "family", "bail_conduct", "set_off"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Mulla on probation of good conduct for three years. He kept every bail condition, his wife and three children depend on him, and he has already spent more than nine months in custody. Probation under the Probation of Offenders Act is lawful for these offences and would keep a working father with his family.",
+          "cites": ["bail_conduct", "family", "probation_rule", "set_off"],
+          "flawExplanation": "The advice leaves out his two previous convictions for theft from homes (F4). With that record, release on probation cannot be expedient, and section 401 BNSS is unavailable altogether."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for eighteen months on each charge, concurrent, and a fine of Rs. 10,000. His record is a concern, but the jewellery and cash were recovered and returned to Mrs Joshi, so the harm has largely been undone. His family and his conduct on bail justify a moderate term.",
+          "cites": ["prior_record", "loss", "family", "bail_conduct"],
+          "flawExplanation": "Nothing was recovered (F3, F6). The loss of about Rs. 3,60,000 is permanent, and treating it as restored removes one of the main reasons for a substantial term."
+        }
+      ]
+    }
+  ]
+}

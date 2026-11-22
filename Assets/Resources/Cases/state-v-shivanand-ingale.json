@@ -1,0 +1,186 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-shivanand-ingale",
+  "title": "State v. Shivanand Ingale",
+  "summary": "A long-running boundary dispute between neighbouring farmers ended with the complainant's forearm broken by an iron rod. The rod spent three unrecorded days in the IO's cupboard before it reached the malkhana.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Shivanand Ingale",
+    "age": 47,
+    "background": "Farms three acres at Hosur village, Kesarnagar taluk, where he has lived all his life, and supports his wife and two college-going children."
+  },
+  "charges": [
+    "Voluntarily causing grievous hurt by dangerous weapons or means (section 118(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Ingale and his neighbour Ramappa Gudageri, 55, have disputed a two-metre strip along the boundary of their fields since 2023. Gudageri's civil suit for a declaration and injunction over the strip is pending before the Civil Judge, Kesarnagar. In 2024 the police closed a trespass complaint by Gudageri against Ingale as a civil dispute." },
+    { "id": "F2", "text": "On the morning of 14 June 2025 Gudageri began digging a water channel on the disputed strip. Ingale walked over from his house carrying an iron rod about one metre long, argued with Gudageri for several minutes, and then struck him twice on the left forearm and once on the shoulder. Gudageri's son Basava, 24, and a farm labourer, Yellappa, saw the assault." },
+    { "id": "F3", "text": "Gudageri suffered a compound fracture of both bones of the left forearm, was operated on and spent twelve days in Kesarnagar District Hospital. The medical officer certified the injury as grievous (fracture). His medical bills came to Rs. 1,15,000." },
+    { "id": "F4", "text": "Ingale was arrested on 15 June 2025. The same day the IO seized an iron rod from the courtyard of Ingale's house in the presence of two panch witnesses, wrapped it in cloth and sealed it with his seal under a seizure panchnama. The malkhana register shows the sealed packet deposited only on 18 June; the IO says he kept it locked in his office cupboard and the case diary records nothing for those three days." },
+    { "id": "F5", "text": "The State FSL received the packet on 21 June. Its forwarding note records the seals as intact and matching the specimen seal. The FSL found human blood of group B on the rod; Gudageri's blood group is B." },
+    { "id": "F6", "text": "Ingale has no previous convictions. The Judicial Magistrate refused him bail in June 2025 because the offence is punishable with imprisonment for life. The charge-sheet was filed on 5 September 2025, after the eyewitnesses' statements had been recorded, and he had then been in judicial custody for nearly three months. His field and the disputed strip adjoin Gudageri's land." },
+    { "id": "F7", "text": "At trial before the Chief Judicial Magistrate, Kesarnagar, Ingale was convicted under section 118(2). The court rejected his plea of grave and sudden provocation because he fetched the rod and argued for several minutes before striking. He was on bail from 18 September 2025 and complied with every condition. He spent three months and three days in custody before bail. Gudageri still cannot lift heavy loads. At the hearing on sentence Ingale offered Rs. 50,000 towards the medical bills; he had paid nothing before." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-3",
+      "title": "Iron rod, seizure panchnama, malkhana register extract and FSL report",
+      "description": "The rod seized from Ingale's courtyard, the panchnama signed by two panch witnesses, the malkhana register showing deposit on 18 June 2025, and the FSL report finding human blood of group B.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Seized and sealed by the IO on 15 June 2025. Kept in the IO's office cupboard until deposited in the malkhana on 18 June, with no case-diary entry for the interval. Received at the State FSL on 21 June with seals recorded as intact and matching the specimen seal.",
+      "objection": "The defence advocate says the three unexplained days break the chain of custody, so the rod and the FSL report cannot be relied on and must be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "After the Magistrate's refusal and the filing of the charge-sheet, Ingale applies to the Sessions Court, Kesarnagar, for bail under section 483 of the Bharatiya Nagarik Suraksha Sanhita. The Public Prosecutor has been given notice and opposes.",
+      "submissions": {
+        "prosecution": "He broke a man's arm with an iron rod over a strip of land that still lies between their fields. Release him and the next quarrel over that strip could be worse.",
+        "defence": "He has no record, the investigation is over and he has spent three months in jail while his crop waits. Conditions can keep him off the disputed strip."
+      },
+      "factors": [
+        { "id": "ties", "text": "A lifelong resident of Hosur who farms his own land and supports a wife and two children." },
+        { "id": "record", "text": "No previous convictions; the earlier trespass complaint was closed by the police as a civil dispute." },
+        { "id": "investigation_done", "text": "The charge-sheet has been filed and the eyewitnesses' statements were recorded before it; he has been in custody for nearly three months." },
+        { "id": "proximity", "text": "His field and the disputed strip adjoin Gudageri's land, and the boundary dispute is still undecided in the civil court." },
+        { "id": "seriousness", "text": "Section 118(2) BNS is punishable with imprisonment for life, or with imprisonment of not less than one year and up to ten years, and fine." },
+        { "id": "sessions_power", "text": "The bar in section 480(1)(i) BNSS on releasing a person accused of an offence punishable with death or life imprisonment applies to courts other than the High Court and Court of Session; a Sessions Court may grant bail under section 483 and, for an offence under Chapter VI of the BNS, impose any condition needed for the purposes of section 480(3)." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977). Custody is justified where there is a real risk of flight, reoffending or intimidating witnesses that conditions cannot manage." },
+        { "id": "civil_suit", "text": "The prosecution points out that Ingale has refused every offer to settle the civil suit." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the conditions in section 480(3)", "quality": "defensible", "feedback": "Release is right, but the one real risk here is a fresh clash on the strip that lies between the two fields. Standard conditions do not keep him away from it, so tailored conditions should be added." },
+        { "id": "bail.grant_conditions", "label": "Release with one surety, the section 480(3) conditions, no entry onto the disputed strip, no contact with the Gudageri family, and weekly reporting to the police station", "quality": "sound", "feedback": "A rooted first offender whose investigation is complete should be released, and the specific risk of a renewed clash on the adjoining land is met directly by keeping him off the strip and away from the family, backed by the power to cancel bail." },
+        { "id": "bail.deny", "label": "Refuse bail and continue judicial custody", "quality": "defensible", "feedback": "The offence is serious and the parties are neighbours, so a court could hesitate. But with the investigation complete, no record and no sign of threats since the incident, the risk can be managed by conditions and continued custody is stronger than necessary." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on conditions. Mr Ingale has no record, deep roots in Hosur, and the investigation is complete, so the rule of bail, not jail, applies even to a serious charge. The real concern is another clash on the strip that still divides the two fields, and conditions keeping him off it and away from the Gudageri family meet that directly.",
+          "cites": ["ties", "record", "investigation_done", "proximity", "sessions_power", "bail_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Section 118(2) is punishable with imprisonment for life, and the law does not allow a person to be released where there are reasonable grounds to believe he committed such an offence. Two eyewitnesses saw him strike with the rod, so those grounds plainly exist.",
+          "cites": ["seriousness", "sessions_power"],
+          "flawExplanation": "The bar in section 480(1)(i) BNSS applies only to courts other than the High Court and the Court of Session. This application is before the Sessions Court under section 483, which may grant bail for an offence punishable with life imprisonment (F6)."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.grant",
+          "confidence": "medium",
+          "rationale": "I would release Mr Ingale on a personal bond with the standard conditions. He has no record, lives where he always has, and the charge-sheet has been filed, so there is nothing left for him to interfere with. The conditions in section 480(3) already forbid any similar offence or approach to the witnesses.",
+          "cites": ["ties", "record", "investigation_done", "bail_rule"],
+          "flawExplanation": "The advice ignores that his field and the disputed strip adjoin Gudageri's land and the dispute is still live (F1, F6). That is the main risk of a fresh clash, and only tailored conditions, such as keeping off the strip and away from the family, address it."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the iron rod and the FSL report",
+      "prompt": "The APP tenders exhibit P-3. The defence objects that the three days before the rod reached the malkhana are unexplained, so the rod and the FSL report must be excluded.",
+      "exhibitId": "P-3",
+      "submissions": {
+        "prosecution": "The rod was sealed in front of two panch witnesses, and the FSL found the seals intact and matching. Any delay goes to weight, not admissibility.",
+        "defence": "For three days nobody knows where that rod was except the IO's word. A break in the chain like that means the court cannot trust the blood result at all."
+      },
+      "factors": [
+        { "id": "sealed_seizure", "text": "The rod was seized and sealed on 15 June 2025 in the presence of two panch witnesses who signed the seizure panchnama." },
+        { "id": "gap", "text": "The IO kept the sealed packet in his office cupboard until 18 June, and the case diary records nothing for those three days." },
+        { "id": "seals_intact", "text": "The FSL's forwarding note records the seals as intact and matching the specimen seal when the packet arrived on 21 June." },
+        { "id": "eyewitnesses", "text": "Basava and Yellappa both describe Ingale striking Gudageri with an iron rod about one metre long." },
+        { "id": "custody_rule", "text": "A gap in the chain of custody does not by itself make a relevant article inadmissible; the court asks whether the gap creates a real possibility of tampering and weighs the evidence accordingly." },
+        { "id": "blood_group", "text": "A blood-group match shows only that the blood could be Gudageri's; group B is common, so the result has limited weight on its own." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the rod and the FSL report, and treat the three-day gap as a matter of weight", "quality": "sound", "feedback": "The rod is relevant, it was sealed before panch witnesses and arrived at the FSL with intact, matching seals. The unexplained interval is a matter for the IO's cross-examination and for weight, not a ground for exclusion." },
+        { "id": "evidence.admit_limited", "label": "Admit the rod as a seized article but disregard the FSL blood result", "quality": "defensible", "feedback": "Caution about the gap is understandable, but intact matching seals answer the main risk of tampering. Discarding the report now pre-judges weight that should be assessed with all the evidence." },
+        { "id": "evidence.exclude", "label": "Exclude the rod and the FSL report", "quality": "unsound", "feedback": "No rule makes a relevant article inadmissible because of a gap in custody. Exclusion would discard evidence whose reliability the court can and should assess." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the rod and the FSL report. The rod was sealed before two panch witnesses, and the laboratory recorded the seals as intact and matching, which answers the main risk of tampering. The three days in the IO's cupboard are a fair subject for cross-examination and go to weight, not admissibility.",
+          "cites": ["sealed_seizure", "gap", "seals_intact", "custody_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the rod and the report. The packet sat in the IO's cupboard for three days with nothing in the case diary, and any unexplained break in the chain of custody makes a seized article inadmissible. The eyewitnesses can still describe the rod without it.",
+          "cites": ["gap", "eyewitnesses"],
+          "flawExplanation": "No rule makes a relevant article inadmissible because of a gap in custody. The gap goes to weight, and here the intact, matching seals (F5) answer the main risk of tampering."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the rod but give no effect to the FSL report. The laboratory noted that the seal on the packet was not intact when it arrived, so after three unrecorded days nobody can say the blood was on the rod when it was seized. A common blood group adds little anyway.",
+          "cites": ["seals_intact", "gap", "blood_group"],
+          "flawExplanation": "The record says the opposite: the FSL's forwarding note records the seals as intact and matching the specimen seal (F5). The advice invents a broken seal to discard the report."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Ingale has been convicted under section 118(2) BNS (imprisonment for life, or imprisonment of not less than one year and up to ten years, and fine). The Chief Judicial Magistrate may impose up to seven years.",
+      "submissions": {
+        "prosecution": "He walked to the field with an iron rod and broke a 55-year-old man's arm, then paid nothing for a year. A substantial sentence is needed.",
+        "defence": "He is 47 with no record, kept every bail condition and now offers Rs. 50,000 towards the bills. We ask for probation in what grew out of a land dispute."
+      },
+      "factors": [
+        { "id": "injury", "text": "A compound fracture of both forearm bones, an operation, twelve days in hospital and continuing weakness." },
+        { "id": "weapon", "text": "He fetched an iron rod and argued for several minutes before striking; the plea of grave and sudden provocation was rejected." },
+        { "id": "first_offence", "text": "Aged 47, no previous convictions, sole earner for his family, and full compliance with bail." },
+        { "id": "minimum", "text": "Section 118(2) BNS prescribes a minimum term of one year unless imprisonment for life is imposed." },
+        { "id": "probation_bar", "text": "Release on probation under section 4 of the Probation of Offenders Act, 1958 is not available for an offence punishable with imprisonment for life, and section 401 BNSS covers only offences punishable with seven years or less for an offender of his age." },
+        { "id": "compensation", "text": "He paid nothing towards Rs. 1,15,000 of medical bills until sentencing, when he offered Rs. 50,000; section 395 BNSS allows a fine to be applied as compensation to the injured person." },
+        { "id": "set_off", "text": "Section 468 BNSS: his three months and three days in custody before bail will be set off against any term." },
+        { "id": "contested", "text": "He pleaded not guilty, contested the trial and has refused to settle the civil suit." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct with compensation of Rs. 1,15,000 to Gudageri", "quality": "unsound", "feedback": "Probation is not available for an offence punishable with imprisonment for life, and section 118(2) requires at least one year's imprisonment." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for two years and a fine of Rs. 1,00,000, of which Rs. 90,000 is paid to Gudageri, with set-off for time in custody", "quality": "sound", "feedback": "Above the one-year minimum to reflect a weapon fetched in advance and a serious fracture, but well down the range for a first offender who kept his bail. Directing the fine to Gudageri answers the unpaid medical bills." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for seven years and a fine", "quality": "unsound", "feedback": "Seven years is the most this court can impose. A single unprovoked attack by a first offender, with no lasting disability shown, does not belong at the top, and contesting the case is no aggravation." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for two years and a fine of Rs. 1,00,000, most of it to go to Mr Gudageri. He fetched the rod and argued before striking, and the fracture was serious, so a term above the one-year minimum is justified. His clean record and his conduct on bail keep it low in the range, and his time in custody will be set off.",
+          "cites": ["injury", "weapon", "first_offence", "minimum", "compensation", "set_off"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Ingale on probation of good conduct and order him to pay the full Rs. 1,15,000 to Mr Gudageri. He is a first offender with a family, and the Probation of Offenders Act allows release for any offence not punishable with death, overriding a minimum term. Compensation does more for Mr Gudageri than prison would.",
+          "cites": ["first_offence", "compensation", "probation_bar"],
+          "flawExplanation": "Section 4 of the Probation of Offenders Act excludes offences punishable with death or imprisonment for life, and section 118(2) carries life imprisonment. Probation is therefore unavailable, and the one-year minimum applies."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for seven years. Beyond the serious injury, Mr Ingale has shown no remorse: he denied the assault through a full trial and still refuses to settle the civil suit. Land disputes in the villages turn violent too often, and the sentence should say so.",
+          "cites": ["injury", "contested"],
+          "flawExplanation": "Pleading not guilty and refusing to settle a civil suit are his rights, not aggravating factors (F1, F7). Using them to push the sentence to the court's maximum punishes him for defending himself."
+        }
+      ]
+    }
+  ]
+}

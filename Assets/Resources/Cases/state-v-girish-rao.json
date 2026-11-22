@@ -1,0 +1,182 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-girish-rao",
+  "title": "State v. Girish Rao",
+  "summary": "A real-estate broker is accused of killing his business partner a week after the partner accused him of misappropriating Rs. 40 lakh. The case is wholly circumstantial, the last-seen witness has turned hostile, and the accused absconded for five months.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Girish Rao",
+    "age": 36,
+    "background": "Real-estate broker in Kesarnagar who lives with his elderly parents, his wife and a nine-year-old daughter."
+  },
+  "charges": [
+    "Murder (section 103(1), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Rao and Harish Kamath, 40, ran a property brokerage together. On 13 October 2024 Kamath lodged a police complaint accusing Rao of misappropriating Rs. 40 lakh of the firm's money." },
+    { "id": "F2", "text": "On 20 October 2024 Kamath left the firm's office at about 20:00. The office peon, Venkatesh, told the police in his statement under section 180 BNSS that he saw Kamath get into Rao's car. Toll-plaza camera footage, proved with a section 63 BSA certificate, shows Rao's car passing towards the disused Kalkere quarry at 21:20." },
+    { "id": "F3", "text": "Kamath's body was found in the quarry on 22 October 2024. The post-mortem found head injuries as the cause of death, with death about 36 to 48 hours earlier." },
+    { "id": "F4", "text": "Rao left Kesarnagar on 25 October 2024 and switched off his phone. He was arrested in Goa on 28 March 2025, five months later, living under another name. The charge-sheet was filed in June 2025." },
+    { "id": "F5", "text": "On 2 September 2025, before the trial began, Venkatesh told the IO that Rao's driver had met him and offered him Rs. 2 lakh to \"remember nothing\"." },
+    { "id": "F6", "text": "At trial Venkatesh said he saw Kamath leave the office at 20:00 but could not see whose car he got into. The court permitted the Public Prosecutor to cross-examine him." },
+    { "id": "F7", "text": "Applying the five principles in Sharad Birdhichand Sarda v. State of Maharashtra (1984), the court found the chain complete: motive, the car on the road to the quarry within the window of death, abscondence under a false name, and no explanation from Rao. He was convicted under section 103(1) BNS. The prosecution does not seek the death penalty." },
+    { "id": "F8", "text": "Rao has no previous convictions. His parents are elderly and his daughter is nine." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-6",
+      "title": "Statement of the peon Venkatesh recorded by the police under section 180 BNSS",
+      "description": "The IO's record of Venkatesh's statement of 23 October 2024 that he saw Kamath get into Rao's car outside the office at about 20:00 on 20 October.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by the Investigating Officer during the investigation and not signed by the witness. At trial Venkatesh departed from it and the court permitted the Public Prosecutor to cross-examine him.",
+      "objection": "The defence advocate says a statement made to the police during investigation cannot be used as evidence of what it says, and that the court cannot treat it as proof that Kamath got into Rao's car."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Rao applies to the Court of Session, Kesarnagar, for regular bail. He has spent six months in custody since his arrest in Goa, and the trial is about to begin. The Public Prosecutor opposes bail.",
+      "submissions": {
+        "prosecution": "He fled for five months under a false name, and his driver has already tried to buy the last-seen witness. Released, he will finish the job or vanish again.",
+        "defence": "There is not one eyewitness; the case is pure circumstance. He has deep roots, a family, and can offer substantial sureties. Weak chains do not justify custody."
+      },
+      "factors": [
+        { "id": "abscondence", "text": "He left the district three days after the body was found and was arrested five months later in Goa, living under another name." },
+        { "id": "witness_inducement", "text": "Before the trial began, the last-seen witness reported that Rao's driver offered him Rs. 2 lakh to remember nothing." },
+        { "id": "offence_gravity", "text": "The charge is murder, punishable with death or imprisonment for life." },
+        { "id": "bail_test", "text": "At the bail stage the court considers whether there is a prima facie case, the gravity of the charge, and the risks of flight and of interfering with witnesses. It does not decide whether the chain of circumstances is complete, which is the test at the end of the trial." },
+        { "id": "sarda_test", "text": "At trial a conviction on circumstantial evidence requires the five principles of Sharad Birdhichand Sarda (1984): circumstances fully established, consistent only with guilt, conclusive in nature, excluding every other hypothesis, and forming a complete chain." },
+        { "id": "family_standing", "text": "He is a well-known businessman in Kesarnagar, and his family offers sureties worth Rs. 25 lakh." },
+        { "id": "custody_length", "text": "Six months in custody since his arrest; the trial is about to begin." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a bond with sureties", "quality": "unsound", "feedback": "Ignores the two strongest risks on the record: five months as an absconder under a false name, and a reported attempt to buy the key witness." },
+        { "id": "bail.grant_conditions", "label": "Release with high-value sureties, surrender of passport, daily reporting and no contact with any witness", "quality": "defensible", "feedback": "Conditions are the usual first answer, so this is not irrational. But a man who has already absconded under a false name, and whose driver has approached the key witness, is a poor candidate for conditions before that witness testifies." },
+        { "id": "bail.deny", "label": "Refuse bail", "quality": "sound", "feedback": "Proven flight under a false name and a reported inducement to the last-seen witness are concrete risks that conditions are unlikely to contain on a murder charge." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Mr Rao left the district three days after the body was found and lived under another name for five months, which is direct evidence of flight. Before the trial began his driver is said to have offered the last-seen witness money to forget what he saw. On a murder charge, those are risks that conditions cannot reliably contain.",
+          "cites": ["abscondence", "witness_inducement", "offence_gravity", "bail_test"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. Where a case rests entirely on circumstantial evidence, bail can be refused only if the prosecution shows at this stage that the chain of circumstances is complete and excludes every hypothesis of innocence. It cannot do that yet, so release on conditions follows.",
+          "cites": ["sarda_test", "custody_length"],
+          "flawExplanation": "The Sarda principles are the test for conviction at the end of the trial, not for bail. At the bail stage the court asks about a prima facie case, gravity, flight and witness risk, and both flight and witness risk are proved here (F4, F5)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. Mr Rao is a well-known businessman with standing in Kesarnagar, and his family can offer sureties worth Rs. 25 lakh, which is ample security. A man of his position will not risk his name by interfering with the trial.",
+          "cites": ["family_standing", "custody_length"],
+          "flawExplanation": "Social standing and wealth are not reasons to release; they do not reduce the risks shown on the record. He has already absconded under a false name (F4), and his driver has approached the key witness (F5)."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Use of the hostile witness's police statement",
+      "prompt": "After cross-examining Venkatesh with the court's permission, the Public Prosecutor tenders exhibit P-6, his police statement, as proof that Kamath got into Rao's car. The defence objects.",
+      "exhibitId": "P-6",
+      "submissions": {
+        "prosecution": "The witness has been won over. His statement to the IO, made three days after the death, is the truth, and the court should act on it.",
+        "defence": "A police statement is not evidence of its contents. It can be used only to contradict him, and nothing more."
+      },
+      "factors": [
+        { "id": "s181_rule", "text": "Section 181 BNSS: a statement made to a police officer during investigation cannot be used at trial for any purpose except, under the proviso, to contradict the witness in the manner provided by section 148 BSA, by the accused or, with the court's permission, by the prosecution." },
+        { "id": "contradiction_only", "text": "A contradiction proved in this way only affects the witness's credibility; it does not make the earlier statement evidence of the facts it states." },
+        { "id": "hostile_remainder", "text": "The evidence of a witness who departs from his earlier account is not wiped out; the court may rely on the parts it finds credible, here that Kamath left the office at about 20:00." },
+        { "id": "permission_given", "text": "The court has already permitted the Public Prosecutor to cross-examine Venkatesh." },
+        { "id": "statement_timing", "text": "The statement was recorded three days after the death, before any reported approach to the witness." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the police statement as proof that Kamath got into Rao's car", "quality": "unsound", "feedback": "Section 181 BNSS forbids using a police statement as evidence of its contents. Hostility does not change that." },
+        { "id": "evidence.admit_limited", "label": "Allow the statement to be proved only to contradict Venkatesh; rely on the credible parts of his testimony, not on the statement's contents", "quality": "sound", "feedback": "This is exactly the use the proviso allows. The contradiction goes to his credibility, and his admitted evidence that Kamath left at 20:00 remains usable." },
+        { "id": "evidence.exclude", "label": "Refuse to let the statement be used at all", "quality": "unsound", "feedback": "The proviso to section 181 expressly allows the prosecution, with permission already given, to use the statement to contradict its witness." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would allow the statement to be proved only to contradict Mr Venkatesh. A police statement cannot be used as evidence of what it says, but the proviso permits the prosecution, with the permission already given, to use it to test his credibility. His evidence is not wiped out, and his account that Mr Kamath left the office at about 20:00 can still be weighed with the rest of the chain.",
+          "cites": ["s181_rule", "contradiction_only", "hostile_remainder", "permission_given"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the statement as proof of its contents. Once the court declares a witness hostile and permits his cross-examination, his earlier statement to the police becomes substantive evidence. It was recorded three days after the death, before anyone approached him, and is more reliable than what he says now.",
+          "cites": ["permission_given", "statement_timing"],
+          "flawExplanation": "A witness's hostility does not turn his police statement into substantive evidence. Under section 181 BNSS it can be used only to contradict him in the manner of section 148 BSA."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would not allow the statement to be used at all. Statements made to the police during an investigation cannot be used at any inquiry or trial, and the prosecution cannot get around that by calling its own witness hostile. The court must take Mr Venkatesh's evidence as he gave it.",
+          "cites": ["s181_rule", "contradiction_only"],
+          "flawExplanation": "The advice ignores the proviso to section 181 BNSS, which lets the prosecution, with the court's permission (F6), use the statement to contradict the witness under section 148 BSA."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Rao has been convicted of murder under section 103(1) BNS on circumstantial evidence. The offence carries death or imprisonment for life, and a fine. The prosecution does not seek death; it asks the Court of Session for life imprisonment with a direction that he not be released for thirty years.",
+      "submissions": {
+        "prosecution": "A planned killing for money, followed by flight and an attempt on the witness. We ask for life with no release for thirty years.",
+        "defence": "He has no record, elderly parents and a young daughter. Life imprisonment is the minimum, and the court should go no further."
+      },
+      "factors": [
+        { "id": "s103_range", "text": "Section 103(1) BNS: death or imprisonment for life, and a fine. With death not sought, imprisonment for life is the sentence." },
+        { "id": "fixed_term_power", "text": "The power to impose imprisonment for life with a fixed term beyond remission, as a substitute for death, can be exercised only by the High Court and, on appeal, the Supreme Court, not by a trial court (Union of India v. V. Sriharan, 2015, as restated in Ravinder Singh v. State of NCT of Delhi, 2023)." },
+        { "id": "aggravation", "text": "A killing with a financial motive, followed by five months of flight and an approach to the last-seen witness." },
+        { "id": "mitigation", "text": "Aged 36, no previous convictions, elderly parents and a nine-year-old daughter." },
+        { "id": "public_outcry", "text": "Kamath's family and the local brokers' association have publicly demanded that Rao never be released." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "A suspended sentence with a fine", "quality": "unsound", "feedback": "Murder carries death or imprisonment for life. There is no lesser sentence available." },
+        { "id": "sentence.custodial_lower", "label": "Imprisonment for life and a fine of Rs. 1,00,000", "quality": "sound", "feedback": "With death not sought, life imprisonment is the sentence the Code provides. A trial court cannot add a fixed no-remission term." },
+        { "id": "sentence.custodial_upper", "label": "Imprisonment for life with a direction that he not be released for thirty years", "quality": "unsound", "feedback": "A fixed term beyond remission is a special category of sentence that only the High Court and the Supreme Court may impose. A Court of Session has no power to make that direction." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "high",
+          "rationale": "I would impose imprisonment for life and a fine of Rs. 1,00,000. With death not sought, life imprisonment is the sentence for murder, and the motive, flight and approach to the witness are serious aggravations. But a direction that he not be released for thirty years is a power reserved to the High Court and the Supreme Court, so this court cannot add it.",
+          "cites": ["s103_range", "fixed_term_power", "aggravation", "mitigation"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose life imprisonment with a direction that he not be released for thirty years. A court that may award death may, instead, fix a minimum period beyond remission, and the motive, the flight and the attempt on the witness show this killing deserves it. His record and family do not outweigh that.",
+          "cites": ["aggravation", "s103_range", "mitigation"],
+          "flawExplanation": "Under V. Sriharan (2015), as restated in Ravinder Singh (2023), only the High Court and the Supreme Court may impose a fixed term beyond remission. A Court of Session cannot, whatever the aggravation."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose life imprisonment with no release for thirty years. Mr Kamath's family and the brokers' association have demanded that Mr Rao never walk free, and the sentence must answer the community's sense of justice. Anything less would be seen as leniency for a planned killing.",
+          "cites": ["public_outcry", "aggravation"],
+          "flawExplanation": "Public demand is not a lawful sentencing consideration. The advice also passes over the fact that this court has no power to direct a fixed term beyond remission (V. Sriharan, 2015)."
+        }
+      ]
+    }
+  ]
+}

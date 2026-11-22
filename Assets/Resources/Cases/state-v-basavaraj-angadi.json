@@ -1,0 +1,182 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-basavaraj-angadi",
+  "title": "State v. Basavaraj Angadi",
+  "summary": "A painter was stopped at the exit of an electronics store in Kesarnagar with a power bank and earphones worth Rs. 2,350 in his bag. The goods were recovered on the spot.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Basavaraj Angadi",
+    "age": 34,
+    "background": "A daily-wage house painter who has lived with his wife and two children at the same rented house in Kesarnagar for ten years."
+  },
+  "charges": [
+    "Theft (section 303(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 18:40 on 11 February 2025 Angadi put a power bank and a pair of earphones, worth Rs. 2,350 together, into his cloth bag at Sri Durga Electronics, MG Road, Kesarnagar, and walked past the billing counter without paying." },
+    { "id": "F2", "text": "The cashier, Deepa Rai, saw him and stopped him at the door. The store staff took both items out of his bag before the police arrived and handed them back to the owner undamaged. The store's CCTV shows him putting the items in the bag." },
+    { "id": "F3", "text": "Angadi was taken to Kesarnagar Town police station. He was not placed under arrest. While Head Constable Ravi Kumar was writing down the owner's complaint, Angadi said to him: \"I took them because I had no money for my son's school fees.\" The head constable wrote the words in a note (exhibit P-1)." },
+    { "id": "F4", "text": "Angadi has no previous conviction. He was allowed to go home the same evening, came to the police station each time he was asked, and appeared before the Judicial Magistrate First Class when summoned after the charge-sheet was filed." },
+    { "id": "F5", "text": "At trial the cashier and the owner gave evidence and the CCTV clip was proved. The court convicted Angadi of theft under section 303(2) BNS. It is his first conviction, and the stolen goods were restored to the owner on the day of the theft." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Head constable's note of Angadi's statement",
+      "description": "A handwritten note by Head Constable Ravi Kumar recording Angadi's words at the police station: \"I took them because I had no money for my son's school fees.\"",
+      "tenderedBy": "Prosecution",
+      "provenance": "Written by the head constable at Kesarnagar Town police station on 11 February 2025 while he was recording the store owner's complaint. Angadi was not under arrest. The goods had already been recovered by the store staff.",
+      "objection": "The defence advocate says the note records a confession made to a police officer, which cannot be proved against the accused."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Angadi appears before the Judicial Magistrate First Class on summons and offers bail under section 478 of the Bharatiya Nagarik Suraksha Sanhita. The Assistant Public Prosecutor (APP) says theft is non-bailable and asks for a local surety and weekly reporting.",
+      "submissions": {
+        "prosecution": "Theft is a non-bailable offence and he was caught red-handed. We ask for a local surety of Rs. 20,000 and weekly reporting at the police station.",
+        "defence": "The goods were worth Rs. 2,350, so the offence is bailable and he must be released on bail. He has come every time he was called."
+      },
+      "factors": [
+        { "id": "value_bailable", "text": "The First Schedule to the BNSS classifies theft where the value of the property is less than Rs. 5,000 as non-cognizable and bailable." },
+        { "id": "bail_right", "text": "Section 478(1) BNSS: a person accused of a bailable offence who appears before a court and is prepared to give bail shall be released on bail." },
+        { "id": "value", "text": "The goods were worth Rs. 2,350 and were recovered at the store exit." },
+        { "id": "ties", "text": "He has lived at the same house with his wife and two children for ten years and works as a painter." },
+        { "id": "record", "text": "No previous conviction; he came to the police station whenever asked and appeared in court on summons." },
+        { "id": "caught", "text": "He was stopped at the door by the cashier, and the prosecution case appears strong." },
+        { "id": "poverty", "text": "He told the head constable he had no money for his son's school fees." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release him on a bail bond under section 478", "quality": "sound", "feedback": "The goods were worth less than Rs. 5,000, so the First Schedule makes the offence bailable, and section 478 gives him a right to be released on bail. He has attended every time, so nothing more is needed." },
+        { "id": "bail.grant_conditions", "label": "Release him only on a local surety of Rs. 20,000 and weekly reporting at the police station", "quality": "defensible", "feedback": "Release is right, but the APP's premise is wrong: this theft is bailable. A man who has answered every call needs no heavy surety or reporting, and those terms add burden without reason." },
+        { "id": "bail.deny", "label": "Refuse bail and remand him to judicial custody", "quality": "unsound", "feedback": "In a bailable offence the court has no discretion to refuse bail to an accused who is prepared to give it. Custody here is unlawful as well as unnecessary." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Angadi on a bail bond. The goods were worth Rs. 2,350, and theft of property worth less than Rs. 5,000 is listed as bailable, so section 478 entitles him to bail. He has lived in Kesarnagar for ten years, has no conviction and has come every time he was called, so no extra terms are needed.",
+          "cites": ["value_bailable", "bail_right", "value", "ties", "record"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would release Mr Angadi, but only on a local surety and weekly reporting. Theft is non-bailable under the BNSS whatever the value of the goods, so release is a matter of discretion. Since he was caught at the door with the goods, firm terms are justified.",
+          "cites": ["value", "caught"],
+          "flawExplanation": "The First Schedule to the BNSS lists theft of property worth less than Rs. 5,000 as bailable, and the goods were worth Rs. 2,350 (F1). Section 478 therefore gives him a right to bail; the court is not exercising a discretion that would justify heavy terms."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would remand Mr Angadi to judicial custody. By his own account he has no money even for his son's school fees, and a man under that pressure is likely to steal again if he is released. A short period in custody protects shopkeepers until trial.",
+          "cites": ["poverty", "caught"],
+          "flawExplanation": "Poverty is not a ground for refusing bail, and nothing in the record suggests he will reoffend (F4). In any case the offence is bailable, so the court cannot refuse bail to an accused who is prepared to give it."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the head constable's note",
+      "prompt": "The APP tenders exhibit P-1, the head constable's note of what Angadi said at the police station. The defence objects that it is a confession to a police officer.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "He was not arrested and nobody pressured him. He spoke freely while the complaint was being written, so the note should be admitted.",
+        "defence": "It is a confession made to a head constable. Section 23 of the Sakshya Adhiniyam says it cannot be proved against him, custody or no custody."
+      },
+      "factors": [
+        { "id": "to_police", "text": "The words were spoken to Head Constable Ravi Kumar at the police station." },
+        { "id": "s23_rule", "text": "Section 23(1) BSA: no confession made to a police officer shall be proved as against a person accused of any offence. Section 23(2) separately bars confessions made in police custody unless made in the immediate presence of a Magistrate." },
+        { "id": "voluntary", "text": "Angadi was not under arrest, and nothing suggests he was pressured or promised anything." },
+        { "id": "not_discovery", "text": "The goods had already been taken out of his bag by the store staff before the police arrived; nothing was discovered because of what he said." },
+        { "id": "discovery_proviso", "text": "The proviso to section 23(2) BSA allows proof of so much of the information given by an accused in police custody as relates distinctly to a fact discovered in consequence of it." },
+        { "id": "other_evidence", "text": "The cashier's evidence, the recovery at the door and the CCTV clip do not depend on the note." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the note", "quality": "unsound", "feedback": "Section 23(1) BSA bars proof of any confession made to a police officer. Voluntariness and the absence of arrest do not lift the bar." },
+        { "id": "evidence.admit_limited", "label": "Admit the note only so far as it relates to the recovery of the goods", "quality": "unsound", "feedback": "The discovery proviso needs a fact discovered in consequence of information from an accused in police custody. The goods were recovered by store staff before the police arrived, so nothing was discovered from his words." },
+        { "id": "evidence.exclude", "label": "Exclude the note", "quality": "sound", "feedback": "The words were a confession to a head constable, and section 23(1) BSA forbids proving it against him. The prosecution can still rely on the cashier, the recovery and the CCTV." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the note. Mr Angadi made the statement to a head constable, and the law does not allow a confession to a police officer to be proved against the accused, whether or not he was in custody. The prosecution still has the cashier, the recovery and the CCTV clip.",
+          "cites": ["to_police", "s23_rule", "other_evidence"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the note. The bar on confessions applies to statements made in police custody, and Mr Angadi was never arrested. He spoke freely while the complaint was being written, so the note can be proved.",
+          "cites": ["to_police", "voluntary"],
+          "flawExplanation": "Section 23(1) BSA bars proof of any confession made to a police officer, in custody or not; custody matters only under section 23(2). A free statement to a head constable (F3) is still caught by section 23(1)."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the note in part. Mr Angadi's statement led the police to recover the power bank and the earphones, so the part of it that relates to that recovery falls within the discovery proviso. The rest of the note should be kept out.",
+          "cites": ["not_discovery", "discovery_proviso"],
+          "flawExplanation": "The store staff took the goods out of his bag before the police arrived (F2), so nothing was discovered because of his words. He was also not in police custody (F3), which the proviso requires."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Angadi has been convicted of theft under section 303(2) BNS (imprisonment up to three years, or fine, or both). It is his first conviction, and the goods, worth Rs. 2,350, were restored to the owner.",
+      "submissions": {
+        "prosecution": "Shoplifting on MG Road has risen this year. He hid the goods in his bag and made the cashier come to court. A short jail term is needed to deter others.",
+        "defence": "This is his first conviction, the goods were worth under Rs. 5,000 and were given back that day. The proviso to section 303(2) requires community service."
+      },
+      "factors": [
+        { "id": "proviso", "text": "The proviso to section 303(2) BNS: where the stolen property is worth less than Rs. 5,000 and a person is convicted for the first time, he shall, upon return of the value of the property or restoration of the stolen property, be punished with community service." },
+        { "id": "cs_punishment", "text": "Section 4(f) BNS lists community service as one of the punishments under the Sanhita." },
+        { "id": "first_conviction", "text": "This is his first conviction." },
+        { "id": "restored", "text": "The goods, worth Rs. 2,350, were restored to the owner undamaged on the day of the theft." },
+        { "id": "concealment", "text": "He hid the goods in his bag and walked past the billing counter." },
+        { "id": "deterrence", "text": "The APP says shoplifting at MG Road stores has risen this year." },
+        { "id": "contested", "text": "He pleaded not guilty, and the cashier and the owner had to give evidence." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Community service under the proviso to section 303(2), for a period the court fixes", "quality": "sound", "feedback": "All three conditions of the proviso are met: property worth under Rs. 5,000, a first conviction, and the goods restored. The proviso says such a person shall be punished with community service." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for one month", "quality": "unsound", "feedback": "The proviso to section 303(2) prescribes community service on these facts. A jail term, however short, departs from it." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for one year and a fine", "quality": "unsound", "feedback": "A year in prison for a first, petty, fully restored theft ignores the proviso and is out of all proportion. Contesting the charge is not a reason to increase sentence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "high",
+          "rationale": "I would order community service. This is Mr Angadi's first conviction, the goods were worth Rs. 2,350, and they were restored to the owner the same day, which is exactly the case the proviso to section 303(2) covers. The Sanhita now recognises community service as a punishment, and the proviso makes it the required one here.",
+          "cites": ["proviso", "cs_punishment", "first_conviction", "restored"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for one month. Mr Angadi deliberately hid the goods in his bag and walked past the counter, and shoplifting on MG Road is rising. A short jail term marks the offence without being harsh.",
+          "cites": ["concealment", "deterrence", "first_conviction"],
+          "flawExplanation": "The advice ignores the proviso to section 303(2) BNS. The property was worth under Rs. 5,000, this is a first conviction and the goods were restored (F1, F2, F5), so the law requires community service, not imprisonment."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for one year with a fine. Mr Angadi was caught on camera, yet he denied the charge and made the cashier and the owner come to court. Someone who forces a full trial in so clear a case has shown no remorse and should not get the benefit of leniency.",
+          "cites": ["contested", "concealment"],
+          "flawExplanation": "Pleading not guilty is the accused's right and is never a reason to increase sentence. On these facts (F5) the proviso to section 303(2) BNS requires community service."
+        }
+      ]
+    }
+  ]
+}

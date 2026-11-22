@@ -1,0 +1,183 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-santosh-talwar",
+  "title": "State v. Santosh Talwar",
+  "summary": "A quarrel over the queue at an auto-rickshaw stand ended with one blow of an iron tyre lever, and the man struck died three days later. Charged with murder, the accused was convicted of culpable homicide under the sudden-fight exception.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Santosh Talwar",
+    "age": 29,
+    "background": "Auto-rickshaw driver in Gandhi Chowk, Kesarnagar, who supports his elderly parents."
+  },
+  "charges": [
+    "Murder (section 103(1), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 22:30 on 14 November 2024, at the Kesarnagar bus stand auto-rickshaw queue, Talwar and another driver, Ramesh Hegde, 35, argued over who was next in line. Two other drivers say the argument lasted a few minutes and that Hegde slapped Talwar." },
+    { "id": "F2", "text": "Talwar picked up an iron tyre lever lying beside his auto-rickshaw and struck Hegde once on the head. He did not strike again. He ran from the stand, but surrendered at Kesarnagar Town police station at 08:00 the next morning." },
+    { "id": "F3", "text": "Hegde was taken to the District Hospital. At 23:40 the Executive Magistrate recorded his statement in question-and-answer form. The Magistrate first asked questions to satisfy himself that Hegde was conscious and coherent and recorded that satisfaction. There is no separate endorsement by a doctor on the statement, but the duty doctor later testified that Hegde was conscious and oriented at that time." },
+    { "id": "F4", "text": "In the statement Hegde said: \"We argued about the queue. I slapped him. He picked up the lever and hit me once.\" Hegde died on 17 November 2024. The post-mortem found a single skull fracture as the cause of death." },
+    { "id": "F5", "text": "The charge-sheet under section 103(1) BNS was filed in January 2025. By the bail hearing on 20 October 2025 Talwar had spent eleven months in custody, and the two drivers who saw the incident had already given evidence at trial. Fourteen of eighteen prosecution witnesses remain." },
+    { "id": "F6", "text": "Talwar has no previous convictions. Hegde was a well-known office-bearer of the auto drivers' union." },
+    { "id": "F7", "text": "At trial the court held that the act was done without premeditation in a sudden fight upon a sudden quarrel, without undue advantage or cruelty, and convicted Talwar under the first part of section 105 BNS rather than section 103(1). At the hearing on sentence he expressed remorse." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Dying declaration of Ramesh Hegde recorded by the Executive Magistrate",
+      "description": "A two-page statement in question-and-answer form recorded at the District Hospital at 23:40 on 14 November 2024, with the Magistrate's note that Hegde was conscious and answering coherently.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by the Executive Magistrate at the bedside after preliminary questions to test Hegde's state of mind. No doctor endorsed the statement, but the duty doctor has testified that Hegde was conscious and oriented at that time.",
+      "objection": "The defence advocate says a dying declaration without a doctor's certificate of fitness cannot be admitted or relied on."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Talwar applies to the Court of Session, Kesarnagar, for regular bail under section 483 BNSS. He has spent eleven months in custody, and the two eyewitnesses have been examined. The Public Prosecutor opposes bail.",
+      "submissions": {
+        "prosecution": "This is a charge of murder punishable with death. A man died from a blow with an iron lever, and the accused ran from the scene.",
+        "defence": "One blow in a sudden quarrel that the deceased began by slapping him. He surrendered the next morning, the eyewitnesses have testified, and he has spent eleven months in jail."
+      },
+      "factors": [
+        { "id": "sessions_power", "text": "Section 483 BNSS empowers the Court of Session to grant bail in any case, including offences punishable with death or imprisonment for life, after notice to the Public Prosecutor." },
+        { "id": "s480_limit", "text": "Section 480(1)(i) BNSS, which forbids release where there are reasonable grounds for believing the accused guilty of an offence punishable with death or life imprisonment, applies to courts other than the High Court or the Court of Session." },
+        { "id": "prima_facie_nature", "text": "On the record, a single blow struck in a sudden quarrel after the deceased slapped him, which prima facie brings the sudden-fight exception into play." },
+        { "id": "surrender_conduct", "text": "He ran from the stand but surrendered at the police station at 08:00 the next morning." },
+        { "id": "witnesses_examined", "text": "The two drivers who saw the incident have already given evidence, so the main risk of influencing witnesses has passed." },
+        { "id": "custody_length", "text": "Eleven months in custody, with fourteen of eighteen prosecution witnesses still to be examined." },
+        { "id": "offence_gravity", "text": "A man has died, and the charge is murder, punishable with death or imprisonment for life." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond", "quality": "defensible", "feedback": "Bail is justified, but in a homicide case with remaining witnesses a bare bond is lighter than the record supports. Sureties and reporting are the usual safeguards." },
+        { "id": "bail.grant_conditions", "label": "Release on a bond with two sureties, weekly reporting at Kesarnagar Town police station, and no contact with the prosecution witnesses", "quality": "sound", "feedback": "The Court of Session has power to bail in a capital charge. A single blow in a sudden quarrel, surrender, the eyewitnesses already examined and eleven months in custody all favour release, and conditions manage what risk remains." },
+        { "id": "bail.deny", "label": "Refuse bail", "quality": "defensible", "feedback": "The gravity of a death is a real consideration, so refusal is not irrational. But it ignores the prima facie sudden-fight character, the surrender, the completed eyewitness evidence and the long custody." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on conditions. This court has power to grant bail even on a murder charge, and the record shows a single blow in a sudden quarrel that Mr Hegde began with a slap. Mr Talwar surrendered the next morning, the eyewitnesses have already testified, and he has spent eleven months in custody. Sureties, weekly reporting and a no-contact direction meet the remaining risk.",
+          "cites": ["sessions_power", "prima_facie_nature", "surrender_conduct", "witnesses_examined", "custody_length"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Section 480 BNSS forbids release where there are reasonable grounds for believing the accused guilty of an offence punishable with death or life imprisonment. Mr Talwar admittedly struck the fatal blow, so those grounds plainly exist on a charge under section 103.",
+          "cites": ["s480_limit", "offence_gravity"],
+          "flawExplanation": "The restriction in section 480(1)(i) does not bind the Court of Session. Section 483 BNSS gives this court power to grant bail in any case, so the advice applies a bar that does not exist here."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail. A man has died from a blow with an iron lever, and Mr Talwar ran from the stand rather than help him. That conduct suggests he may not stay to face a trial on a charge carrying a life sentence.",
+          "cites": ["offence_gravity", "surrender_conduct"],
+          "flawExplanation": "The advice leaves out that he surrendered at the police station the next morning (F2) and that the eyewitnesses have already testified (F5). His conduct after the blow points away from flight, not toward it."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the dying declaration",
+      "prompt": "The Public Prosecutor tenders exhibit P-1, Hegde's statement recorded by the Executive Magistrate. The defence objects that no doctor certified Hegde fit to make it.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "The Magistrate tested his state of mind before recording a word, and the duty doctor has told the court he was conscious and oriented. A doctor's endorsement is not a condition of admissibility.",
+        "defence": "Without a doctor's certificate on the document there is no proof he was fit to speak. The statement must be excluded."
+      },
+      "factors": [
+        { "id": "dd_rule", "text": "Section 26(a) BSA: a statement by a person as to the cause of his death, or the circumstances of the transaction that resulted in his death, is relevant where the cause of death is in question." },
+        { "id": "laxman_rule", "text": "A doctor's certificate of fitness is a rule of caution, not a requirement. What is required is that the person recording the declaration is satisfied the declarant was in a fit state of mind (Laxman v. State of Maharashtra, Constitution Bench, 2002)." },
+        { "id": "magistrate_check", "text": "The Executive Magistrate asked preliminary questions, recorded his satisfaction that Hegde was conscious and coherent, and recorded the statement in question-and-answer form." },
+        { "id": "doctor_evidence", "text": "The duty doctor testified that Hegde was conscious and oriented at 23:40." },
+        { "id": "sole_basis", "text": "A dying declaration found true and voluntary can be acted on without corroboration; corroboration is a rule of prudence, not of law." },
+        { "id": "no_endorsement", "text": "No doctor endorsed the statement itself." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the dying declaration; its weight to be assessed with the rest of the evidence", "quality": "sound", "feedback": "It is relevant under section 26(a) BSA, the Magistrate satisfied himself of Hegde's fitness, and the doctor's evidence supports it. A missing endorsement goes at most to caution." },
+        { "id": "evidence.admit_limited", "label": "Admit it, but rule that it cannot be acted on without independent corroboration", "quality": "defensible", "feedback": "Admission is right, but there is no rule of law that a dying declaration needs corroboration. Seeking corroboration is a matter of prudence that depends on the declaration's quality, which here is high." },
+        { "id": "evidence.exclude", "label": "Exclude the dying declaration", "quality": "unsound", "feedback": "Treats the doctor's certificate as a condition of admissibility, which the Constitution Bench in Laxman rejected." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the dying declaration. A statement about the cause of death is relevant, and the law requires that the person recording it be satisfied of the declarant's fitness, not that a doctor endorse it. The Magistrate tested Mr Hegde's state of mind and recorded his satisfaction, and the duty doctor has confirmed he was conscious and oriented.",
+          "cites": ["dd_rule", "laxman_rule", "magistrate_check", "doctor_evidence"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the statement. A dying declaration can be admitted only when a doctor has certified on it that the declarant was fit to make a statement, because that certificate is the only reliable guarantee of a sound mind. No doctor endorsed this statement, and evidence given a year later cannot cure the omission.",
+          "cites": ["no_endorsement", "dd_rule"],
+          "flawExplanation": "The Constitution Bench in Laxman (2002) held that a doctor's certification is a rule of caution and fitness can be proved otherwise. Here the Magistrate's own check (F3) and the doctor's testimony prove it."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the statement but not act on it without independent corroboration. The Magistrate's note records that Mr Hegde was drifting in and out of consciousness while he answered, so the court should be cautious about relying on it alone. The eyewitness drivers can supply the corroboration.",
+          "cites": ["magistrate_check", "sole_basis"],
+          "flawExplanation": "The Magistrate recorded that Hegde was conscious and coherent, and the doctor confirmed he was conscious and oriented (F3). Nothing in the record suggests he drifted in and out, so there is no reason to treat the declaration as needing corroboration."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Talwar has been convicted under the first part of section 105 BNS: culpable homicide not amounting to murder, under the sudden-fight exception. The offence carries imprisonment for life, or imprisonment of either description for not less than five and up to ten years, and a fine.",
+      "submissions": {
+        "prosecution": "A man lost his life and a family lost its earner. We ask for imprisonment for life.",
+        "defence": "One blow, struck after he was slapped, by a first offender who surrendered and is remorseful. We ask for probation or the minimum term."
+      },
+      "factors": [
+        { "id": "s105_range", "text": "Section 105 BNS, first part: imprisonment for life, or imprisonment of either description for not less than five years and up to ten years, and a fine." },
+        { "id": "probation_bar", "text": "Section 4 of the Probation of Offenders Act, 1958 and section 401 BNSS apply only to offences not punishable with death or imprisonment for life, so probation is not available for section 105." },
+        { "id": "offence_circumstances", "text": "A single blow with a lever that happened to be at hand, in a sudden quarrel that the deceased escalated by slapping him." },
+        { "id": "post_offence_conduct", "text": "Surrendered the next morning, no previous convictions, supports elderly parents, and remorseful." },
+        { "id": "custody_setoff", "text": "Section 468 BNSS: the time spent in custody before conviction is set off against the term." },
+        { "id": "victim_status", "text": "The deceased was a well-known office-bearer of the auto drivers' union." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct", "quality": "unsound", "feedback": "Section 105 is punishable with imprisonment for life, so neither the Probation of Offenders Act nor section 401 BNSS applies." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for six years and a fine of Rs. 25,000, with the time already spent in custody set off", "quality": "sound", "feedback": "Just above the five-year minimum: a death was caused, but by a single blow in a sudden quarrel the deceased escalated, from a first offender who surrendered and is remorseful." },
+        { "id": "sentence.custodial_upper", "label": "Imprisonment for life", "quality": "unsound", "feedback": "Life imprisonment suits the gravest culpable homicide. A single unplanned blow after provocation, by a remorseful first offender, belongs near the bottom of the term range." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for six years and a fine of Rs. 25,000, setting off the time already served. Probation is not available because the offence is punishable with life imprisonment, and five years is the minimum term. One blow with a lever that was at hand, after Mr Hegde slapped him, from a first offender who surrendered and is remorseful, places this just above that minimum.",
+          "cites": ["s105_range", "probation_bar", "offence_circumstances", "post_offence_conduct", "custody_setoff"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose imprisonment for life. Where an act done with the intention of causing injury likely to cause death actually results in death, the law treats life imprisonment as the minimum, and the sudden-fight exception only removes the death penalty. Mr Talwar's remorse cannot take the sentence below that floor.",
+          "cites": ["s105_range", "offence_circumstances"],
+          "flawExplanation": "That is the rule for murder under section 103. Section 105 gives the court a choice between life and a term of five to ten years, so life is the maximum, not the minimum."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose imprisonment for life. Mr Hegde was a well-known union office-bearer whose death has shaken the drivers at the stand, and the sentence must reflect the standing of the man who was lost. A term of years would not do that.",
+          "cites": ["victim_status", "s105_range"],
+          "flawExplanation": "The social standing of the deceased is not a sentencing consideration; every life counts equally. The advice ignores the single blow, the provocation and the surrender (F1, F2), which point to the lower end of the range."
+        }
+      ]
+    }
+  ]
+}

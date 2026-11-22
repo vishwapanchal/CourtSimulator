@@ -1,0 +1,184 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-ramesh-gaonkar",
+  "title": "State v. Ramesh Gaonkar",
+  "summary": "A drunk truck driver from Goa shouted at passengers at Kesarnagar New Bus Stand and slapped a tea vendor, then wrote an apology for the bus-stand controller before the police arrived.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching. Not legal advice.",
+  "defendant": {
+    "name": "Ramesh Gaonkar",
+    "age": 38,
+    "background": "A long-distance truck driver from Margao, Goa, who was passing through Kesarnagar and knows no one in the district."
+  },
+  "charges": [
+    "Misconduct in public by a drunken person (section 355, Bharatiya Nyaya Sanhita, 2023)",
+    "Voluntarily causing hurt (section 115(2), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At about 22:30 on 14 September 2025 Gaonkar, visibly drunk, walked through Kesarnagar New Bus Stand shouting abuse at waiting passengers. He knocked two glass jars off the counter of a tea stall run by Iqbal Sayyed, and when Iqbal protested, slapped him. Iqbal's cheek was swollen; there was no other injury." },
+    { "id": "F2", "text": "Suresh Kamath, the bus-stand controller employed by Kesarnagar City Transport, took Gaonkar to his cabin. Gaonkar calmed down, said he wanted to apologise, and asked for paper. Kamath made no promise or threat. Gaonkar wrote and signed a note (exhibit P-1), and Kamath countersigned it." },
+    { "id": "F3", "text": "The police, called earlier by Iqbal, arrived about twenty minutes after the note was written and took Gaonkar to the police station. A medical examination that night recorded that he had consumed alcohol." },
+    { "id": "F4", "text": "On 15 September the Judicial Magistrate First Class released him on bail on a bond with one local surety of Rs. 10,000. He could not find a surety in Kesarnagar and has been in judicial custody for nine days. The police have verified his Margao address through Margao police, and his employer has written confirming his job." },
+    { "id": "F5", "text": "At trial Iqbal, two passengers and Kamath gave evidence. The court convicted Gaonkar on both charges. He has no previous conviction, apologised again in court and offered to pay Rs. 1,600 for the jars." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Gaonkar's handwritten apology note",
+      "description": "A note on a page from the controller's register reading: \"I, Ramesh Gaonkar, had too much to drink and slapped the tea seller. I am sorry and will pay for his jars.\" Signed by Gaonkar and countersigned by the controller.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Written by Gaonkar in the bus-stand controller's cabin at about 22:40 on 14 September 2025, before the police arrived. The controller kept the page and handed it to the IO the next morning under a seizure memo.",
+      "objection": "The defence advocate says the note is a confession written while the accused was drunk, and the controller is a transport official, so like a confession to the police it cannot be proved."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Application to be released without a surety",
+      "prompt": "Gaonkar has been in custody for nine days because he cannot find a local surety. He applies to the Judicial Magistrate First Class to be released on his own bond under section 478 of the Bharatiya Nagarik Suraksha Sanhita.",
+      "submissions": {
+        "prosecution": "He is from Goa and has no roots here. Without a local surety, nothing will bring him back. The surety requirement should stay.",
+        "defence": "Both offences are bailable. He has been inside nine days only because he knows no one here. His address and job are verified. He must be released on his own bond."
+      },
+      "factors": [
+        { "id": "bailable", "text": "The First Schedule to the BNSS classifies both section 355 and section 115(2) BNS as non-cognizable and bailable." },
+        { "id": "bail_right", "text": "Section 478(1) BNSS: a person accused of a bailable offence who is prepared to give bail shall be released on bail." },
+        { "id": "indigent_proviso", "text": "The proviso to section 478(1) BNSS: if the person is indigent and unable to furnish a surety, the court shall release him on his own bond; under its Explanation, inability to give bail within a week of arrest is sufficient ground to presume he is indigent." },
+        { "id": "custody_period", "text": "He has been in custody for nine days because he cannot find a local surety." },
+        { "id": "verified", "text": "His Margao address has been verified through Margao police, and his employer has confirmed his job." },
+        { "id": "outsider", "text": "He lives in Goa and has no family or friends in Kesarnagar." },
+        { "id": "licence", "text": "He earns his living driving a truck." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release him on his own bond without a surety", "quality": "sound", "feedback": "The offences are bailable, and having been unable to find a surety for over a week he is presumed indigent. The proviso then requires release on his own bond, and his verified address and job answer the APP's concern." },
+        { "id": "bail.grant_conditions", "label": "Release him on his own bond, but order him to surrender his driving licence until the trial ends", "quality": "defensible", "feedback": "Release on his own bond is right. Taking his licence takes his livelihood for a bailable offence and goes well beyond what is needed to secure his attendance." },
+        { "id": "bail.deny", "label": "Keep the local-surety requirement; he stays in custody until he finds one", "quality": "unsound", "feedback": "This keeps a man in jail for nine days and counting in a bailable case only because he is poor and far from home. The proviso to section 478(1) forbids exactly that." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Gaonkar on his own bond. Both offences are bailable, and he has been in custody for nine days only because he cannot find a local surety, so the law presumes him indigent and requires his release without one. His Goa address and his job have been verified, which meets the worry that he will not return.",
+          "cites": ["bail_right", "indigent_proviso", "custody_period", "verified"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would keep the surety requirement in place. Mr Gaonkar lives in another State and has no ties to Kesarnagar, so a local surety is the only real assurance that he will come back for trial. The offences are bailable, and the court has already granted bail; it is for him to furnish the surety.",
+          "cites": ["outsider", "bailable", "bail_right"],
+          "flawExplanation": "The advice ignores the proviso to section 478(1) BNSS. He has been unable to give bail for more than a week (F4), so he is presumed indigent, and the court must release him on his own bond."
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would release Mr Gaonkar on his own bond, but order him to surrender his driving licence. When granting bail the court must impose conditions under section 480(3) to secure attendance, and holding his licence is the surest way to bring back a driver from another State.",
+          "cites": ["outsider", "licence", "bail_right"],
+          "flawExplanation": "Section 480(3) applies to bail in non-bailable offences punishable with seven years or more and certain chapters. These offences are bailable (F4), so section 478 governs, and nothing in it calls for taking away his livelihood."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the apology note",
+      "prompt": "The APP tenders exhibit P-1, the note Gaonkar wrote in the bus-stand controller's cabin. The defence objects that it is a confession made while drunk, to an official, and cannot be proved.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "He wrote it himself, before the police arrived, to a transport employee who promised him nothing. Being drunk goes to weight, not admissibility.",
+        "defence": "He was drunk and did not know what he was writing. A confession to an official is no different from one to the police. It must be excluded."
+      },
+      "factors": [
+        { "id": "not_police", "text": "The note was written to the bus-stand controller, a transport corporation employee, not a police officer, before the police arrived." },
+        { "id": "s23_rule", "text": "Section 23 BSA bars confessions made to a police officer, or made in police custody unless in the immediate presence of a Magistrate." },
+        { "id": "s22_rule", "text": "Section 22 BSA: a confession is irrelevant if it appears to have been caused by an inducement, threat, coercion or promise from a person in authority, relating to the charge." },
+        { "id": "drunk_proviso", "text": "The second proviso to section 22 BSA: an otherwise relevant confession does not become irrelevant merely because it was made when the accused was drunk." },
+        { "id": "no_inducement", "text": "The controller made no promise or threat; Gaonkar asked for paper because he wanted to apologise." },
+        { "id": "weight", "text": "His intoxication may affect how much weight the note deserves, alongside the evidence of Iqbal, two passengers and the controller." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the note; its weight to be assessed with the other evidence", "quality": "sound", "feedback": "Section 23 does not reach a statement to a transport employee, no inducement was offered, and the BSA says drunkenness alone does not make a confession irrelevant. His condition goes to weight." },
+        { "id": "evidence.admit_limited", "label": "Admit only the offer to pay for the jars, not the words about drinking and slapping", "quality": "unsound", "feedback": "There is no basis for splitting the note. Either a bar applies to the confession or it does not, and none applies here." },
+        { "id": "evidence.exclude", "label": "Exclude the note", "quality": "unsound", "feedback": "Exclusion misapplies section 23, which is limited to police officers and police custody, and ignores the proviso to section 22 on confessions made while drunk." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the note. Mr Gaonkar wrote it for the bus-stand controller before the police arrived, so the bar on confessions to the police does not apply, and the controller offered him nothing. The law says a confession does not become irrelevant merely because the maker was drunk; his condition is a matter of weight for the court.",
+          "cites": ["not_police", "s23_rule", "no_inducement", "drunk_proviso", "weight"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the note. A confession made while the accused is intoxicated is irrelevant, because a drunk man cannot make a free and informed choice to confess. The medical examination confirms he had been drinking when he wrote it.",
+          "cites": ["s22_rule", "weight"],
+          "flawExplanation": "The second proviso to section 22 BSA says the opposite: an otherwise relevant confession does not become irrelevant merely because it was made when the accused was drunk. Intoxication goes to weight, not admissibility."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the note. Mr Gaonkar wrote it after the police had arrived and taken charge of him, so it is a confession made in police custody, and no Magistrate was present. It cannot be proved against him.",
+          "cites": ["not_police", "s23_rule"],
+          "flawExplanation": "The note was written in the controller's cabin about twenty minutes before the police arrived (F2, F3). He was not in police custody, so section 23 does not apply."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Gaonkar has been convicted under section 355 BNS (simple imprisonment up to 24 hours, or fine up to Rs. 1,000, or both, or community service) and section 115(2) BNS (imprisonment up to one year, or fine up to Rs. 10,000, or both).",
+      "submissions": {
+        "prosecution": "Drivers passing through cause trouble at the bus stand every week. A jail term will send a message to them.",
+        "defence": "He is a first offender who has already spent nine days in jail. He apologised at the scene and in court and will pay for the jars."
+      },
+      "factors": [
+        { "id": "s355_range", "text": "Section 355 BNS: simple imprisonment up to 24 hours, or fine up to Rs. 1,000, or both, or community service." },
+        { "id": "s115_range", "text": "Section 115(2) BNS: imprisonment up to one year, or fine up to Rs. 10,000, or both." },
+        { "id": "first_offender", "text": "No previous conviction." },
+        { "id": "minor_injury", "text": "A slap that left a swollen cheek, with no other injury." },
+        { "id": "remorse", "text": "He apologised at the scene and in court, and offered Rs. 1,600 for the jars." },
+        { "id": "custody_served", "text": "He has already spent nine days in custody because he could not find a local surety." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows the court to apply part of a fine to compensate the person injured." },
+        { "id": "outsiders", "text": "The APP says drivers from other States cause trouble at the bus stand." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Fine of Rs. 1,000 under section 355 and Rs. 5,000 under section 115(2), with Rs. 4,000 paid to Iqbal as compensation", "quality": "sound", "feedback": "A first offender, a minor injury, prompt remorse and nine days already spent in custody. Fines with compensation to the vendor are proportionate." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for one month under section 115(2) and a fine", "quality": "defensible", "feedback": "Within the range, but he has already spent nine days in custody, and a further month adds little for a first offender who slapped once and apologised." },
+        { "id": "sentence.custodial_upper", "label": "Simple imprisonment for one year under section 115(2), the maximum", "quality": "unsound", "feedback": "The maximum for a single slap by a remorseful first offender is grossly disproportionate, and where he comes from is not a sentencing factor." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would impose fines of Rs. 1,000 and Rs. 5,000 on the two charges, and order Rs. 4,000 of them paid to Mr Sayyed. Mr Gaonkar has no conviction, the slap caused only swelling, and he apologised at once. He has also already spent nine days in custody, which is more than enough loss of liberty for this offence.",
+          "cites": ["s355_range", "s115_range", "first_offender", "minor_injury", "remorse", "custody_served", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for one month with a fine. Mr Gaonkar frightened passengers and struck a vendor at his own stall, and a fine alone would not mark that. One month is at the low end of the range for simple hurt.",
+          "cites": ["s115_range", "minor_injury", "first_offender"],
+          "flawExplanation": "The advice ignores that he has already spent nine days in custody only because he could not find a local surety (F4). With that, a first offence and prompt remorse, further jail time is not needed."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose the maximum of one year's simple imprisonment for the hurt. Drivers from other States regularly cause trouble at the bus stand, and a firm sentence on Mr Gaonkar will show them the court takes it seriously.",
+          "cites": ["outsiders", "s115_range"],
+          "flawExplanation": "An offender's home State is irrelevant, and he cannot be punished for the conduct of other drivers. On a single slap by a remorseful first offender (F1, F5), the maximum is grossly excessive."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-prakash-shetty",
+  "title": "State v. Prakash Shetty",
+  "summary": "A shopkeeper is accused of sexually assaulting a neighbour's daughter in the back room of his shop. The child's age is disputed: her school's date-of-birth certificate says 15, and the defence relies on a bone-age estimate.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Protection of Children from Sexual Offences Act, 2012 and the Juvenile Justice (Care and Protection of Children) Act, 2015. Not legal advice.",
+  "defendant": {
+    "name": "Prakash Shetty",
+    "age": 31,
+    "background": "Runs a provision shop in Basavanagudi lane, Kesarnagar, and lives with his wife and infant son."
+  },
+  "charges": [
+    "Sexual assault on a child (sections 7 and 8, Protection of Children from Sexual Offences Act, 2012)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "On 6 January 2025 the child, referred to in these proceedings as X, went to Shetty's shop to buy groceries. She says that he called her into the back room and committed an act amounting to sexual assault as defined in section 7 of the POCSO Act. She told her mother that evening, and the FIR was registered the next morning." },
+    { "id": "F2", "text": "X's statement was recorded by a Magistrate under section 183 BNSS on 9 January 2025 and is consistent with what she told her mother. Shetty was arrested on 8 January 2025 and the charge-sheet was filed on 2 March 2025." },
+    { "id": "F3", "text": "Shetty's shop is about 50 metres from X's home in the same lane. On 20 January 2025 X's mother told the police that Shetty's wife had come to their house and offered Rs. 50,000 if the complaint was withdrawn." },
+    { "id": "F4", "text": "The Headmistress of the Government Higher Primary School, Basavanagudi, the first school X attended, issued a date-of-birth certificate from the school's admission register giving her date of birth as 12 August 2009, which made her 15 years and nearly 5 months old on 6 January 2025. The entry was made at admission in June 2015 on her father's declaration. No municipal birth certificate was ever registered." },
+    { "id": "F5", "text": "The IO also had a radiologist estimate X's age from X-rays. The radiologist's report puts her bone age between 16 and 18 years." },
+    { "id": "F6", "text": "Shetty has no previous convictions. When his bail application was heard on 10 June 2025 he had spent five months in custody, and X had not yet given evidence." },
+    { "id": "F7", "text": "At trial X gave evidence through a support person and was cross-examined at length. Shetty was convicted under section 8 of the POCSO Act. No case was brought against his wife." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-3",
+      "title": "School date-of-birth certificate and extract of the admission register",
+      "description": "A certificate signed by the Headmistress of the Government Higher Primary School, Basavanagudi, giving X's date of birth as 12 August 2009, with a certified extract of the 2015 admission register entry.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Issued from the admission register of the first school X attended. The Headmistress produced the original register in court and was cross-examined. The entry was made in June 2015 on the father's declaration at admission.",
+      "objection": "The defence advocate says the entry rests only on the father's word, and the radiologist's bone-age estimate of 16 to 18 years, with the usual two-year margin of error, shows X may have been an adult. The school record should not be relied on."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Shetty applies to the Special Court (POCSO), Kesarnagar, for regular bail. He has spent five months in custody; the charge-sheet has been filed but X has not yet testified. The Special Public Prosecutor opposes bail.",
+      "submissions": {
+        "prosecution": "Section 29 makes the court presume he committed the offence, so he cannot have bail unless he rebuts it. He lives 50 metres from the child, and his wife has already offered the family money.",
+        "defence": "The POCSO Act does not restrict bail. The charge-sheet is filed, he has no record, and five months is long for an offence capped at five years. Any concern can be met by conditions."
+      },
+      "factors": [
+        { "id": "s29_presumption", "text": "Section 29 POCSO directs the Special Court to presume that a person prosecuted under section 7 committed the offence unless the contrary is proved. It is a rule of proof at trial; the Act contains no provision restricting the grant of bail." },
+        { "id": "proximity_risk", "text": "His shop is about 50 metres from X's home in the same lane, and X has not yet given evidence." },
+        { "id": "inducement_offer", "text": "X's mother reported that Shetty's wife offered the family Rs. 50,000 to withdraw the complaint." },
+        { "id": "investigation_done", "text": "The charge-sheet has been filed and X's statement has been recorded by a Magistrate." },
+        { "id": "custody_length", "text": "Five months in custody for an offence punishable with three to five years." },
+        { "id": "clean_record", "text": "No previous convictions; lives with his wife and infant son and runs a shop." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with one surety", "quality": "unsound", "feedback": "A bare bond does nothing about the child living 50 metres away or the reported attempt to buy off her family before she testifies." },
+        { "id": "bail.grant_conditions", "label": "Release with two sureties, on conditions that he lives outside Basavanagudi until X has testified, does not enter her lane or the shop, and has no contact with X or her family directly or through anyone else", "quality": "sound", "feedback": "POCSO places no bar on bail, and the case for custody rests on the risk to the child's evidence. Residence and no-contact conditions, backed by cancellation, meet that risk directly." },
+        { "id": "bail.deny", "label": "Refuse bail until X has testified", "quality": "defensible", "feedback": "Protecting a child witness from pressure is a legitimate ground, and the inducement report is serious, so refusal is within reason. But strict residence and no-contact conditions can achieve the same protection." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would grant bail on strict conditions. The presumption in section 29 governs proof at trial, and nothing in the POCSO Act restricts bail, so ordinary principles apply. The real risk is to the child's evidence: she lives 50 metres away and her family has reported an offer of money. Requiring him to live outside the locality and forbidding any contact until she testifies meets that risk.",
+          "cites": ["s29_presumption", "proximity_risk", "inducement_offer", "investigation_done", "custody_length"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Section 29 requires this court to presume that Mr Shetty committed the offence unless he proves otherwise, and at the bail stage he has offered nothing to rebut it. Until the presumption is displaced, there are no grounds on which bail can be granted.",
+          "cites": ["s29_presumption", "proximity_risk"],
+          "flawExplanation": "Section 29 is a presumption that operates at trial, and the POCSO Act contains no bail restriction. The advice turns a rule of proof into a bar on bail, which the statute does not create."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "bail.grant",
+          "confidence": "medium",
+          "rationale": "I would release Mr Shetty on a personal bond with one surety. The charge-sheet is filed, the child's statement has been recorded before a Magistrate, and he has spent five months in custody for an offence capped at five years. He has no record and a family and business here.",
+          "cites": ["investigation_done", "custody_length", "clean_record"],
+          "flawExplanation": "The advice ignores that X lives 50 metres away and has not yet testified, and that her family reported an offer of Rs. 50,000 to withdraw (F3, F6). Those facts call for residence and no-contact conditions, not a bare bond."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Proof of the child's age",
+      "prompt": "The Special Public Prosecutor tenders exhibit P-3, the school date-of-birth certificate and the admission register extract, to prove X was under 18. The defence objects and relies on the radiologist's bone-age estimate.",
+      "exhibitId": "P-3",
+      "submissions": {
+        "prosecution": "This is the date-of-birth certificate from the first school she attended, proved by the Headmistress with the original register. The statute puts it first; a bone-age estimate comes in only when no such document exists.",
+        "defence": "The entry is only her father's word. A radiologist says 16 to 18, and with a two-year margin she may have been 20. The medical evidence is more scientific and must prevail."
+      },
+      "factors": [
+        { "id": "s94_order", "text": "Section 94(2) of the Juvenile Justice Act, 2015 sets the order of proof: (i) the date-of-birth certificate from the school, or the matriculation certificate; failing that, (ii) a birth certificate from a corporation, municipality or panchayat; and only in the absence of both, (iii) an ossification or other medical age test." },
+        { "id": "applies_to_victims", "text": "The Supreme Court has held that section 94 of the Juvenile Justice Act governs the determination of a victim's age under the POCSO Act, so the medical test is used only when the documents in (i) and (ii) are absent (P. Yuvaprakash v. State, 2023)." },
+        { "id": "document_type", "text": "P-3 is a date-of-birth certificate from the first school X attended, not a transfer certificate, and the Headmistress proved it from the original admission register." },
+        { "id": "bone_age", "text": "The radiologist's report puts X's bone age between 16 and 18 years." },
+        { "id": "father_declaration", "text": "The 2015 register entry was made on the father's declaration at admission." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the school certificate and treat it as the primary proof of age under section 94(2)(i)", "quality": "sound", "feedback": "It is the document the statute puts first, properly proved. The bone-age estimate is only for cases where no such document or birth certificate exists." },
+        { "id": "evidence.admit_limited", "label": "Admit the certificate but weigh it against the bone-age estimate, giving the accused the benefit of the margin of error", "quality": "unsound", "feedback": "Section 94(2) is a hierarchy, not a balancing exercise. Once a school date-of-birth certificate is proved, the medical estimate does not come in to displace it." },
+        { "id": "evidence.exclude", "label": "Exclude the certificate and determine age from the radiologist's report", "quality": "unsound", "feedback": "Reverses the statutory order: the medical test is the last resort, used only in the absence of the documents in (i) and (ii)." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the school certificate as the primary proof of age. It is a date-of-birth certificate from the first school X attended, proved from the original register, which is exactly the document the Juvenile Justice Act puts first. That order governs a victim's age under the POCSO Act too, so the bone-age estimate does not come into play when such a document exists.",
+          "cites": ["s94_order", "applies_to_victims", "document_type"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would decide X's age on the radiologist's report. School records rest on what parents tell the school, while bone age is an objective scientific measure, so where the two conflict the medical evidence prevails. On the report she may well have been 18 or older, and the accused is entitled to that doubt.",
+          "cites": ["bone_age", "father_declaration"],
+          "flawExplanation": "Section 94(2) of the Juvenile Justice Act, applied to POCSO victims in P. Yuvaprakash (2023), puts the school date-of-birth certificate first and allows a medical test only when no such document or birth certificate exists. Here a proper school certificate was proved (F4)."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the certificate but read it together with the bone-age report and give the accused the benefit of the margin. The document produced is a transfer certificate issued when X left school, which is not the kind of record the statute treats as conclusive, so the medical estimate must be weighed alongside it.",
+          "cites": ["document_type", "bone_age", "s94_order"],
+          "flawExplanation": "P-3 is a date-of-birth certificate from the first school X attended, proved from the original admission register (F4), not a transfer certificate. It falls squarely within section 94(2)(i), so the medical estimate has no role."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Shetty has been convicted under section 8 of the POCSO Act. The offence carries imprisonment of either description for not less than three and up to five years, and a fine.",
+      "submissions": {
+        "prosecution": "He abused a child who trusted the neighbourhood shopkeeper, and then made her relive it under cross-examination. We ask for the maximum of five years.",
+        "defence": "He is a first offender with a wife and infant son, and this was a single incident. We ask for probation, or failing that the minimum."
+      },
+      "factors": [
+        { "id": "s8_range", "text": "Section 8 POCSO: imprisonment of either description for not less than three years and up to five years, and a fine." },
+        { "id": "single_incident", "text": "A single incident, with no aggravating circumstance under section 9 alleged or proved." },
+        { "id": "breach_of_trust", "text": "The child knew him as the neighbourhood shopkeeper and came to his shop on an ordinary errand." },
+        { "id": "personal_mitigation", "text": "Aged 31, no previous convictions, with a wife and infant son." },
+        { "id": "custody_setoff", "text": "Section 468 BNSS: the time spent in custody before conviction is set off against the term." },
+        { "id": "trial_choice", "text": "He pleaded not guilty, so X had to give evidence and was cross-examined at length." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct", "quality": "unsound", "feedback": "Section 8 prescribes a minimum of three years' imprisonment, and nothing in this record makes it expedient to release an adult convicted of sexually assaulting a 15-year-old." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for three years and a fine of Rs. 20,000, with the time already spent in custody set off", "quality": "sound", "feedback": "The minimum term fits a single incident with no section 9 aggravation by a first offender. The breach of trust is real, but it is the ordinary character of the offence rather than an added aggravation." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years and a fine of Rs. 50,000", "quality": "defensible", "feedback": "Within the range, and the breach of a neighbour's trust can support more than the minimum, but the maximum is better kept for cases with clearer aggravation." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose rigorous imprisonment for three years and a fine of Rs. 20,000, setting off the time already served. Section 8 fixes three years as the minimum, so probation is not a fit sentence. This was a single incident with no section 9 aggravation, by a first offender, and the breach of a neighbour's trust is the ordinary character of this offence rather than a reason to go higher.",
+          "cites": ["s8_range", "single_incident", "breach_of_trust", "personal_mitigation", "custody_setoff"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Shetty on probation of good conduct. Section 8 sets only a maximum of five years, with no minimum term, so the court keeps its full discretion to release a first offender. This was a single incident, and he has an infant son who depends on him.",
+          "cites": ["single_incident", "personal_mitigation"],
+          "flawExplanation": "Section 8 POCSO prescribes imprisonment of not less than three years. The advice wrongly says there is no minimum and builds a non-custodial sentence on that error."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose the maximum of five years and a fine of Rs. 50,000. Mr Shetty chose to deny the offence, which forced a 15-year-old to relive it in the witness box under long cross-examination. A man who puts a child through that has forfeited any claim to the minimum.",
+          "cites": ["trial_choice", "s8_range"],
+          "flawExplanation": "An accused is entitled to plead not guilty and test the evidence; using that choice to increase the sentence penalises the right to a trial. A guilty plea can earn credit, but contesting the charge is not an aggravating factor."
+        }
+      ]
+    }
+  ]
+}

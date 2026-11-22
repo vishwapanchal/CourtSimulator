@@ -1,0 +1,181 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-joseph-varghese",
+  "title": "State v. Joseph Varghese",
+  "summary": "A lorry cleaner was arrested when 620 g of heroin was found behind the cabin seat at a toll plaza. The complaint was not filed within 180 days, and the prosecution relies on his statement to an NCB officer under section 67 of the NDPS Act.",
+  "difficulty": 3,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Narcotic Drugs and Psychotropic Substances Act, 1985. Not legal advice.",
+  "defendant": {
+    "name": "Joseph Varghese",
+    "age": 34,
+    "background": "Lorry cleaner who has worked for the same transport company for six years and lives with his wife and daughter in Kesarnagar."
+  },
+  "charges": [
+    "Possession of heroin in commercial quantity (section 21(c), Narcotic Drugs and Psychotropic Substances Act, 1985)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "At 02:10 on 2 February 2025 officers of the Narcotics Control Bureau (NCB) stopped a goods lorry at the Kesarnagar toll plaza on prior information. The driver, Mahadev, ran into the dark and has not been traced. Varghese, the cleaner, was asleep in the cabin." },
+    { "id": "F2", "text": "In the presence of two panch witnesses the officers found two packets behind the cabin seat, totalling 620 g. The State FSL confirmed heroin (diacetylmorphine). The commercial quantity for heroin is 250 g." },
+    { "id": "F3", "text": "Varghese was arrested on 2 February 2025 and remanded to judicial custody. The 180-day period under section 36A(4) of the NDPS Act expired on 1 August 2025. No complaint had been filed by then, and the Special Public Prosecutor never filed a report seeking an extension of time." },
+    { "id": "F4", "text": "On 4 August 2025, with no complaint yet filed, Varghese applied for default bail and offered to furnish bail. The application was heard on 6 August 2025, when the complaint had still not been filed." },
+    { "id": "F5", "text": "On 3 February 2025 an NCB Intelligence Officer, invested with powers under section 53 of the NDPS Act, recorded a statement from Varghese under section 67 of the NDPS Act, in which he said the driver had told him the packets were \"brown sugar\" and had promised him Rs. 20,000. Varghese signed every page. Three months later he retracted it in a letter from jail, saying he signed what he was told to sign." },
+    { "id": "F6", "text": "Varghese has no previous convictions. Nothing in the record shows weapons, minors, a link to an organised group, or any other illegal activity." },
+    { "id": "F7", "text": "At trial the court relied on the recovery from behind the cabin seat, the panch witnesses and the FSL report, and convicted Varghese under section 21(c) of the NDPS Act. During the investigation he had declined to answer the NCB officers' questions about the supplier." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-2",
+      "title": "Statement of Joseph Varghese recorded under section 67 of the NDPS Act",
+      "description": "A four-page statement recorded by an NCB Intelligence Officer on 3 February 2025, signed on each page, in which Varghese says the driver told him the packets were brown sugar and promised him Rs. 20,000.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded at the NCB zonal office the day after his arrest, while he was in NCB custody. Retracted by letter from jail three months later.",
+      "objection": "The defence advocate says the statement is a confession to an officer who is a police officer in law, and cannot be proved against him."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Application for default bail",
+      "prompt": "Varghese applies to the Special Court (NDPS), Kesarnagar, for default bail. He has been in custody since 2 February 2025, no complaint has been filed, and no extension of time was sought. The Special Public Prosecutor opposes, relying on section 37 of the NDPS Act.",
+      "submissions": {
+        "prosecution": "This is 620 g of heroin, more than twice the commercial quantity. Section 37 bars bail unless the court finds he is not guilty, and nothing before the court supports that.",
+        "defence": "The 180 days ran out on 1 August with no complaint and no extension. The right to default bail is statutory, section 37 does not touch it, and he has offered bail."
+      },
+      "factors": [
+        { "id": "period_180", "text": "Section 36A(4) NDPS: for commercial quantity, the ninety-day limit on custody during investigation is read as 180 days, extendable up to one year only on a report of the Public Prosecutor showing the progress of the investigation and specific reasons for further detention." },
+        { "id": "no_extension", "text": "No extension report was filed, the 180 days expired on 1 August 2025, and no complaint had been filed when he applied on 4 August or when the application was heard." },
+        { "id": "default_right", "text": "Under section 187(3) BNSS, once the permitted period expires without a charge-sheet or complaint, the accused shall be released on bail if he is prepared to and does furnish bail." },
+        { "id": "s37_scope", "text": "The limits in section 37 NDPS on bail for commercial quantity do not exclude default bail, which operates in a different field: the total period of custody permitted during investigation (Union of India v. Thamisharasi, 1995)." },
+        { "id": "commercial_qty", "text": "620 g of heroin, more than twice the 250 g commercial quantity." },
+        { "id": "flight_risk", "text": "The driver absconded at the toll plaza; Varghese has a family, six years with one employer and no previous convictions." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on default bail on a personal bond", "quality": "defensible", "feedback": "Default bail must be granted, but the court may still set the bond and sureties to secure attendance, and with the driver absconding a bare personal bond is thinner than it should be." },
+        { "id": "bail.grant_conditions", "label": "Release on default bail on a bond with two sureties, surrender of his passport, and weekly reporting to the NCB zonal office", "quality": "sound", "feedback": "The right accrued on 1 August and was claimed before any complaint was filed. Section 37 does not apply to it, and sureties and reporting secure his attendance." },
+        { "id": "bail.deny", "label": "Refuse bail under section 37", "quality": "unsound", "feedback": "Section 37 does not override the right to default bail. The 180 days expired without a complaint or extension, and he has offered bail." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "high",
+          "rationale": "I would release Mr Varghese on default bail with sureties, surrender of his passport and weekly reporting. For a commercial quantity the investigation had 180 days, which expired on 1 August with no complaint and no report seeking more time, and he applied and offered bail before anything was filed. The twin conditions of section 37 do not apply to default bail, so the quantity cannot defeat the right; conditions simply secure his attendance.",
+          "cites": ["period_180", "no_extension", "default_right", "s37_scope", "flight_risk"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Section 37 applies to every release on bail in a commercial-quantity case, whatever the route, and requires me to find reasonable grounds for believing he is not guilty. With 620 g of heroin found behind his seat, I cannot make that finding, so the expiry of the investigation period does not help him.",
+          "cites": ["commercial_qty", "period_180"],
+          "flawExplanation": "Section 37's limits do not exclude default bail, which concerns the permitted period of custody during investigation (Thamisharasi, 1995). The 180 days expired without a complaint or an extension (F3), so the right is enforceable."
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse default bail. In July the Special Court extended the investigation period to one year on the Public Prosecutor's report, so the time for filing the complaint has not yet run out. Until it does, no right to default bail arises, and on merits section 37 stands in the way.",
+          "cites": ["period_180", "commercial_qty"],
+          "flawExplanation": "No extension report was ever filed (F3). The 180 days expired on 1 August 2025 with no complaint, so the right to default bail accrued."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the section 67 statement",
+      "prompt": "The Special Public Prosecutor tenders exhibit P-2, Varghese's statement under section 67 of the NDPS Act, to prove that he knew what the packets contained. The defence objects.",
+      "exhibitId": "P-2",
+      "submissions": {
+        "prosecution": "NCB officers are not police. The statement was recorded under a statutory power, he signed every page, and he waited three months to retract it. It proves he knew the packets held drugs.",
+        "defence": "An officer empowered under the NDPS Act is a police officer for this purpose. A confession to him cannot be proved, and a statement under section 67 cannot be used as a confession at trial."
+      },
+      "factors": [
+        { "id": "s23_rule", "text": "Section 23(1) BSA: no confession made to a police officer shall be proved against a person accused of any offence." },
+        { "id": "tofan_rule", "text": "Officers invested with powers under section 53 of the NDPS Act are police officers for the bar on confessions, and a statement recorded under section 67 cannot be used as a confessional statement in an NDPS trial (Tofan Singh v. State of Tamil Nadu, 2020)." },
+        { "id": "ncb_officer", "text": "The statement was recorded by an NCB Intelligence Officer invested with powers under section 53, at the zonal office the day after arrest, while Varghese was in NCB custody." },
+        { "id": "signed_pages", "text": "Varghese signed each page, and the prosecution says he made no complaint of coercion until his retraction three months later." },
+        { "id": "independent_proof", "text": "Independent evidence exists: the recovery from behind the cabin seat before two panch witnesses and the FSL report." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the statement as proof of his knowledge", "quality": "unsound", "feedback": "The statement is a confession to an officer who counts as a police officer, and a section 67 statement cannot be used as a confession at trial." },
+        { "id": "evidence.admit_limited", "label": "Admit the statement only to corroborate the recovery evidence", "quality": "unsound", "feedback": "Using a barred confession as corroboration still proves it against the accused. The prosecution must rely on the recovery, the panch witnesses and the FSL report on their own." },
+        { "id": "evidence.exclude", "label": "Exclude the statement", "quality": "sound", "feedback": "Tofan Singh settles it: NDPS officers are police officers for the confession bar, and a section 67 statement cannot be used as a confession. The case rests on the independent evidence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.exclude",
+          "confidence": "high",
+          "rationale": "I would exclude the statement. It was recorded by an NCB officer while Mr Varghese was in NCB custody, and the Supreme Court has held that such officers are police officers for the bar on confessions and that a section 67 statement cannot be used as a confession at trial. Signed pages and a late retraction do not change that, and the prosecution still has the recovery and the FSL report.",
+          "cites": ["s23_rule", "tofan_rule", "ncb_officer", "independent_proof"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the statement. NCB officers are not police officers, so the bar on confessions to the police does not reach a statement recorded under section 67, which is a separate statutory power of inquiry. Mr Varghese signed every page and raised no complaint for three months, which shows the statement was voluntary.",
+          "cites": ["ncb_officer", "signed_pages"],
+          "flawExplanation": "Tofan Singh (2020) holds that officers with powers under section 53 NDPS are police officers for the confession bar, and that a section 67 statement cannot be used as a confession. Section 23(1) BSA therefore excludes it."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.admit_limited",
+          "confidence": "medium",
+          "rationale": "I would admit the statement, but only as corroboration of the recovery. The packets were found behind his seat before two panch witnesses and confirmed as heroin, and the statement fits that evidence. He signed every page and waited three months to retract, so it can safely support the independent proof.",
+          "cites": ["independent_proof", "signed_pages", "ncb_officer"],
+          "flawExplanation": "The advice ignores Tofan Singh and the section 23(1) BSA bar: the statement is a confession to an officer who counts as a police officer and cannot be proved against him for any purpose, including corroboration."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Varghese has been convicted under section 21(c) of the NDPS Act for possessing 620 g of heroin. The offence carries rigorous imprisonment of not less than ten and up to twenty years, and a fine of not less than Rs. 1,00,000 and up to Rs. 2,00,000.",
+      "submissions": {
+        "prosecution": "Six hundred grams of heroin would ruin hundreds of lives, and he refused to name the supplier. We ask for sixteen years.",
+        "defence": "He is a cleaner who was asleep in the cabin, the driver who controlled the load has fled, and he has no record. We ask for the minimum."
+      },
+      "factors": [
+        { "id": "s21c_range", "text": "Section 21(c) NDPS: rigorous imprisonment of not less than ten and up to twenty years, and a fine of not less than Rs. 1,00,000 and up to Rs. 2,00,000." },
+        { "id": "s32b_factors", "text": "Section 32B NDPS lists the factors that may justify more than the minimum: use or threat of violence or arms, abuse of public office, involving or affecting minors, offences near educational institutions, membership of an organised criminal group, and involvement in other illegal activity." },
+        { "id": "none_present", "text": "None of the section 32B factors is shown: no weapons, no minors, no link to an organised group and no other illegal activity." },
+        { "id": "minor_role", "text": "A cleaner asleep in the cabin; the driver, who absconded, controlled the lorry and the load." },
+        { "id": "probation_bar", "text": "Section 33 NDPS: probation is not available to a person convicted under the Act unless he is under eighteen or the offence is under section 26 or 27." },
+        { "id": "silence_investigation", "text": "During the investigation he declined to answer the NCB officers' questions about the supplier." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct", "quality": "unsound", "feedback": "Section 33 bars probation for an adult convicted under section 21, and the offence carries a ten-year minimum." },
+        { "id": "sentence.custodial_lower", "label": "Rigorous imprisonment for ten years and a fine of Rs. 1,00,000, in default six months' further imprisonment, with the time already spent in custody set off", "quality": "sound", "feedback": "The minimum is already severe, and none of the section 32B factors that justify going higher is present for a cleaner with no record." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for sixteen years and a fine of Rs. 2,00,000", "quality": "unsound", "feedback": "Going well above the minimum needs aggravation of the kind section 32B describes. Nothing of that kind is proved, and his role was minor." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose the minimum of ten years' rigorous imprisonment and a fine of Rs. 1,00,000, setting off the time already served. Probation is barred and ten years is the floor. The factors the Act lists for going higher, such as weapons, minors or an organised group, are all absent, and Mr Varghese was a cleaner while the driver who fled controlled the load.",
+          "cites": ["s21c_range", "probation_bar", "s32b_factors", "none_present", "minor_role"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose sixteen years' rigorous imprisonment and a fine of Rs. 2,00,000. Section 32B requires a sentence above the minimum wherever the quantity is a multiple of the commercial threshold, and 620 g is more than twice 250 g. His role as cleaner cannot take the sentence below that statutory direction.",
+          "cites": ["s32b_factors", "s21c_range"],
+          "flawExplanation": "Section 32B does not mention quantity and does not require anything. It lists factors the court may consider for going above the minimum, and none of them is present here (F6)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "medium",
+          "rationale": "I would impose sixteen years' rigorous imprisonment and a fine of Rs. 2,00,000. Mr Varghese refused to tell the officers who supplied the heroin, which shows he is protecting the trade rather than distancing himself from it. A man who stays silent to shield others deserves no leniency.",
+          "cites": ["silence_investigation", "s21c_range"],
+          "flawExplanation": "An accused has a right not to incriminate himself, and his silence during investigation (F7) cannot be treated as aggravation. Without a section 32B factor, nothing justifies going far above the minimum."
+        }
+      ]
+    }
+  ]
+}

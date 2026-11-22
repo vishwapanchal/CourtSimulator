@@ -1,0 +1,182 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-rohan-desai",
+  "title": "State v. Rohan Desai",
+  "summary": "A call-centre employee advertised a used laptop on a classifieds app under a false name, took Rs. 18,000 from a retired teacher by UPI and never delivered it. The money was traced to his bank account.",
+  "difficulty": 1,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, together with the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Rohan Desai",
+    "age": 27,
+    "background": "A call-centre employee who has rented a room in Kesarnagar and worked for the same employer for three years."
+  },
+  "charges": [
+    "Cheating and dishonestly inducing delivery of property (section 318(4), Bharatiya Nyaya Sanhita, 2023)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "On 3 March 2025 an advertisement on a classifieds app offered a used laptop for Rs. 18,000 under the name \"Rahul\", with photographs copied from another seller's listing. Sharada Bhat, 66, a retired schoolteacher in Kesarnagar, agreed to buy it and paid Rs. 18,000 by UPI the same day." },
+    { "id": "F2", "text": "No laptop was sent. The seller stopped answering and blocked her number. The police traced the UPI payment to a bank account in Desai's name; his KYC documents and mobile number matched the account." },
+    { "id": "F3", "text": "Desai was arrested on 2 April 2025 and has been in judicial custody since. His phone and bank records were seized, and the charge-sheet was filed on 25 April. He has no previous conviction. Two complaints about similar listings are under investigation in Bengaluru; no charge-sheet has been filed in either." },
+    { "id": "F4", "text": "The prosecution's exhibit P-1 contains the bank's statement of the account, printed with a section 63(4) BSA certificate (Part A signed by the branch manager, Part B by the bank's IT officer), and four paper printouts of screenshots of the chat on Sharada's phone. The printouts were made at a shop; there is no certificate for them, and her phone has not been produced." },
+    { "id": "F5", "text": "After trial the court convicted Desai under section 318(4). Before judgment the court adjourned the case three times so that he could repay Sharada; he paid nothing. He has expressed no remorse." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-1",
+      "title": "Bank account statement and chat screenshot printouts",
+      "description": "Part 1: the bank's statement for Desai's account showing the Rs. 18,000 UPI credit from Sharada Bhat on 3 March 2025. Part 2: four printed screenshots of the WhatsApp chat between Sharada and \"Rahul\" about the laptop.",
+      "tenderedBy": "Prosecution",
+      "provenance": "The statement was printed by the bank from its server and comes with a section 63(4) BSA certificate signed by the branch manager (Part A) and the bank's IT officer (Part B). The screenshots were taken on Sharada's phone and printed at a shop near her house; no certificate accompanies them and the phone has not been produced.",
+      "objection": "The defence advocate says the whole bundle is electronic evidence that has not been properly proved, and must be excluded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "After the charge-sheet, Desai applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The APP opposes, citing the Bengaluru complaints and the unpaid money.",
+      "submissions": {
+        "prosecution": "There are two more complaints against him in Bengaluru, and the complainant has not got a rupee back. He should stay in custody.",
+        "defence": "The charge-sheet is filed and all his records are seized. He has no conviction and a steady job here. Conditions will do."
+      },
+      "factors": [
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977): custody is justified only by a real risk of flight, reoffending or interference with witnesses that conditions cannot manage." },
+        { "id": "mandatory_conditions", "text": "Section 318(4) BNS is punishable with up to seven years, so section 480(3) BNSS requires conditions that he attend, not commit a similar offence and not induce or threaten any witness; the court may add other conditions in the interests of justice." },
+        { "id": "investigation_done", "text": "The charge-sheet has been filed, and his phone and bank records are seized." },
+        { "id": "ties", "text": "He has lived and worked for the same employer in Kesarnagar for three years." },
+        { "id": "record", "text": "No previous conviction." },
+        { "id": "other_complaints", "text": "Two complaints about similar listings are under investigation in Bengaluru; no charge-sheet has been filed in either." },
+        { "id": "money_unpaid", "text": "The Rs. 18,000 has not been returned." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with only the mandatory section 480(3) conditions", "quality": "defensible", "feedback": "Bail is right, but with similar complaints under investigation and an elderly complainant, a surety, a no-contact direction and a duty to report any change of address fit better." },
+        { "id": "bail.grant_conditions", "label": "Release on a bond with one local surety, the mandatory conditions, no contact with the complainant and notice to the IO of any change of address", "quality": "sound", "feedback": "The evidence is secured and he has a job and three years in Kesarnagar. The pending complaints justify firmer conditions, not custody." },
+        { "id": "bail.deny", "label": "Refuse bail and keep him in judicial custody", "quality": "unsound", "feedback": "Nothing shows a risk that conditions cannot manage. Pending complaints are not convictions, and custody may not be used to force repayment." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant_conditions",
+          "confidence": "high",
+          "rationale": "I would release Mr Desai on a bond with a local surety. The charge-sheet is filed and his phone and bank records are with the police, he has no conviction and he has worked here for three years, so the rule of bail, not jail, applies. Because similar complaints are being investigated, I would add a no-contact direction and require him to tell the IO of any change of address, on top of the mandatory conditions.",
+          "cites": ["bail_rule", "mandatory_conditions", "investigation_done", "ties", "record", "other_complaints"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "bail.deny",
+          "confidence": "high",
+          "rationale": "I would refuse bail. Mr Desai already has convictions for the same kind of online fraud in Bengaluru, so he is a habitual offender likely to keep cheating if released. Conditions have not stopped him before.",
+          "cites": ["other_complaints", "record"],
+          "flawExplanation": "The Bengaluru matters are complaints still under investigation, with no charge-sheet in either (F3). Desai has no previous conviction, so the advice treats untested allegations as proven offending."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would keep Mr Desai in custody for now. Mrs Bhat has not received any of her Rs. 18,000, and a few more weeks in custody are likely to persuade him to repay her. Once the money is returned, bail can be reconsidered.",
+          "cites": ["money_unpaid", "investigation_done"],
+          "flawExplanation": "Custody may not be used as a tool to recover money. Bail turns on the risk of flight, reoffending or interference, and the record (F3) shows none that conditions cannot manage."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Admissibility of the bank statement and chat printouts",
+      "prompt": "The APP tenders exhibit P-1: the certified bank statement and four uncertified printouts of chat screenshots. The defence objects to the whole bundle.",
+      "exhibitId": "P-1",
+      "submissions": {
+        "prosecution": "The bank statement carries a full section 63 certificate. The chat printouts are plain paper documents, and the complainant can identify them in the witness box.",
+        "defence": "These are electronic records. The printouts have no certificate and her phone is not here. The bundle as a whole should be excluded."
+      },
+      "factors": [
+        { "id": "bank_certified", "text": "The bank statement comes with a section 63(4) certificate: Part A by the branch manager, in charge of the bank's system, and Part B by the bank's IT officer." },
+        { "id": "chat_printouts", "text": "The chat printouts were printed at a shop from screenshots on the complainant's phone; there is no certificate and the phone has not been produced." },
+        { "id": "s63_rule", "text": "Section 63(1) BSA: information in an electronic record that is printed on paper is computer output, admissible without the original only if the section's conditions are met; section 63(4) requires a certificate to be submitted with it." },
+        { "id": "late_certificate", "text": "So long as the trial is not over, the court may allow the certificate to be produced later (Arjun Panditrao Khotkar v. Kailash Kushanrao Gorantyal, 2020, on the old section 65B)." },
+        { "id": "relevance", "text": "Both parts are relevant: the statement shows the payment reached Desai's account, and the chat shows what he promised." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Admit the whole bundle", "quality": "unsound", "feedback": "The chat printouts are computer output with no certificate and no original device. Oral identification by the complainant does not cure that." },
+        { "id": "evidence.admit_limited", "label": "Admit the certified bank statement; keep the chat printouts out unless a certificate is filed or the phone is produced", "quality": "sound", "feedback": "The bank statement meets section 63 and comes in. The printouts do not, as they stand, but the prosecution may still file a certificate or produce the phone before the trial ends." },
+        { "id": "evidence.exclude", "label": "Exclude the whole bundle", "quality": "unsound", "feedback": "The bank statement is fully certified under section 63(4). A defect in the printouts is no reason to exclude a properly proved record tendered with them." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would admit the bank statement and keep the chat printouts out for now. The statement is computer output with a complete section 63 certificate from the bank, so it is admissible. The printouts are also computer output, but they have no certificate and the phone is not in court, so they cannot come in as they stand; the prosecution may still cure that before the trial ends.",
+          "cites": ["bank_certified", "chat_printouts", "s63_rule", "late_certificate"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the bundle. The chat printouts were made at a shop from screenshots, with no certificate and without the phone, so they do not meet section 63. The prosecution tendered the bundle as one exhibit and it stands or falls together.",
+          "cites": ["chat_printouts", "s63_rule"],
+          "flawExplanation": "The advice ignores that the bank statement has its own complete section 63(4) certificate from the branch manager and the IT officer (F4). That part is admissible and should not be excluded because the printouts are defective."
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would admit the whole bundle. The bank statement is certified, and the chat printouts are ordinary paper documents, so section 63 does not apply to them. Mrs Bhat can identify them in the witness box.",
+          "cites": ["bank_certified", "chat_printouts", "relevance"],
+          "flawExplanation": "A paper printout of an electronic record is computer output under section 63(1) BSA and needs a section 63(4) certificate unless the original device is produced. The printouts have neither (F4)."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Desai has been convicted under section 318(4) BNS (imprisonment up to seven years, and fine). He is a first offender, has repaid nothing despite three adjournments for that purpose, and has shown no remorse.",
+      "submissions": {
+        "prosecution": "He used a false name and copied photographs to cheat a retired teacher, and has not paid back a rupee. A custodial sentence is needed.",
+        "defence": "He is 27, has a steady job and no conviction. We ask for probation; he will repay from his salary."
+      },
+      "factors": [
+        { "id": "first_offender", "text": "No previous conviction." },
+        { "id": "no_repayment", "text": "The court adjourned the case three times so that he could repay; he paid nothing." },
+        { "id": "deception", "text": "He used a false name and copied photographs, then blocked the complainant." },
+        { "id": "range", "text": "Section 318(4) BNS: imprisonment of either description up to seven years, and he shall also be liable to fine." },
+        { "id": "probation_rule", "text": "Section 4 of the Probation of Offenders Act, 1958 allows release on probation of good conduct for an offence not punishable with death or life imprisonment, where the nature of the offence and the character of the offender make it expedient." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows the court to apply part of a fine to compensate the victim for her loss." },
+        { "id": "job", "text": "He is 27 and has worked for the same employer for three years." },
+        { "id": "pending_matters", "text": "Two similar complaints are under investigation in Bengaluru; no charge-sheet has been filed in either." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Probation of good conduct for two years under section 4 of the Probation of Offenders Act, with Rs. 18,000 compensation", "quality": "defensible", "feedback": "Available for a first offender, but three chances to repay went unused and he has shown no remorse, which leaves little basis for finding probation expedient." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for one year and a fine of Rs. 20,000, of which Rs. 18,000 is paid to the complainant", "quality": "sound", "feedback": "A deliberate deception, with no repayment or remorse despite repeated chances, calls for a short custodial term. His clean record and steady job keep it at the low end, and the fine compensates the victim." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for five years and a fine", "quality": "unsound", "feedback": "Five years for a first conviction involving Rs. 18,000 is out of proportion, and it can only be reached by treating untested complaints as proven offences." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for one year and a fine of Rs. 20,000, paying Rs. 18,000 of it to Mrs Bhat. Mr Desai planned the deception with a false name and copied photographs, and he repaid nothing despite three adjournments for that purpose, so probation is not expedient. His clean record and steady job keep the term at the low end.",
+          "cites": ["deception", "no_repayment", "probation_rule", "first_offender", "job", "range", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Desai on probation of good conduct for two years. He is a first offender with a steady job, and he has now repaid the full Rs. 18,000 to Mrs Bhat. With the loss made good, probation is the proportionate course.",
+          "cites": ["first_offender", "job", "no_repayment", "probation_rule"],
+          "flawExplanation": "Desai has repaid nothing: the court adjourned three times for repayment and he paid nothing (F5). The advice rests its case for probation on a repayment that never happened."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for five years with a fine. The two Bengaluru complaints show this was not a one-off but a pattern of online cheating, and the sentence must reflect the full scale of his conduct.",
+          "cites": ["pending_matters", "deception"],
+          "flawExplanation": "The Bengaluru complaints are untested allegations with no charge-sheet (F3). A court may sentence only for the offence proved, and cannot add punishment for complaints that have never been tried."
+        }
+      ]
+    }
+  ]
+}

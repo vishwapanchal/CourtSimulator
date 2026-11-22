@@ -1,0 +1,185 @@
+{
+  "schema": "courtsim.case/1",
+  "id": "state-v-manjunath-patil",
+  "title": "State v. Manjunath Patil",
+  "summary": "A young wife's complaint of beatings, a night locked out of the house and a demand for Rs. 3,00,000 led to her husband's prosecution. At trial she turned hostile, and the prosecution asks the court to treat her police statement as evidence.",
+  "difficulty": 2,
+  "jurisdictionNote": "Training case. Fictional facts; legal provisions are the Bharatiya Nyaya Sanhita, Bharatiya Nagarik Suraksha Sanhita and Bharatiya Sakshya Adhiniyam (in force from 1 July 2024) as summarised for teaching, with the Dowry Prohibition Act, 1961 and the Probation of Offenders Act, 1958. Not legal advice.",
+  "defendant": {
+    "name": "Manjunath Patil",
+    "age": 31,
+    "background": "A clerk in a co-operative bank who lives with his parents in Vidyanagar, Kesarnagar, and contributes to their household."
+  },
+  "charges": [
+    "Husband subjecting a woman to cruelty (section 85, Bharatiya Nyaya Sanhita, 2023)",
+    "Demanding dowry (section 4, Dowry Prohibition Act, 1961)"
+  ],
+  "facts": [
+    { "id": "F1", "text": "Patil married Savita, 26, in February 2023, and she came to live with him and his parents in Vidyanagar, Kesarnagar." },
+    { "id": "F2", "text": "On 3 March 2025 Savita went to her parents' home in Hirepura, 40 km away. The next day she and her father, Shankar Hiremath, lodged an FIR alleging that since mid-2023 Patil had regularly abused and slapped her, had locked her out of the house overnight on 1 March 2025, and had demanded Rs. 3,00,000 from her father to clear his two-wheeler loan." },
+    { "id": "F3", "text": "A Kesarnagar Taluk Hospital record dated 2 March 2025 notes a contusion on Savita's left cheek and bruising on both forearms, with the history \"assaulted by husband\". A neighbour, Leela Kamat, found Savita sitting on the steps outside the house at about 11 pm on 1 March, crying, with a swollen face, and gave her shelter for the night." },
+    { "id": "F4", "text": "On 4 March 2025 the IO recorded Savita's statement under section 180 BNSS, describing the slaps, the night locked out and the Rs. 3,00,000 demand. Her father's statement says she had complained to him by phone of beatings and of the money demand." },
+    { "id": "F5", "text": "Patil was arrested on 6 March 2025 and produced before the Judicial Magistrate First Class. He has no previous convictions or pending cases. Savita, her father and Leela Kamat had already given their statements to the IO, and the hospital record had been seized. No contact between Patil and Savita's family has been alleged since she left." },
+    { "id": "F6", "text": "At trial Savita said the quarrels were ordinary family quarrels and that she had hurt her face falling on the steps. With the court's permission the APP cross-examined her: she admitted that she was locked out on the night of 1 March and that Patil had \"raised his hand\" at her during quarrels, but denied telling the IO about any money demand. The IO proved the portions of her section 180 statement that she denied." },
+    { "id": "F7", "text": "Patil was convicted under section 85 BNS on the hospital record, Leela Kamat's evidence and Savita's admissions, and acquitted under section 4 of the Dowry Prohibition Act because the demand rested on her father's account of what she told him and on her police statement. Savita's divorce and maintenance petitions are pending in the Family Court, and Patil pays interim maintenance of Rs. 8,000 a month under its order. At the hearing on sentence his father said the family wants a reconciliation; Savita's counsel said she wants none and asked for compensation." }
+  ],
+  "exhibits": [
+    {
+      "id": "P-4",
+      "title": "Savita's statement to the IO under section 180 BNSS",
+      "description": "The IO's written record of Savita's statement of 4 March 2025, describing slaps over many months, the night locked out of the house and a demand for Rs. 3,00,000 from her father.",
+      "tenderedBy": "Prosecution",
+      "provenance": "Recorded by the IO at Hirepura on 4 March 2025 in the course of investigation; not signed by Savita. The IO has proved the portions she denied in the witness box.",
+      "objection": "The defence advocate says a statement to the police cannot be used as evidence at all, and that because the prosecution's own witness was declared hostile her whole evidence should be discarded."
+    }
+  ],
+  "decisionPoints": [
+    {
+      "kind": "bail",
+      "title": "Bail application",
+      "prompt": "Patil applies to the Judicial Magistrate First Class for bail under section 480 of the Bharatiya Nagarik Suraksha Sanhita. The APP opposes and, in the alternative, asks for a condition that he deposit money for Savita's maintenance.",
+      "submissions": {
+        "prosecution": "Cruelty to a wife is a serious, non-bailable offence. If he is released, he should at least be made to deposit Rs. 1,50,000 for her maintenance, since she has no income.",
+        "defence": "He is a bank clerk with no record, the witnesses' statements are recorded and his wife lives 40 km away. Maintenance is for the Family Court, not a price for bail."
+      },
+      "factors": [
+        { "id": "offence", "text": "Section 85 BNS is punishable with up to three years' imprisonment and fine; it is non-bailable and is in Chapter V of the BNS." },
+        { "id": "record", "text": "No previous convictions or pending cases; steady employment and a fixed home in Kesarnagar." },
+        { "id": "investigation", "text": "The statements of Savita, her father and the neighbour have been recorded and the hospital record seized." },
+        { "id": "distance", "text": "Savita lives with her parents 40 km away, and no contact or threat has been alleged since she left." },
+        { "id": "s480_scope", "text": "Section 480(1)(ii) BNSS restricts bail only for a person with previous convictions of the kinds it lists; the 'special reason' proviso applies to that person, not to every non-bailable offence." },
+        { "id": "bail_rule", "text": "The basic rule is bail, not jail (State of Rajasthan v. Balchand, 1977). Conditions of bail must serve its purposes, securing attendance and preventing reoffending or interference, and are not a means of recovering money for the complainant." },
+        { "id": "maintenance", "text": "Savita has no income of her own and the APP asks for Rs. 1,50,000 to be deposited for her maintenance." }
+      ],
+      "options": [
+        { "id": "bail.grant", "label": "Release on a personal bond with one surety", "quality": "sound", "feedback": "A first offender in steady employment, charged with an offence carrying up to three years, whose witnesses have already given statements and live 40 km away, shows no risk that requires custody or special conditions." },
+        { "id": "bail.grant_conditions", "label": "Release with one surety on condition that he first deposits Rs. 1,50,000 for Savita's maintenance", "quality": "unsound", "feedback": "A money deposit for maintenance does nothing to secure attendance or protect the trial. It makes liberty depend on payment and takes over a question that belongs to the Family Court." },
+        { "id": "bail.deny", "label": "Refuse bail and remand to judicial custody", "quality": "unsound", "feedback": "Nothing in the record suggests flight, reoffending or interference. Refusal would treat a non-bailable offence as if bail were the exception." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "bail.grant",
+          "confidence": "high",
+          "rationale": "I would release Mr Patil on a personal bond with one surety. He has no record and a steady job, the key statements are already recorded, and Savita lives 40 km away with no contact alleged since she left. Nothing calls for custody, and a deposit for maintenance would not serve any purpose of bail.",
+          "cites": ["offence", "record", "investigation", "distance", "bail_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "bail.grant_conditions",
+          "confidence": "medium",
+          "rationale": "I would release Mr Patil, but only after he deposits Rs. 1,50,000 for Savita's maintenance. She has no income of her own and left the matrimonial home because of his conduct. Making him provide for her now is a fair price for his liberty while the case goes on.",
+          "cites": ["maintenance", "record"],
+          "flawExplanation": "Bail conditions must secure attendance and protect the trial. Securing maintenance is not a purpose of bail; it belongs to the Family Court, where Savita's petition is pending (F7)."
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "bail.deny",
+          "confidence": "medium",
+          "rationale": "I would refuse bail at this stage. Cruelty under section 85 is non-bailable, and for a non-bailable offence the accused must show a special reason before the court can release him. Mr Patil has offered nothing beyond his job and his clean record.",
+          "cites": ["offence", "s480_scope"],
+          "flawExplanation": "The 'special reason' requirement in section 480(1) applies only to a person with the previous convictions listed in clause (ii). Patil has none (F5), so ordinary bail principles apply and favour release."
+        }
+      ]
+    },
+    {
+      "kind": "evidence_admissibility",
+      "title": "Use of the hostile witness's police statement",
+      "prompt": "Savita has turned hostile. The APP asks the court to read exhibit P-4 as substantive evidence of the slaps and the Rs. 3,00,000 demand. The defence objects to any use of it and asks the court to discard her evidence entirely.",
+      "exhibitId": "P-4",
+      "submissions": {
+        "prosecution": "She told the IO everything the day after she left. Now that she has turned hostile, her statement is the truest account and should be read as evidence.",
+        "defence": "A police statement is not evidence. And once the prosecution declared her hostile, nothing she said can be trusted, for either side."
+      },
+      "factors": [
+        { "id": "s181_rule", "text": "Section 181(1) BNSS: a statement to the police during investigation may not be used for any purpose at the trial, except that the accused, and with the court's permission the prosecution, may use it to contradict the witness under section 148 BSA." },
+        { "id": "contradiction_done", "text": "The IO proved the portions of Savita's statement she denied, after her attention was drawn to them in cross-examination." },
+        { "id": "s157_rule", "text": "Section 157 BSA: the court may permit a party to cross-examine its own witness, and doing so does not stop that party relying on any part of the witness's evidence." },
+        { "id": "hostile_rule", "text": "The evidence of a hostile witness is not wiped out; the court may rely on the parts it finds credible, especially where they are corroborated (Bhagwan Singh v. State of Haryana, 1976)." },
+        { "id": "admissions", "text": "In the witness box Savita admitted being locked out on the night of 1 March and that Patil had raised his hand at her." },
+        { "id": "corroboration", "text": "The hospital record of 2 March and Leela Kamat's evidence of finding her outside with a swollen face are independent of her statement." }
+      ],
+      "options": [
+        { "id": "evidence.admit", "label": "Read the police statement as substantive evidence of the slaps and the demand", "quality": "unsound", "feedback": "A statement to the police during investigation cannot be substantive evidence. Its only permitted use against a prosecution witness is to contradict her." },
+        { "id": "evidence.admit_limited", "label": "Use the proved portions only to contradict Savita, and weigh her evidence in court, including her admissions, on its merits", "quality": "sound", "feedback": "This is exactly what the law allows: the statement tests her credibility, and the parts of her testimony that are credible and corroborated, such as the lockout and the raised hand, remain evidence." },
+        { "id": "evidence.exclude", "label": "Exclude the statement for all purposes and disregard Savita's entire evidence", "quality": "unsound", "feedback": "The proviso to section 181(1) expressly allows the prosecution, with permission, to use the statement to contradict her, and declaring a witness hostile does not erase her evidence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "evidence.admit_limited",
+          "confidence": "high",
+          "rationale": "I would allow the proved portions of the police statement to be used only to contradict Savita, not as evidence of what happened. Her testimony is not wiped out because she was declared hostile: her admissions about the lockout and the raised hand are corroborated by the hospital record and the neighbour, and the court can rely on them.",
+          "cites": ["s181_rule", "contradiction_done", "s157_rule", "hostile_rule", "admissions", "corroboration"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misstated_law",
+          "recommends": "evidence.admit",
+          "confidence": "high",
+          "rationale": "I would read the statement as evidence. Once the court permitted the prosecution to cross-examine Savita as hostile and the IO proved the statement, it became substantive evidence of what she told him. It was recorded the day after she left, before any pressure to reconcile.",
+          "cites": ["contradiction_done", "s157_rule"],
+          "flawExplanation": "Proving a police statement to contradict a witness does not make it substantive evidence. Section 181(1) BNSS limits its use to contradiction under section 148 BSA, however early it was recorded."
+        },
+        {
+          "flaw": "omitted_factor",
+          "recommends": "evidence.exclude",
+          "confidence": "medium",
+          "rationale": "I would exclude the police statement and set Savita's evidence aside. Section 181 forbids using a statement made to the police during investigation at the trial. She has now given two inconsistent accounts, so no part of what she says can safely be relied on.",
+          "cites": ["s181_rule", "admissions"],
+          "flawExplanation": "The advice ignores the proviso allowing the prosecution to use the statement to contradict her, and the rule that a hostile witness's evidence is not wiped out. Her corroborated admissions about the lockout and the raised hand remain usable (F3, F6)."
+        }
+      ]
+    },
+    {
+      "kind": "sentencing",
+      "title": "Sentence",
+      "prompt": "Patil has been convicted under section 85 BNS (imprisonment up to three years and fine) and acquitted of demanding dowry.",
+      "submissions": {
+        "prosecution": "He beat his wife badly enough to need hospital treatment and left her outside at night. A custodial sentence and compensation are needed.",
+        "defence": "He is 31, has no record and pays maintenance every month, and his family hopes for reconciliation. We ask for probation."
+      },
+      "factors": [
+        { "id": "conduct", "text": "Slaps causing a contusion and bruising, and locking his wife out of the house at night; the wider pattern of abuse was not fully proved." },
+        { "id": "first_offence", "text": "Aged 31, no previous convictions, in steady employment." },
+        { "id": "maintenance_paid", "text": "He pays interim maintenance of Rs. 8,000 a month under the Family Court's order." },
+        { "id": "victim_view", "text": "Savita wants no reconciliation, has filed for divorce and asks for compensation." },
+        { "id": "acquitted_dowry", "text": "He was acquitted of demanding Rs. 3,00,000 from Savita's father." },
+        { "id": "probation_rule", "text": "Release on probation under section 4 of the Probation of Offenders Act, 1958 is lawful for this offence, where the nature of the offence and the offender's character make it expedient." },
+        { "id": "compensation_rule", "text": "Section 395 BNSS allows the court to apply a fine as compensation to the person injured by the offence." }
+      ],
+      "options": [
+        { "id": "sentence.non_custodial", "label": "Release on probation of good conduct for two years with compensation of Rs. 50,000 to Savita", "quality": "defensible", "feedback": "Lawful for a first offender who is complying with the maintenance order. But a physical assault with injuries followed by turning her out of the house at night is serious domestic violence, and a non-custodial order understates it." },
+        { "id": "sentence.custodial_lower", "label": "Simple imprisonment for six months and a fine of Rs. 40,000, all of it paid to Savita as compensation", "quality": "sound", "feedback": "A short term marks the seriousness of violence within the home, while his clean record and his compliance with the maintenance order keep it at the lower end. Directing the fine to Savita meets her request for compensation." },
+        { "id": "sentence.custodial_upper", "label": "Rigorous imprisonment for three years, the maximum, and a fine", "quality": "unsound", "feedback": "The maximum is for the worst cases. Nothing proved here puts it there, and the acquitted dowry charge cannot be used to increase the sentence." }
+      ],
+      "advice": [
+        {
+          "flaw": "none",
+          "recommends": "sentence.custodial_lower",
+          "confidence": "medium",
+          "rationale": "I would impose simple imprisonment for six months and a fine of Rs. 40,000, all of it to go to Savita. He hit her hard enough to need hospital treatment and then left her outside the house at night, which calls for a custodial term. His clean record and his regular maintenance payments keep it short.",
+          "cites": ["conduct", "first_offence", "maintenance_paid", "victim_view", "compensation_rule"],
+          "flawExplanation": ""
+        },
+        {
+          "flaw": "misread_fact",
+          "recommends": "sentence.non_custodial",
+          "confidence": "medium",
+          "rationale": "I would release Mr Patil on probation of good conduct with compensation of Rs. 50,000. He is a first offender who pays maintenance regularly, and Savita has told the court she is willing to return to the matrimonial home. Prison would end any chance of the reconciliation both families want.",
+          "cites": ["first_offence", "maintenance_paid", "probation_rule"],
+          "flawExplanation": "The record says the opposite: Savita wants no reconciliation, has filed for divorce and asks for compensation; only Patil's father spoke of reconciliation (F7)."
+        },
+        {
+          "flaw": "improper_factor",
+          "recommends": "sentence.custodial_upper",
+          "confidence": "high",
+          "rationale": "I would impose rigorous imprisonment for three years. Mr Patil did not only beat his wife; he tried to extract Rs. 3,00,000 from her father and punished her when the money did not come. That kind of greed-driven cruelty deserves the maximum the law allows.",
+          "cites": ["conduct", "acquitted_dowry"],
+          "flawExplanation": "Patil was acquitted of demanding dowry (F7). Treating the alleged demand as proved and using it to reach the maximum sentence punishes him for an offence the court found not proved."
+        }
+      ]
+    }
+  ]
+}
