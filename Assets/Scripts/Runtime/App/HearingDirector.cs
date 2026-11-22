@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Events;
+using CourtSim.Core.Sarvam;
 using CourtSim.Core.Sessions;
 using CourtSim.Core.UI;
 using CourtSim.Runtime.Audio;
@@ -26,6 +27,7 @@ namespace CourtSim.Runtime.App
         private UIManager _ui;
         private CaseSessionController _sessions;
         private CourtroomCast _cast;
+        private string _seatedForCaseId;
         private AssistantVoice _voice;
         private GameObject _subtitleBar;
         private Text _speaker;
@@ -85,6 +87,18 @@ namespace CourtSim.Runtime.App
             return true;
         }
 
+        private void Update()
+        {
+            // When a new case starts, seat the defence advocate whose look matches that case's defence voice.
+            CaseSession session = _sessions != null ? _sessions.Session : null;
+            string caseId = session != null ? session.Case.Id : null;
+            if (_cast != null && caseId != _seatedForCaseId)
+            {
+                _seatedForCaseId = caseId;
+                _cast.UseFemaleDefence(SarvamVoiceCast.For(caseId).Defence.IsFemale);
+            }
+        }
+
         private IEnumerator PlayHearing(CaseSession session, CaseDecisionPoint point)
         {
             EnsureSubtitleBar();
@@ -97,9 +111,11 @@ namespace CourtSim.Runtime.App
                 _cast.ShowWitness(true);
             }
 
-            yield return Speak(_cast.Reader, "Bench Clerk", $"{session.Case.Title}. {point.Definition.Title}. The Public Prosecutor, Your Honour.", false, 1, false);
-            yield return Speak(_cast.Prosecutor, _cast.Prosecutor.DisplayName, point.ProsecutionSubmission, false, 0, true);
-            yield return Speak(_cast.Defence, _cast.Defence.DisplayName, point.DefenceSubmission, true, 0, true);
+            // The case picks which Sarvam voices the clerk and advocates use, so every case sounds different.
+            _voice.CaseId = session.Case.Id;
+            yield return Speak(_cast.Reader, "Bench Clerk", $"{session.Case.Title}. {point.Definition.Title}. The Public Prosecutor, Your Honour.", SarvamVoiceRole.Clerk, false);
+            yield return Speak(_cast.Prosecutor, _cast.Prosecutor.DisplayName, point.ProsecutionSubmission, SarvamVoiceRole.Prosecutor, true);
+            yield return Speak(_cast.Defence, _cast.Defence.DisplayName, point.DefenceSubmission, SarvamVoiceRole.Defence, true);
 
             foreach (CharacterAnimator character in _cast.AllCharacters)
             {
@@ -119,7 +135,8 @@ namespace CourtSim.Runtime.App
         }
 
         /// <summary>One speaker: stand (advocates), speak with subtitles while everyone looks, then sit again.</summary>
-        private IEnumerator Speak(CharacterAnimator who, string name, string text, bool female, int rate, bool stands)
+        /// <remarks>The subtitle shows the English text; the voice speaks it in Kannada-English when Sarvam is available.</remarks>
+        private IEnumerator Speak(CharacterAnimator who, string name, string text, SarvamVoiceRole role, bool stands)
         {
             if (who == null || string.IsNullOrWhiteSpace(text))
             {
@@ -144,7 +161,7 @@ namespace CourtSim.Runtime.App
             _speaker.text = name.ToUpperInvariant();
             _line.text = text;
             _subtitleBar.SetActive(true);
-            _voice.Speak(text, female, rate);
+            _voice.Speak(text, role);
             who.SetSpeaking(true);
 
             // Wait for the voice; without speech (e.g. not on Windows) give readers time to read the subtitle.

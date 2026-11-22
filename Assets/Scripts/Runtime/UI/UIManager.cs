@@ -5,6 +5,7 @@ using CourtSim.Core.Decisions;
 using CourtSim.Core.Events;
 using CourtSim.Core.Interaction;
 using CourtSim.Core.Logging;
+using CourtSim.Core.Sarvam;
 using CourtSim.Core.Sessions;
 using CourtSim.Core.UI;
 using CourtSim.Runtime.App;
@@ -523,7 +524,8 @@ namespace CourtSim.Runtime.UI
             }
 
             _spokenAdvice = advice;
-            _voice.Speak(AdviceText.Spoken(_session));
+            // The assistant always speaks in the same voice ("roopa"); the panel text stays English.
+            _voice.Speak(AdviceText.Spoken(_session), SarvamVoiceRole.Assistant, _session.Case.Id);
         }
 
         private void StopSpeaking()

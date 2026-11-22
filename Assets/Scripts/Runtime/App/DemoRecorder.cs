@@ -170,13 +170,15 @@ namespace CourtSim.Runtime.App
             Destroy(this);
         }
 
-        // A fixed demo: the first (easiest) case, two of three suggestions planted as flawed, a repeatable plan.
+        /// <summary>The case the guided demo always plays, so its script and captions match.</summary>
+        public const string DemoCaseId = "state-v-sahil-kadam";
+
+        // A fixed demo: an easy case, two of three suggestions planted as flawed, a repeatable plan.
         private void StartFixedSession()
         {
             if (_bootstrap.Sessions != null)
             {
-                string firstCase = _bootstrap.Sessions.Cases.Count > 0 ? _bootstrap.Sessions.Cases[0].Id : string.Empty;
-                _bootstrap.Sessions.Configure(firstCase, 2, 2026, true, true);
+                _bootstrap.Sessions.Configure(DemoCaseId, 2, 2026, true, true);
                 _bootstrap.Sessions.StartNewSession();
             }
         }

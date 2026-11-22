@@ -49,3 +49,6 @@ crashlytics-build.properties
 *.env
 **/Resources/ApiKeys*.json
 **/anthropic_api_key*
+# Sarvam AI (Kannada-English voice): key and synthesised-audio cache never go into git.
+**/sarvam_api_key*
+voice-cache/

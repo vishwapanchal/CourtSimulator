@@ -444,6 +444,66 @@ The request also states which advice is flawed. Anyone who inspects traffic on t
 see the plan. That affects the integrity of an exercise, not security; a proxy does not hide it unless
 the proxy builds the brief itself.
 
+## Voice (Sarvam, Kannada-English)
+
+Every spoken line (the assistant's advice, and the bench clerk, Public Prosecutor and defence advocate in
+the hearing) is spoken in **Kannada-English code-mixed** speech, the way people in Karnataka courts
+actually talk ("Case strong ಇದೆ: ಅವರ room-ನಿಂದ phones recover ಮಾಡಲಾಗಿದೆ."). **All text on screen,
+including subtitles and the assistant card, stays English.** Only the audio changes.
+
+**Pipeline** (`AssistantVoice.Speak(englishText, role)` in `Runtime/Audio/AssistantVoice.cs`, using
+`SarvamClient` in `Core/Sarvam/SarvamClient.cs`):
+
+1. Look the line up in the disk cache. A hit plays at once, with no network and no cost.
+2. `POST https://api.sarvam.ai/translate`: `mayura:v1`, `en-IN` to `kn-IN`, `mode: "code-mixed"`, and
+   `speaker_gender` of the role's voice (so verb forms match the speaker). Inputs over 1,000 characters
+   are split at sentence ends and the translations joined.
+3. `POST https://api.sarvam.ai/text-to-speech`: `bulbul:v3`, `kn-IN`, the role's speaker, pace 1.0,
+   22,050 Hz. Inputs over 2,500 characters are split the same way and the WAV pieces joined
+   (`WavWriter.Concatenate`).
+4. Save the WAV to the cache and play it through an `AudioSource`.
+
+The requests go through `UnityWebRequestTransport` with async/await on the main thread, so nothing
+blocks. While steps 2–3 run, `IsPreparing` is true: the typewriter text and the demo recorder wait for it.
+`Stop()` (or a new line) cancels the requests and the audio. In batch mode nothing is spoken or sent.
+
+**Voices** (`Core/Sarvam/SarvamVoiceCast.cs`):
+
+| Role | Speaker |
+| --- | --- |
+| AI assistant | always `roopa` (female), so the trainee always recognises it |
+| Public Prosecutor | male, chosen per case |
+| Bench clerk | male, chosen per case, never the same as the prosecutor |
+| Defence advocate | male or female, chosen per case, never the same as the other two |
+
+`SarvamVoiceCast.For(caseId)` picks the per-case voices from fixed pools (male: anand, vijay, gokul, rahul,
+shubh, aditya, kabir, rohan, varun, mohit; female: kavitha, priya, kavya, ritu, shruti, neha, pooja,
+ishita, rupali; `roopa` is reserved). It hashes the case id with 32-bit FNV-1a, not `string.GetHashCode`
+(which can differ between runs), so a case always gets the same voices. With no case id the default cast
+is anand / kavitha / gokul. `HearingDirector` sets `AssistantVoice.CaseId` from `session.Case.Id`.
+
+**Key.** `SarvamKeyLocator` (`Runtime/Audio/SarvamKeyLocator.cs`) reads the environment variable
+`SARVAM_API_KEY`, then the one-line file `sarvam_api_key.txt` in `Application.persistentDataPath`
+(on Windows `%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\`). The key is sent only in the
+`api-subscription-key` header. It is never logged, and `SarvamClient` removes it from any error message.
+`.gitignore` blocks `**/sarvam_api_key*`. The same rules as for the Anthropic key apply: never commit a
+key, never put one under `Assets/`.
+
+**Cache.** `<persistentDataPath>/voice-cache/<sha1>.wav`. The SHA-1 covers the role, speaker, gender,
+models, language, mode, pace, sample rate and the English text, so changing any of them makes a new clip.
+Using a clip marks it as recently used; beyond 300 clips the least recently used are deleted. Delete the
+folder at any time to clear it. Play a demo once with a network connection and later runs of the same
+lines are offline and free.
+
+**Fallback.** With no key, or when Sarvam fails (no network, key rejected, rate limit (HTTP 429), server
+error, or more than 60 seconds), the line is spoken in English by the offline Windows voice instead, and
+one warning is logged for the whole session. After a rejected key, or three failures in a row, Sarvam is
+not tried again until the next run.
+
+**Privacy.** Every spoken line is sent to Sarvam AI's servers to be translated and synthesised. These are
+the case's scripted submissions and the assistant's advice text; no trainee input, decision or log is
+sent. Cached clips stay on the machine.
+
 ## Decision log
 
 `CaseSession` writes the log through an `IDecisionLogSink` (`Core/Logging/DecisionLog.cs`).

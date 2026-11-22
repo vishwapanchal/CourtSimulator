@@ -20,6 +20,7 @@ namespace CourtSim.Runtime.Characters
         [SerializeField] private List<CharacterAnimator> _spectators = new List<CharacterAnimator>();
         [SerializeField] private CharacterAnimator _prosecutor;
         [SerializeField] private CharacterAnimator _defence;
+        [SerializeField] private CharacterAnimator _defenceMale;
         [SerializeField] private CharacterAnimator _accused;
         [SerializeField] private CharacterAnimator _witness;
         [SerializeField] private CharacterAnimator _reader;
@@ -27,7 +28,8 @@ namespace CourtSim.Runtime.Characters
 
         public CharacterAnimator Prosecutor { get => _prosecutor; private set => _prosecutor = value; }
 
-        public CharacterAnimator Defence { get => _defence; private set => _defence = value; }
+        /// <summary>The defence advocate currently in court (a woman or a man, chosen per case).</summary>
+        public CharacterAnimator Defence => _defenceMale != null && _defenceMale.gameObject.activeSelf ? _defenceMale : _defence;
 
         public CharacterAnimator Accused { get => _accused; private set => _accused = value; }
 
@@ -41,6 +43,23 @@ namespace CourtSim.Runtime.Characters
 
         /// <summary>Everyone currently in the room (the witness only while shown).</summary>
         public IReadOnlyList<CharacterAnimator> AllCharacters => _all;
+
+        /// <summary>
+        /// Seats the female or the male defence advocate, so the person on screen matches the voice the case uses.
+        /// </summary>
+        public void UseFemaleDefence(bool female)
+        {
+            if (_defence == null || _defenceMale == null)
+            {
+                return;
+            }
+
+            _defence.gameObject.SetActive(female);
+            _defenceMale.gameObject.SetActive(!female);
+            _all.Remove(_defence);
+            _all.Remove(_defenceMale);
+            _all.Add(female ? _defence : _defenceMale);
+        }
 
         /// <summary>Shows or hides the witness in the witness box.</summary>
         public void ShowWitness(bool show)
@@ -73,9 +92,13 @@ namespace CourtSim.Runtime.Characters
             cast.Prosecutor = cast.Add(root, materials, "Prosecutor", "Additional Public Prosecutor",
                 new CharacterLook { Outfit = Outfit.Advocate, Skin = SurfaceKind.SkinMedium, Hair = HairStyle.Short },
                 BehindTable(prosecution, -0.7f), 0f, true, 0.45f);
-            cast.Defence = cast.Add(root, materials, "Defence", "Defence Advocate",
+            cast._defence = cast.Add(root, materials, "Defence", "Defence Advocate",
                 new CharacterLook { Outfit = Outfit.Advocate, Skin = SurfaceKind.SkinLight, Hair = HairStyle.Long, BodyWidth = 0.9f },
                 BehindTable(defence, 0.7f), 0f, true, 0.45f);
+            cast._defenceMale = cast.Add(root, materials, "DefenceMale", "Defence Advocate",
+                new CharacterLook { Outfit = Outfit.Advocate, Skin = SurfaceKind.SkinDark, Hair = HairStyle.Short, BodyWidth = 1.05f },
+                BehindTable(defence, 0.7f), 0f, true, 0.45f);
+            cast.UseFemaleDefence(true);
 
             // The accused stands in the dock on its plinth, facing the centre aisle; a constable stands guard beside it.
             FixtureSpec dock = layout.Find(FixtureKind.AccusedDock);
