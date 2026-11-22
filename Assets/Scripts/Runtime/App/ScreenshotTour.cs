@@ -47,6 +47,9 @@ namespace CourtSim.Runtime.App
             yield return new WaitForSecondsRealtime(2f); // let the main menu fade in
 
             yield return Capture("01-main-menu");
+            ui.Open(ScreenId.CaseSelect);
+            yield return Capture("01b-case-select");
+            ui.CloseAll();
             ui.Open(ScreenId.Controls);
             yield return Capture("02-controls");
 

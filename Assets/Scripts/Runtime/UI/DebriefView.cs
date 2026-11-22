@@ -86,7 +86,7 @@ namespace CourtSim.Runtime.UI
             SessionSummary summary = session.Summary;
             UITheme theme = _factory.Theme;
             _headline.text = Debrief.Headline(summary);
-            _subline.text = $"{session.Case.Title}   |   Difficulty: {DifficultyName(session.Case.Difficulty)}";
+            _subline.text = $"Difficulty: {DifficultyName(session.Case.Difficulty)}";
 
             float soundShare = summary.Rulings == 0 ? 0f : (float)summary.SoundRulings / summary.Rulings;
             _sound.Set($"{summary.SoundRulings} / {summary.Rulings}",
@@ -153,6 +153,8 @@ namespace CourtSim.Runtime.UI
                 return string.Empty;
             }
 
+            // Drop internal factor codes such as "(F4)" that the local model sometimes copies from its prompt.
+            text = System.Text.RegularExpressions.Regex.Replace(text, @"\s*\(F\d+\)", string.Empty);
             int end = text.IndexOf(". ", System.StringComparison.Ordinal);
             return end > 0 ? text.Substring(0, end + 1) : text;
         }
