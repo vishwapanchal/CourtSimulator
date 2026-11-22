@@ -13,16 +13,22 @@ namespace CourtSim.Runtime.Tests
         {
             IReadOnlyList<CaseFile> cases = CaseRepository.LoadAll();
 
-            var ids = new List<string>();
-            foreach (CaseFile caseFile in cases)
+            // 21 cases, seven at each difficulty, in order of difficulty and then id.
+            Assert.That(cases.Count, Is.EqualTo(21));
+            var perDifficulty = new int[4];
+            for (int i = 0; i < cases.Count; i++)
             {
-                ids.Add(caseFile.Id);
+                perDifficulty[cases[i].Difficulty]++;
+                if (i > 0)
+                {
+                    CaseFile previous = cases[i - 1];
+                    bool ordered = previous.Difficulty < cases[i].Difficulty
+                        || (previous.Difficulty == cases[i].Difficulty && string.CompareOrdinal(previous.Id, cases[i].Id) < 0);
+                    Assert.That(ordered, Is.True, $"{previous.Id} should come before {cases[i].Id}");
+                }
             }
 
-            Assert.That(ids, Is.EqualTo(new[] { "state-v-sahil-kadam", "state-v-mahesh-rathod", "state-v-kunal-bisht" }));
-            Assert.That(cases[0].Difficulty, Is.EqualTo(1));
-            Assert.That(cases[1].Difficulty, Is.EqualTo(2));
-            Assert.That(cases[2].Difficulty, Is.EqualTo(3));
+            Assert.That(perDifficulty, Is.EqualTo(new[] { 0, 7, 7, 7 }));
             LogAssert.NoUnexpectedReceived();
         }
 
