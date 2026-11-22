@@ -101,17 +101,28 @@ namespace CourtSim.Runtime.App
             if (_ui != null)
             {
                 _ui.RestartRequested -= OnRestartRequested;
+                _ui.CaseChosen -= OnCaseChosen;
             }
 
             _ui = ui;
             if (_ui != null)
             {
                 _ui.RestartRequested += OnRestartRequested;
+                _ui.CaseChosen += OnCaseChosen;
+                EnsureCasesLoaded();
+                _ui.SetCaseCatalog(_cases);
                 if (_session != null)
                 {
                     _ui.AttachSession(_session);
                 }
             }
+        }
+
+        /// <summary>Starts a session on the case the player picked.</summary>
+        public CaseSession StartCase(string caseId)
+        {
+            _caseId = caseId ?? string.Empty;
+            return StartNewSession();
         }
 
         /// <summary>Replaces the advisor for later sessions (tests, or a custom backend).</summary>
@@ -272,7 +283,13 @@ namespace CourtSim.Runtime.App
             if (_ui != null)
             {
                 _ui.RestartRequested -= OnRestartRequested;
+                _ui.CaseChosen -= OnCaseChosen;
             }
+        }
+
+        private void OnCaseChosen(string caseId)
+        {
+            StartCase(caseId);
         }
 
         private void OnRestartRequested()

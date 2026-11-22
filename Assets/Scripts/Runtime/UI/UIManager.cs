@@ -278,6 +278,24 @@ namespace CourtSim.Runtime.UI
             ShowToast(_session != null ? $"New session: {_session.Case.Title}" : "New session started");
         }
 
+        /// <summary>The cases the player can choose from, set by the session controller.</summary>
+        public IReadOnlyList<CourtSim.Core.Cases.CaseFile> CaseCatalog { get; private set; } = Array.Empty<CourtSim.Core.Cases.CaseFile>();
+
+        /// <summary>Raised when the player picks a case on the case-selection screen (argument: case id).</summary>
+        public event Action<string> CaseChosen;
+
+        public void SetCaseCatalog(IReadOnlyList<CourtSim.Core.Cases.CaseFile> cases)
+        {
+            CaseCatalog = cases ?? Array.Empty<CourtSim.Core.Cases.CaseFile>();
+        }
+
+        /// <summary>Starts the chosen case and walks the player into the courtroom.</summary>
+        public void ChooseCase(string caseId)
+        {
+            CaseChosen?.Invoke(caseId);
+            CloseAll();
+        }
+
         /// <summary>
         /// Called when the judge asks for the next ruling at the bench. If it returns true, something else (the hearing)
         /// takes over and opens the decision dialog later.
@@ -424,6 +442,7 @@ namespace CourtSim.Runtime.UI
             AddScreen<ControlsScreen>(screenCanvas.transform);
             AddScreen<DecisionPointScreen>(screenCanvas.transform);
             AddScreen<EvidenceScreen>(screenCanvas.transform);
+            AddScreen<CaseSelectScreen>(screenCanvas.transform);
         }
 
         private void AddScreen<T>(Transform parent) where T : UIScreen

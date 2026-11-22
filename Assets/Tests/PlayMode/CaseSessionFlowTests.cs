@@ -109,6 +109,20 @@ namespace CourtSim.Runtime.Tests
         }
 
         [Test]
+        public void CaseSelect_ListsEveryCase_AndChoosingOneStartsIt()
+        {
+            Assert.That(UI.CaseCatalog.Count, Is.GreaterThanOrEqualTo(3));
+            string other = UI.CaseCatalog[UI.CaseCatalog.Count - 1].Id;
+            UI.Open(ScreenId.CaseSelect);
+            Assert.That(UI.CurrentScreen, Is.EqualTo(ScreenId.CaseSelect));
+
+            UI.ChooseCase(other);
+
+            Assert.That(Session.Case.Id, Is.EqualTo(other));
+            Assert.That(UI.CurrentScreen, Is.EqualTo(ScreenId.None));
+        }
+
+        [Test]
         public void FullSession_ShowsDebrief_AndWritesFiveLogRecords()
         {
             OpenDecisionScreen();

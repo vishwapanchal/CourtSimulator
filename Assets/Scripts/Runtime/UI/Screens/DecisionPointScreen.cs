@@ -74,7 +74,10 @@ namespace CourtSim.Runtime.UI.Screens
             UIFactory.AddVerticalLayout(_debrief.gameObject, new RectOffset(0, 0, 0, 0), Theme.Spacing);
             _debriefView = new DebriefView(Factory, _debrief);
             _debriefText = Factory.CreateText("Text", _debrief, string.Empty, TextStyle.Body);
-            _restartButton = Factory.CreateButton("Restart", _debrief, "Start the next case", ButtonVariant.Primary, OnRestart, 260f);
+            RectTransform debriefActions = Factory.CreateRect("DebriefActions", _debrief);
+            UIFactory.AddHorizontalLayout(debriefActions.gameObject, new RectOffset(0, 0, 4, 0), 12f, TextAnchor.MiddleLeft);
+            Factory.CreateButton("ChooseCase", debriefActions, "Choose another case", ButtonVariant.Primary, () => Manager.Open(ScreenId.CaseSelect), 260f);
+            _restartButton = Factory.CreateButton("Restart", debriefActions, "Replay this case", ButtonVariant.Secondary, OnRestart, 220f);
 
             Factory.CreateButton("Return", footer, "Return to courtroom", ButtonVariant.Ghost, Manager.Back, 220f);
         }

@@ -10,5 +10,8 @@ namespace CourtSim.Core.UI
         Controls = 3,
         DecisionPoint = 4,
         Evidence = 5,
+
+        /// <summary>Choose a case to play, grouped by difficulty.</summary>
+        CaseSelect = 6,
     }
 }

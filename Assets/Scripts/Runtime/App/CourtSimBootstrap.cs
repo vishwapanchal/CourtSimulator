@@ -56,6 +56,12 @@ namespace CourtSim.Runtime.App
 
         private void Awake()
         {
+#if !UNITY_EDITOR
+            // Always borderless full screen at the monitor's own resolution, even if Windows remembered an
+            // older windowed size for the game.
+            Resolution native = Screen.currentResolution;
+            Screen.SetResolution(native.width, native.height, FullScreenMode.FullScreenWindow);
+#endif
             if (_assembleMissingParts)
             {
                 AssembleMissingParts();
