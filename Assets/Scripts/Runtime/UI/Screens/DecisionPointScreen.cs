@@ -96,6 +96,7 @@ namespace CourtSim.Runtime.UI.Screens
 
             _columns.gameObject.SetActive(true);
             _debrief.gameObject.SetActive(false);
+            _debriefView.Hide(); // stop the report's 3D picture while a decision is on screen
             session?.MarkPresented();
 
             string progress = $"DECISION {decisions.CurrentIndex + 1} OF {decisions.Count} · {DecisionPointCatalog.ShortName(current.Kind).ToUpperInvariant()}";
@@ -138,6 +139,7 @@ namespace CourtSim.Runtime.UI.Screens
             }
             else
             {
+                _debriefView.Hide();
                 _debriefText.text = "You have ruled on every decision point. No case file was loaded, so there is no debrief.";
             }
         }

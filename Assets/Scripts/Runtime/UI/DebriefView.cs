@@ -10,13 +10,21 @@ namespace CourtSim.Runtime.UI
 {
     /// <summary>
     /// The final report, written to be read in a few seconds:
-    /// 1. a big score ("2 of 3 rulings were sound") with a one-word grade,
+    /// 1. a 3D picture of the result (see <see cref="ResultsDiorama"/>) with the big score and a grade on top of it,
     /// 2. two plain counts about the AI: wrong advice caught, and good advice ignored,
-    /// 3. one card per phase saying what you ruled, the best ruling if yours was not, what the AI said, and why.
+    /// 3. one colour-coded card per phase, side by side like the pillars in the picture: what you ruled, the best
+    ///    ruling if yours was not, what the AI said, and why.
     /// </summary>
+    /// <remarks>Result colours (emerald, amber, coral) come from <see cref="ResultsDiorama"/>'s palette so each card
+    /// matches its pillar in the picture.</remarks>
     public sealed class DebriefView
     {
+        /// <summary>Height of the 3D picture. Its width is the card's inner width (1240 − 2 × 28 = 1184), so 4:1.</summary>
+        private const float HeroHeight = 296f;
+        private const float ScoreBlockWidth = 440f;
+
         private readonly UIFactory _factory;
+        private readonly ResultsDiorama _diorama;
         private readonly Text _score;
         private readonly Text _grade;
         private readonly Text _headline;
@@ -32,21 +40,42 @@ namespace CourtSim.Runtime.UI
             Root = factory.CreateRect("DebriefView", parent);
             UIFactory.AddVerticalLayout(Root.gameObject, new RectOffset(0, 0, 0, 0), 12f);
 
-            // Score row: "2 / 3" big, the grade beside it, and the one-sentence headline below.
-            RectTransform scoreRow = factory.CreateRect("ScoreRow", Root);
-            UIFactory.AddHorizontalLayout(scoreRow.gameObject, new RectOffset(0, 0, 0, 0), 16f, TextAnchor.MiddleLeft);
-            _score = factory.CreateText("Score", scoreRow, "-", TextStyle.Title);
-            _score.fontSize = Mathf.RoundToInt(_score.fontSize * 1.6f);
-            _grade = factory.CreateText("Grade", scoreRow, string.Empty, TextStyle.Heading);
-            _headline = factory.CreateText("Headline", Root, string.Empty, TextStyle.Body, TextAnchor.UpperLeft, theme.TextSecondary);
+            // The hero: a rounded frame that clips (Mask) the live 3D picture, with the score written over its left side.
+            Image frame = factory.CreatePanel("Hero", Root, ResultsDiorama.Backdrop);
+            LayoutElement frameLayout = UIFactory.GetOrAddLayoutElement(frame.gameObject);
+            frameLayout.minHeight = HeroHeight;
+            frameLayout.preferredHeight = HeroHeight;
+            frame.gameObject.AddComponent<Mask>().showMaskGraphic = true;
+
+            // The RawImage shows the texture the diorama's own camera draws into every frame.
+            RectTransform pictureRect = factory.CreateRect("Diorama", frame.rectTransform);
+            UIFactory.Stretch(pictureRect);
+            var picture = pictureRect.gameObject.AddComponent<RawImage>();
+            picture.raycastTarget = false;
+            _diorama = pictureRect.gameObject.AddComponent<ResultsDiorama>();
+            factory.AddOutline(frame.rectTransform, theme.Border);
+
+            RectTransform scoreBlock = factory.CreateRect("ScoreBlock", frame.rectTransform);
+            UIFactory.Place(scoreBlock, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(40f, 0f), new Vector2(ScoreBlockWidth, HeroHeight - 40f));
+            UIFactory.AddVerticalLayout(scoreBlock.gameObject, new RectOffset(0, 0, 0, 0), 2f, TextAnchor.MiddleLeft);
+            factory.CreateText("Label", scoreBlock, "YOUR SCORE", TextStyle.Overline);
+            _score = factory.CreateText("Score", scoreBlock, "-", TextStyle.Display);
+            _score.fontSize = Mathf.RoundToInt(_score.fontSize * 1.4f);
+            AddShadow(_score, theme);
+            _grade = factory.CreateText("Grade", scoreBlock, string.Empty, TextStyle.Heading);
+            _grade.fontSize = Mathf.RoundToInt(_grade.fontSize * 1.35f);
+            AddShadow(_grade, theme);
+            _headline = factory.CreateText("Headline", scoreBlock, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextSecondary);
 
             RectTransform tiles = factory.CreateRect("AiTrust", Root);
             UIFactory.AddHorizontalLayout(tiles.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.UpperLeft);
             _caught = new CountTile(factory, tiles, "WRONG AI ADVICE YOU CAUGHT");
             _ignored = new CountTile(factory, tiles, "GOOD AI ADVICE YOU IGNORED");
 
+            // Phase cards sit side by side, one under each pillar of the picture, all stretched to the same height.
             _cards = factory.CreateRect("Phases", Root);
-            UIFactory.AddVerticalLayout(_cards.gameObject, new RectOffset(0, 0, 0, 0), 8f);
+            HorizontalLayoutGroup row = UIFactory.AddHorizontalLayout(_cards.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.UpperLeft);
+            row.childForceExpandHeight = true;
         }
 
         public RectTransform Root { get; }
@@ -77,18 +106,18 @@ namespace CourtSim.Runtime.UI
             UITheme theme = _factory.Theme;
 
             _score.text = $"{summary.SoundRulings} / {summary.Rulings}";
-            Color tone = GradeColour(theme, summary);
+            Color tone = GradeColour(summary);
             _score.color = tone;
             _grade.text = Grade(summary);
             _grade.color = tone;
             _headline.text = Debrief.Headline(summary);
 
-            _caught.Set(summary.FlawedAdviceSeen == 0 ? "None given" : $"{summary.FlawsCaught} of {summary.FlawedAdviceSeen}",
+            _caught.Set(summary.FlawedAdviceSeen == 0 ? "None" : $"{summary.FlawsCaught} of {summary.FlawedAdviceSeen}",
                 summary.FlawedAdviceSeen == 0 ? "The AI gave no planted wrong advice this time." : "Catching wrong advice is the key skill.",
-                summary.FlawedAdviceSeen == 0 ? theme.TextSecondary : summary.FlawsCaught == summary.FlawedAdviceSeen ? theme.Success : theme.Warning);
-            _ignored.Set(summary.SoundAdviceSeen == 0 ? "None given" : $"{summary.SoundAdviceOverridden} of {summary.SoundAdviceSeen}",
+                summary.FlawedAdviceSeen == 0 ? theme.TextSecondary : summary.FlawsCaught == summary.FlawedAdviceSeen ? ResultsDiorama.Emerald : ResultsDiorama.Amber);
+            _ignored.Set(summary.SoundAdviceSeen == 0 ? "None" : $"{summary.SoundAdviceOverridden} of {summary.SoundAdviceSeen}",
                 summary.SoundAdviceSeen == 0 ? "The AI gave no correct advice this time." : "Good advice is worth following.",
-                summary.SoundAdviceSeen == 0 ? theme.TextSecondary : summary.SoundAdviceOverridden == 0 ? theme.Success : theme.Warning);
+                summary.SoundAdviceSeen == 0 ? theme.TextSecondary : summary.SoundAdviceOverridden == 0 ? ResultsDiorama.Emerald : ResultsDiorama.Amber);
 
             IReadOnlyList<DebriefItem> items = Debrief.Build(session);
             while (_cardViews.Count < items.Count)
@@ -106,6 +135,14 @@ namespace CourtSim.Runtime.UI
                     _cardViews[i].Set($"{HearingPhase.Number(i, items.Count)}  ·  {HearingPhase.Title(kind)}", items[i]);
                 }
             }
+
+            _diorama.Show(session);
+        }
+
+        /// <summary>Stops the 3D picture while the report is not on screen.</summary>
+        public void Hide()
+        {
+            _diorama.Hide();
         }
 
         public static string DifficultyName(int difficulty)
@@ -134,14 +171,24 @@ namespace CourtSim.Runtime.UI
             return summary.SoundRulings > 0 ? "Needs practice" : "Review the law and try again";
         }
 
-        private static Color GradeColour(UITheme theme, SessionSummary summary)
+        private static Color GradeColour(SessionSummary summary)
         {
             if (summary.Rulings > 0 && summary.SoundRulings == summary.Rulings)
             {
-                return theme.Success;
+                return ResultsDiorama.Emerald;
             }
 
-            return summary.SoundRulings * 2 >= summary.Rulings ? theme.Accent : theme.Warning;
+            return summary.SoundRulings * 2 >= summary.Rulings ? ResultsDiorama.Gold : ResultsDiorama.Coral;
+        }
+
+        /// <summary>A soft drop shadow keeps big text readable over the 3D picture.</summary>
+        private static void AddShadow(Text text, UITheme theme)
+        {
+            var shadow = text.gameObject.AddComponent<Shadow>();
+            Color colour = theme.Backdrop;
+            colour.a = 0.8f;
+            shadow.effectColor = colour;
+            shadow.effectDistance = new Vector2(0f, -3f);
         }
 
         /// <summary>The first sentence of a longer explanation, so each card stays short.</summary>
@@ -158,6 +205,14 @@ namespace CourtSim.Runtime.UI
             return end > 0 ? text.Substring(0, end + 1) : text;
         }
 
+        /// <summary>A coloured bar drawn as a UI rectangle, turned by <paramref name="angle"/> degrees.</summary>
+        private static void Bar(UIFactory factory, RectTransform parent, Vector2 position, Vector2 size, float angle)
+        {
+            Image bar = factory.CreatePanel("Bar", parent, factory.Theme.OnAccent, PanelShape.Rounded, 3f);
+            UIFactory.Place(bar.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), position, size);
+            bar.rectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
         private sealed class CountTile
         {
             private readonly string _label;
@@ -169,12 +224,18 @@ namespace CourtSim.Runtime.UI
                 UITheme theme = factory.Theme;
                 _label = label;
                 Image tile = factory.CreatePanel(label, parent, theme.SurfaceRaised);
-                UIFactory.AddVerticalLayout(tile.gameObject, new RectOffset(18, 18, 10, 10), 2f);
+                UIFactory.AddHorizontalLayout(tile.gameObject, new RectOffset(18, 18, 10, 10), 14f, TextAnchor.MiddleLeft);
                 UIFactory.GetOrAddLayoutElement(tile.gameObject).flexibleWidth = 1f;
                 factory.AddOutline(tile.rectTransform, theme.Border);
-                factory.CreateText("Label", tile.rectTransform, label, TextStyle.Overline);
-                _value = factory.CreateText("Value", tile.rectTransform, "-", TextStyle.Heading);
-                _meaning = factory.CreateText("Meaning", tile.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextSecondary);
+
+                _value = factory.CreateText("Value", tile.rectTransform, "-", TextStyle.Title, TextAnchor.MiddleLeft);
+                _value.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+                RectTransform words = factory.CreateRect("Words", tile.rectTransform);
+                UIFactory.AddVerticalLayout(words.gameObject, new RectOffset(0, 0, 0, 0), 2f);
+                UIFactory.GetOrAddLayoutElement(words.gameObject).flexibleWidth = 1f;
+                factory.CreateText("Label", words, label, TextStyle.Overline);
+                _meaning = factory.CreateText("Meaning", words, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextSecondary);
             }
 
             public void Set(string value, string meaning, Color colour)
@@ -187,35 +248,74 @@ namespace CourtSim.Runtime.UI
             public string Describe() => $"{_label}: {_value.text}. {_meaning.text}";
         }
 
-        /// <summary>One phase: what you ruled, the best ruling (only if yours wasn't it), what the AI said, and why.</summary>
+        /// <summary>
+        /// One phase: a coloured stripe and badge (tick, dash or cross), the result word, what you ruled, the best
+        /// ruling (only if yours wasn't it), what the AI said, and why.
+        /// </summary>
         private sealed class PhaseCard
         {
-            private readonly UITheme _theme;
+            private readonly Image _tint;
+            private readonly Image _stripe;
+            private readonly Image _badge;
+            private readonly RectTransform _tick;
+            private readonly RectTransform _dash;
+            private readonly RectTransform _cross;
+            private readonly Text _result;
             private readonly Text _phase;
             private readonly Text _title;
-            private readonly Image _chip;
-            private readonly Text _chipText;
             private readonly Text _body;
 
             public PhaseCard(UIFactory factory, RectTransform parent)
             {
-                _theme = factory.Theme;
-                Image card = factory.CreatePanel("Phase", parent, _theme.SurfaceRaised);
+                UITheme theme = factory.Theme;
+                Image card = factory.CreatePanel("Phase", parent, theme.SurfaceRaised);
                 Root = card.rectTransform;
-                UIFactory.AddVerticalLayout(card.gameObject, new RectOffset(18, 18, 10, 12), 4f);
-                factory.AddOutline(card.rectTransform, _theme.Border);
+                LayoutElement layout = UIFactory.GetOrAddLayoutElement(card.gameObject);
+
+                // Same small base width and equal stretch, so the three cards are always equally wide.
+                layout.minWidth = 10f;
+                layout.preferredWidth = 10f;
+                layout.flexibleWidth = 1f;
+                UIFactory.AddVerticalLayout(card.gameObject, new RectOffset(28, 18, 14, 16), 6f);
+
+                // A faint wash of the result colour over the card, and a solid stripe down its left edge.
+                _tint = factory.CreatePanel("Tint", card.rectTransform, Color.clear);
+                UIFactory.Stretch(_tint.rectTransform);
+                UIFactory.GetOrAddLayoutElement(_tint.gameObject).ignoreLayout = true;
+                _stripe = factory.CreatePanel("Stripe", card.rectTransform, Color.clear, PanelShape.Rounded, 3f);
+                UIFactory.GetOrAddLayoutElement(_stripe.gameObject).ignoreLayout = true;
+                RectTransform stripe = _stripe.rectTransform;
+                stripe.anchorMin = new Vector2(0f, 0f);
+                stripe.anchorMax = new Vector2(0f, 1f);
+                stripe.pivot = new Vector2(0f, 0.5f);
+                stripe.offsetMin = new Vector2(10f, 16f);
+                stripe.offsetMax = new Vector2(16f, -16f);
+                factory.AddOutline(card.rectTransform, theme.Border);
 
                 RectTransform top = factory.CreateRect("Top", card.rectTransform);
                 UIFactory.AddHorizontalLayout(top.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.MiddleLeft);
+
+                // The badge's tick and cross are drawn from rotated bars, so they never depend on the font having ✓ or ✗.
+                _badge = factory.CreatePanel("Badge", top, Color.white, PanelShape.Circle);
+                UIFactory.SetFixedSize(_badge.gameObject, 44f, 44f);
+                _tick = Glyph(factory, _badge.rectTransform, "Tick");
+                Bar(factory, _tick, new Vector2(-7f, -4f), new Vector2(6f, 13f), 45f);
+                Bar(factory, _tick, new Vector2(4f, 1f), new Vector2(6f, 25f), -37.9f);
+                _dash = Glyph(factory, _badge.rectTransform, "Dash");
+                Bar(factory, _dash, Vector2.zero, new Vector2(22f, 6f), 0f);
+                _cross = Glyph(factory, _badge.rectTransform, "Cross");
+                Bar(factory, _cross, Vector2.zero, new Vector2(6f, 24f), 45f);
+                Bar(factory, _cross, Vector2.zero, new Vector2(6f, 24f), -45f);
+
                 RectTransform names = factory.CreateRect("Names", top);
                 UIFactory.AddVerticalLayout(names.gameObject, new RectOffset(0, 0, 0, 0), 0f);
                 UIFactory.GetOrAddLayoutElement(names.gameObject).flexibleWidth = 1f;
-                _phase = factory.CreateText("Phase", names, string.Empty, TextStyle.Overline);
-                _title = factory.CreateText("Title", names, string.Empty, TextStyle.Body);
-                _title.fontStyle = FontStyle.Bold;
-                _chip = factory.CreateChip("Result", top, string.Empty, _theme.Surface, _theme.TextPrimary, out _chipText).GetComponent<Image>();
+                _result = factory.CreateText("Result", names, string.Empty, TextStyle.Heading);
+                _phase = factory.CreateText("Phase", names, string.Empty, TextStyle.Overline, TextAnchor.UpperLeft, theme.TextSecondary);
 
-                _body = factory.CreateText("Body", card.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, _theme.TextPrimary);
+                _title = factory.CreateText("Title", card.rectTransform, string.Empty, TextStyle.Body);
+                _title.fontStyle = FontStyle.Bold;
+                _body = factory.CreateText("Body", card.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextPrimary);
                 _body.supportRichText = true;
             }
 
@@ -227,11 +327,17 @@ namespace CourtSim.Runtime.UI
                 _title.text = item.Title;
 
                 bool sound = item.Quality == OptionQuality.Sound;
-                _chipText.text = sound ? "CORRECT" : item.Quality == OptionQuality.Defensible ? "ACCEPTABLE" : "WRONG";
-                Color tone = sound ? _theme.Success : item.Quality == OptionQuality.Defensible ? _theme.Accent : _theme.Warning;
-                _chipText.color = tone;
-                tone.a = 0.16f;
-                _chip.color = tone;
+                bool acceptable = item.Quality == OptionQuality.Defensible;
+                _result.text = sound ? "CORRECT" : acceptable ? "ACCEPTABLE" : "WRONG";
+                Color tone = ResultsDiorama.ResultColour(item.Quality);
+                _result.color = tone;
+                _badge.color = tone;
+                _stripe.color = tone;
+                tone.a = 0.09f;
+                _tint.color = tone;
+                _tick.gameObject.SetActive(sound);
+                _dash.gameObject.SetActive(acceptable);
+                _cross.gameObject.SetActive(!sound && !acceptable);
 
                 var body = new StringBuilder();
                 body.Append("<b>You ruled:</b>  ").Append(UIFactory.Plain(item.RulingLabel));
@@ -245,7 +351,14 @@ namespace CourtSim.Runtime.UI
                 _body.text = body.ToString();
             }
 
-            public string Describe() => $"{_phase.text} {_title.text} [{_chipText.text}]\n{_body.text}";
+            public string Describe() => $"{_phase.text} {_title.text} [{_result.text}]\n{_body.text}";
+
+            private static RectTransform Glyph(UIFactory factory, RectTransform badge, string name)
+            {
+                RectTransform glyph = factory.CreateRect(name, badge);
+                UIFactory.Stretch(glyph);
+                return glyph;
+            }
 
             private static string DescribeAdvice(DebriefItem item)
             {
