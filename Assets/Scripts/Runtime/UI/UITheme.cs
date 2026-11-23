@@ -16,6 +16,9 @@ namespace CourtSim.Runtime.UI
 
         /// <summary>Small, bold, accent-coloured label above a title. Write the text in capitals.</summary>
         Overline,
+
+        /// <summary>The biggest type, bold: the project title in the opening titles.</summary>
+        Hero,
     }
 
     /// <summary>Visual weight of a button.</summary>
@@ -46,10 +49,15 @@ namespace CourtSim.Runtime.UI
         [SerializeField] private Color _onAccent = new Color(0.078f, 0.106f, 0.176f, 1f);
         [SerializeField] private Color _warning = new Color(0.902f, 0.659f, 0.263f, 1f);
         [SerializeField] private Color _success = new Color(0.412f, 0.718f, 0.537f, 1f);
+        [Tooltip("Near-black navy behind the opening titles and cinematic vignettes.")]
+        [SerializeField] private Color _backdrop = new Color(0.008f, 0.012f, 0.03f, 1f);
+        [Tooltip("A brighter gold for glows and light sweeps over the accent.")]
+        [SerializeField] private Color _accentBright = new Color(1f, 0.878f, 0.541f, 1f);
 
         [Header("Typography")]
         [Tooltip("Leave empty to use Unity's built-in font.")]
         [SerializeField] private Font _font;
+        [SerializeField, Min(8)] private int _heroSize = 84;
         [SerializeField, Min(8)] private int _displaySize = 64;
         [SerializeField, Min(8)] private int _titleSize = 36;
         [SerializeField, Min(8)] private int _headingSize = 22;
@@ -85,6 +93,10 @@ namespace CourtSim.Runtime.UI
         public Color Warning => _warning;
 
         public Color Success => _success;
+
+        public Color Backdrop => _backdrop;
+
+        public Color AccentBright => _accentBright;
 
         public Font Font => _font != null ? _font : BuiltinAssets.DefaultFont;
 
@@ -127,6 +139,8 @@ namespace CourtSim.Runtime.UI
                     return _buttonSize;
                 case TextStyle.Overline:
                     return _overlineSize;
+                case TextStyle.Hero:
+                    return _heroSize;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(style), style, null);
             }
@@ -136,6 +150,7 @@ namespace CourtSim.Runtime.UI
         {
             switch (style)
             {
+                case TextStyle.Hero:
                 case TextStyle.Display:
                 case TextStyle.Title:
                 case TextStyle.Heading:

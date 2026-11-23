@@ -11,6 +11,25 @@ namespace CourtSim.Runtime.UI
         Rounded,
         Square,
         Circle,
+
+        /// <summary>A circle drawn from a bigger texture, for discs a few hundred pixels across.</summary>
+        LargeCircle,
+    }
+
+    /// <summary>Soft, tinted overlays used for cinematic lighting (see <see cref="UIFactory.CreateGradient"/>).</summary>
+    public enum GradientShape
+    {
+        /// <summary>Solid on the left, fading out to the right: darkens the side where text sits.</summary>
+        FadeRight,
+
+        /// <summary>Solid at the bottom, fading out upwards.</summary>
+        FadeUp,
+
+        /// <summary>A soft spot of light, brightest in the middle.</summary>
+        Glow,
+
+        /// <summary>Clear in the middle, darker towards the edges, like an old film lens.</summary>
+        Vignette,
     }
 
     /// <summary>
@@ -85,6 +104,29 @@ namespace CourtSim.Runtime.UI
             return outline;
         }
 
+        /// <summary>A tinted soft gradient; stretch or place it like any panel. It never takes input.</summary>
+        public Image CreateGradient(string name, Transform parent, Color color, GradientShape shape)
+        {
+            Image image = CreatePanel(name, parent, color, PanelShape.Square);
+            switch (shape)
+            {
+                case GradientShape.FadeRight:
+                    image.sprite = _sprites.FadeRight;
+                    break;
+                case GradientShape.FadeUp:
+                    image.sprite = _sprites.FadeUp;
+                    break;
+                case GradientShape.Glow:
+                    image.sprite = _sprites.Glow;
+                    break;
+                default:
+                    image.sprite = _sprites.Vignette;
+                    break;
+            }
+
+            return image;
+        }
+
         public Image CreateDivider(Transform parent)
         {
             Image divider = CreatePanel("Divider", parent, Theme.Border, PanelShape.Square);
@@ -152,6 +194,10 @@ namespace CourtSim.Runtime.UI
             var button = background.gameObject.AddComponent<Button>();
             button.targetGraphic = background;
             button.colors = BuildColors(variant);
+
+            // A faint tick on hover and a soft click on press. Added first, so the click sounds before the action runs.
+            background.gameObject.AddComponent<ButtonSounds>();
+            button.onClick.AddListener(ButtonSounds.PlayClick);
             if (variant == ButtonVariant.Secondary)
             {
                 AddOutline(background.rectTransform, Theme.Border);
@@ -292,6 +338,11 @@ namespace CourtSim.Runtime.UI
                     break;
                 case PanelShape.Circle:
                     image.sprite = _sprites.Circle;
+                    image.type = Image.Type.Simple;
+                    image.preserveAspect = true;
+                    break;
+                case PanelShape.LargeCircle:
+                    image.sprite = _sprites.LargeCircle;
                     image.type = Image.Type.Simple;
                     image.preserveAspect = true;
                     break;

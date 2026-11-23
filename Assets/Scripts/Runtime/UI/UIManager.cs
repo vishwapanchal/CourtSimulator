@@ -38,6 +38,8 @@ namespace CourtSim.Runtime.UI
         [Tooltip("Optional. Leave empty to use the default theme.")]
         [SerializeField] private UITheme _theme;
         [SerializeField] private bool _showMainMenuOnStart = true;
+        [Tooltip("Play the opening titles over the main menu at launch (never in batch mode; see IntroSequence).")]
+        [SerializeField] private bool _playIntro = true;
 
         private readonly ScreenStack _stack = new ScreenStack();
         private readonly Dictionary<ScreenId, UIScreen> _screens = new Dictionary<ScreenId, UIScreen>();
@@ -54,8 +56,12 @@ namespace CourtSim.Runtime.UI
         private bool _ownsTheme;
         private bool _built;
         private bool _gameplayBlocked;
+        private IntroSequence _intro;
 
         public UITheme Theme => _theme;
+
+        /// <summary>True while the opening titles cover the main menu (they are skipped with any key or click).</summary>
+        public bool IsIntroPlaying => _intro != null && _intro.IsPlaying;
 
         public ScreenId CurrentScreen => _stack.Top;
 
@@ -363,6 +369,13 @@ namespace CourtSim.Runtime.UI
             if (_showMainMenuOnStart)
             {
                 ShowMainMenu();
+
+                // The titles only cover the menu, which is already open underneath, so the screen stack (and
+                // everything that checks it, tests included) is the same with or without them.
+                if (_playIntro && IntroSequence.ShouldPlay())
+                {
+                    _intro = IntroSequence.Play(_factory, transform, OnIntroFinished);
+                }
             }
             else
             {
@@ -403,6 +416,8 @@ namespace CourtSim.Runtime.UI
                 _session.AdviceChanged -= OnSessionAdviceChanged;
             }
 
+            // The drone lives on a separate, long-lived object; without the menus it has no reason to keep playing.
+            SoundEffects.StopDrone(0.3f);
             _sprites?.Dispose();
             _sprites = null;
             if (_ownsTheme)
@@ -468,10 +483,42 @@ namespace CourtSim.Runtime.UI
                 currentScreen.SetVisible(true);
             }
 
-            _hud.SetVisible(!_stack.Contains(ScreenId.MainMenu));
+            // Anything that leaves the main menu (a tool, a test, the demo) must not stay hidden under the titles.
+            // Done before the drone below, because skipping the titles resets the drone to its menu volume.
+            if (current != ScreenId.MainMenu && IsIntroPlaying)
+            {
+                _intro.Skip();
+            }
+
+            bool onMenu = _stack.Contains(ScreenId.MainMenu);
+            _hud.SetVisible(!onMenu);
+
+            // The ambient drone belongs to the menus (main menu and the screens opened from it) and fades out
+            // as the player walks into the courtroom.
+            if (onMenu)
+            {
+                SoundEffects.StartDrone(IsIntroPlaying ? SoundEffects.IntroDroneVolume : SoundEffects.MenuDroneVolume);
+            }
+            else
+            {
+                SoundEffects.StopDrone();
+            }
+
             ApplyGameplayBlock(IsGameplayBlocked);
             GameServices.Events.Publish(new ScreenChanged(previous, current));
             SpeakNewAdvice();
+        }
+
+        /// <summary>
+        /// The titles are fading away: show the main menu again, which replays its entrance animation and gives the
+        /// keyboard focus back to its first button (the intro had cleared it so Enter could not press a hidden button).
+        /// </summary>
+        private void OnIntroFinished()
+        {
+            if (_stack.Top == ScreenId.MainMenu && _screens.TryGetValue(ScreenId.MainMenu, out UIScreen menu))
+            {
+                menu.SetVisible(true);
+            }
         }
 
         private void ApplyGameplayBlock(bool blocked, bool force = false)
