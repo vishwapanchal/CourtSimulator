@@ -202,34 +202,39 @@ namespace CourtSim.Runtime.App
             yield return TurnBy(-35f, -8f, 1.6f);
 
             Vector3 benchSpot = new Vector3(0f, 0f, 4.3f);
-            yield return Say("Walk to the judge's bench. Press E to hear the next matter.", 0f);
+            yield return VisitEvidence();
+            yield return Say("The judge takes the bench. Pressing E calls the first hearing.", 0f);
             yield return WalkTo(benchSpot);
             yield return FaceBench();
 
+            // Once seated, the judge stays on the bench: each ruling leads straight into the next phase's hearing.
             for (int decision = 0; decision < 3 && Session != null && !Session.IsComplete; decision++)
             {
-                if (decision == 1)
-                {
-                    yield return VisitEvidence(benchSpot);
-                }
-
                 yield return Rule(decision);
             }
 
-            yield return Hold(1f);
-            UI.CloseAll();
-            UI.Open(ScreenId.DecisionPoint);
-            yield return Say("The debrief reveals which suggestions were planted as flawed, and scores over-trust and under-trust in the AI.", 9f);
+            // After the last ruling the final report opens by itself.
+            float reportDeadline = Time.realtimeSinceStartup + 15f;
+            while (UI.CurrentScreen != ScreenId.DecisionPoint && Time.realtimeSinceStartup < reportDeadline)
+            {
+                yield return null;
+            }
+
+            yield return Say("The final report: how many rulings were sound, which AI suggestions were planted as wrong, and whether the judge caught them.", 9f);
             yield return Say("Adaptive difficulty: flaws grow subtler for judges who over-trust; explanations grow richer for judges who dismiss sound advice.", 7f);
         }
 
         private IEnumerator Rule(int decision)
         {
-            _input.PressInteract();
+            if (decision == 0)
+            {
+                _input.PressInteract();
+            }
+
             yield return WaitForHearing(decision);
             yield return Say(decision == 0
                 ? "The AI assistant types its suggested ruling and reads it aloud. Some suggestions are deliberately flawed."
-                : "A new matter. The assistant advises again; the judge must test it against the record.", 0f);
+                : "The judge stays on the bench and the next phase is heard. The assistant advises again; test it against the record.", 0f);
             yield return WaitForAssistant();
             yield return Hold(1.5f);
 
@@ -267,9 +272,9 @@ namespace CourtSim.Runtime.App
             _recording = true;
         }
 
-        private IEnumerator VisitEvidence(Vector3 benchSpot)
+        private IEnumerator VisitEvidence()
         {
-            yield return Say("Before ruling on admissibility, the judge examines the exhibit.", 0f);
+            yield return Say("Before the hearings, the judge examines the exhibits on the evidence table.", 0f);
             yield return TurnBy(-90f, 8f, 1.2f);
             yield return WalkTo(new Vector3(-4.9f, 0f, 4f));
             yield return FaceYaw(270f, 0f, 1f);
@@ -277,8 +282,6 @@ namespace CourtSim.Runtime.App
             yield return Hold(6f);
             UI.Back();
             yield return Hold(0.6f);
-            yield return WalkTo(benchSpot);
-            yield return FaceBench();
         }
 
         private IEnumerator FaceBench()
