@@ -201,8 +201,50 @@ namespace CourtSim.Runtime.UI
 
             // Drop internal factor codes such as "(F4)" that the local model sometimes copies from its prompt.
             text = System.Text.RegularExpressions.Regex.Replace(text, @"\s*\(F\d+\)", string.Empty);
-            int end = text.IndexOf(". ", System.StringComparison.Ordinal);
-            return end > 0 ? text.Substring(0, end + 1) : text;
+            // A sentence ends at ". " unless the word before the full stop is an abbreviation such as "Rs.", "s."
+            // (section), "No." or "v." (versus), which are common in Indian legal text.
+            int searchFrom = 0;
+            while (true)
+            {
+                int end = text.IndexOf(". ", searchFrom, System.StringComparison.Ordinal);
+                if (end <= 0)
+                {
+                    return text;
+                }
+
+                int wordStart = text.LastIndexOf(' ', end - 1) + 1;
+                string word = text.Substring(wordStart, end - wordStart);
+                if (!IsAbbreviation(word))
+                {
+                    return text.Substring(0, end + 1);
+                }
+
+                searchFrom = end + 2;
+            }
+        }
+
+        private static bool IsAbbreviation(string word)
+        {
+            switch (word.TrimStart('(').ToLowerInvariant())
+            {
+                case "rs":
+                case "s":
+                case "ss":
+                case "no":
+                case "nos":
+                case "v":
+                case "vs":
+                case "dr":
+                case "mr":
+                case "mrs":
+                case "sh":
+                case "smt":
+                case "i.e":
+                case "e.g":
+                    return true;
+                default:
+                    return word.Length == 1; // initials such as "B." in "B. R. Ambedkar"
+            }
         }
 
         /// <summary>A coloured bar drawn as a UI rectangle, turned by <paramref name="angle"/> degrees.</summary>
