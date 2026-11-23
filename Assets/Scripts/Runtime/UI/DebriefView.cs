@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Text;
-using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Logging;
 using CourtSim.Core.Sessions;
@@ -10,26 +9,21 @@ using UnityEngine.UI;
 namespace CourtSim.Runtime.UI
 {
     /// <summary>
-    /// The results page, kept deliberately simple:
-    /// 1. one headline sentence,
-    /// 2. three score tiles (sound rulings, over-trust, under-trust), each with one line of meaning,
-    /// 3. a table with one row per ruling: your ruling, the sound ruling, what the AI suggested, and the result,
-    ///    with a single "why" line underneath.
+    /// The final report, written to be read in a few seconds:
+    /// 1. a big score ("2 of 3 rulings were sound") with a one-word grade,
+    /// 2. two plain counts about the AI: wrong advice caught, and good advice ignored,
+    /// 3. one card per phase saying what you ruled, the best ruling if yours was not, what the AI said, and why.
     /// </summary>
     public sealed class DebriefView
     {
-        private const float DecisionWidth = 170f;
-        private const float RulingWidth = 260f;
-        private const float ResultWidth = 120f;
-
         private readonly UIFactory _factory;
+        private readonly Text _score;
+        private readonly Text _grade;
         private readonly Text _headline;
-        private readonly Text _subline;
-        private readonly ScoreTile _sound;
-        private readonly ScoreTile _overTrust;
-        private readonly ScoreTile _underTrust;
-        private readonly RectTransform _rows;
-        private readonly List<RulingRow> _rowViews = new List<RulingRow>();
+        private readonly CountTile _caught;
+        private readonly CountTile _ignored;
+        private readonly RectTransform _cards;
+        private readonly List<PhaseCard> _cardViews = new List<PhaseCard>();
 
         public DebriefView(UIFactory factory, RectTransform parent)
         {
@@ -38,26 +32,21 @@ namespace CourtSim.Runtime.UI
             Root = factory.CreateRect("DebriefView", parent);
             UIFactory.AddVerticalLayout(Root.gameObject, new RectOffset(0, 0, 0, 0), 12f);
 
-            _headline = factory.CreateText("Headline", Root, string.Empty, TextStyle.Heading);
-            _subline = factory.CreateText("Subline", Root, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextSecondary);
+            // Score row: "2 / 3" big, the grade beside it, and the one-sentence headline below.
+            RectTransform scoreRow = factory.CreateRect("ScoreRow", Root);
+            UIFactory.AddHorizontalLayout(scoreRow.gameObject, new RectOffset(0, 0, 0, 0), 16f, TextAnchor.MiddleLeft);
+            _score = factory.CreateText("Score", scoreRow, "-", TextStyle.Title);
+            _score.fontSize = Mathf.RoundToInt(_score.fontSize * 1.6f);
+            _grade = factory.CreateText("Grade", scoreRow, string.Empty, TextStyle.Heading);
+            _headline = factory.CreateText("Headline", Root, string.Empty, TextStyle.Body, TextAnchor.UpperLeft, theme.TextSecondary);
 
-            RectTransform tiles = factory.CreateRect("Scores", Root);
+            RectTransform tiles = factory.CreateRect("AiTrust", Root);
             UIFactory.AddHorizontalLayout(tiles.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.UpperLeft);
-            _sound = new ScoreTile(factory, tiles, "SOUND RULINGS");
-            _overTrust = new ScoreTile(factory, tiles, "OVER-TRUST IN AI");
-            _underTrust = new ScoreTile(factory, tiles, "UNDER-TRUST IN AI");
+            _caught = new CountTile(factory, tiles, "WRONG AI ADVICE YOU CAUGHT");
+            _ignored = new CountTile(factory, tiles, "GOOD AI ADVICE YOU IGNORED");
 
-            // Table header.
-            RectTransform header = factory.CreateRect("TableHeader", Root);
-            UIFactory.AddHorizontalLayout(header.gameObject, new RectOffset(16, 16, 6, 0), 12f, TextAnchor.MiddleLeft);
-            HeaderCell(header, "DECISION", DecisionWidth);
-            HeaderCell(header, "YOUR RULING", RulingWidth);
-            HeaderCell(header, "SOUND RULING", RulingWidth);
-            HeaderCell(header, "AI SUGGESTED", RulingWidth);
-            HeaderCell(header, "RESULT", ResultWidth);
-
-            _rows = factory.CreateRect("Rows", Root);
-            UIFactory.AddVerticalLayout(_rows.gameObject, new RectOffset(0, 0, 0, 0), 8f);
+            _cards = factory.CreateRect("Phases", Root);
+            UIFactory.AddVerticalLayout(_cards.gameObject, new RectOffset(0, 0, 0, 0), 8f);
         }
 
         public RectTransform Root { get; }
@@ -67,13 +56,14 @@ namespace CourtSim.Runtime.UI
         {
             get
             {
-                var text = new StringBuilder(_headline.text).Append('\n').Append(_subline.text).Append('\n');
-                text.Append(_sound.Describe()).Append('\n').Append(_overTrust.Describe()).Append('\n').Append(_underTrust.Describe()).Append('\n');
-                foreach (RulingRow row in _rowViews)
+                var text = new StringBuilder();
+                text.Append(_score.text).Append(' ').Append(_grade.text).Append('\n').Append(_headline.text).Append('\n');
+                text.Append(_caught.Describe()).Append('\n').Append(_ignored.Describe()).Append('\n');
+                foreach (PhaseCard card in _cardViews)
                 {
-                    if (row.Root.gameObject.activeSelf)
+                    if (card.Root.gameObject.activeSelf)
                     {
-                        text.Append(row.Describe()).Append('\n');
+                        text.Append(card.Describe()).Append('\n');
                     }
                 }
 
@@ -85,28 +75,35 @@ namespace CourtSim.Runtime.UI
         {
             SessionSummary summary = session.Summary;
             UITheme theme = _factory.Theme;
-            _headline.text = Debrief.Headline(summary);
-            _subline.text = $"Difficulty: {DifficultyName(session.Case.Difficulty)}";
 
-            float soundShare = summary.Rulings == 0 ? 0f : (float)summary.SoundRulings / summary.Rulings;
-            _sound.Set($"{summary.SoundRulings} / {summary.Rulings}",
-                soundShare >= 0.99f ? "Every ruling was sound." : soundShare >= 0.5f ? "Most rulings were sound." : "Review the sound rulings below.",
-                soundShare >= 0.99f ? theme.Success : soundShare >= 0.5f ? theme.TextPrimary : theme.Warning);
-            _overTrust.Set(Debrief.OverTrustPercent(summary), ShortTrustLine(summary.OverTrust, "flawed AI advice accepted"), BandColour(theme, summary.OverTrust));
-            _underTrust.Set(Debrief.UnderTrustPercent(summary), ShortTrustLine(summary.UnderTrust, "sound AI advice rejected"), BandColour(theme, summary.UnderTrust));
+            _score.text = $"{summary.SoundRulings} / {summary.Rulings}";
+            Color tone = GradeColour(theme, summary);
+            _score.color = tone;
+            _grade.text = Grade(summary);
+            _grade.color = tone;
+            _headline.text = Debrief.Headline(summary);
+
+            _caught.Set(summary.FlawedAdviceSeen == 0 ? "None given" : $"{summary.FlawsCaught} of {summary.FlawedAdviceSeen}",
+                summary.FlawedAdviceSeen == 0 ? "The AI gave no planted wrong advice this time." : "Catching wrong advice is the key skill.",
+                summary.FlawedAdviceSeen == 0 ? theme.TextSecondary : summary.FlawsCaught == summary.FlawedAdviceSeen ? theme.Success : theme.Warning);
+            _ignored.Set(summary.SoundAdviceSeen == 0 ? "None given" : $"{summary.SoundAdviceOverridden} of {summary.SoundAdviceSeen}",
+                summary.SoundAdviceSeen == 0 ? "The AI gave no correct advice this time." : "Good advice is worth following.",
+                summary.SoundAdviceSeen == 0 ? theme.TextSecondary : summary.SoundAdviceOverridden == 0 ? theme.Success : theme.Warning);
 
             IReadOnlyList<DebriefItem> items = Debrief.Build(session);
-            while (_rowViews.Count < items.Count)
+            while (_cardViews.Count < items.Count)
             {
-                _rowViews.Add(new RulingRow(_factory, _rows));
+                _cardViews.Add(new PhaseCard(_factory, _cards));
             }
 
-            for (int i = 0; i < _rowViews.Count; i++)
+            for (int i = 0; i < _cardViews.Count; i++)
             {
-                _rowViews[i].Root.gameObject.SetActive(i < items.Count);
-                if (i < items.Count)
+                bool used = i < items.Count;
+                _cardViews[i].Root.gameObject.SetActive(used);
+                if (used)
                 {
-                    _rowViews[i].Set(items[i]);
+                    var kind = session.Case.DecisionPoints[i].Definition.Kind;
+                    _cardViews[i].Set($"{HearingPhase.Number(i, items.Count)}  ·  {HearingPhase.Title(kind)}", items[i]);
                 }
             }
         }
@@ -116,36 +113,38 @@ namespace CourtSim.Runtime.UI
             return difficulty <= 1 ? "Easy" : difficulty == 2 ? "Medium" : "Hard";
         }
 
-        private static string ShortTrustLine(double? rate, string what)
+        /// <summary>A one-word verdict on the session.</summary>
+        public static string Grade(SessionSummary summary)
         {
-            if (!rate.HasValue)
+            if (summary.Rulings == 0)
             {
-                return "Not measured this session.";
+                return string.Empty;
             }
 
-            string band = Debrief.Band(rate.Value);
-            return $"{char.ToUpperInvariant(band[0])}{band.Substring(1)}: {what}.";
+            if (summary.SoundRulings == summary.Rulings)
+            {
+                return "Excellent judgment";
+            }
+
+            if (summary.SoundRulings * 2 >= summary.Rulings)
+            {
+                return "Good judgment";
+            }
+
+            return summary.SoundRulings > 0 ? "Needs practice" : "Review the law and try again";
         }
 
-        private static Color BandColour(UITheme theme, double? rate)
+        private static Color GradeColour(UITheme theme, SessionSummary summary)
         {
-            if (!rate.HasValue)
+            if (summary.Rulings > 0 && summary.SoundRulings == summary.Rulings)
             {
-                return theme.TextSecondary;
+                return theme.Success;
             }
 
-            switch (Debrief.Band(rate.Value))
-            {
-                case "high":
-                    return theme.Warning;
-                case "moderate":
-                    return theme.TextPrimary;
-                default:
-                    return theme.Success;
-            }
+            return summary.SoundRulings * 2 >= summary.Rulings ? theme.Accent : theme.Warning;
         }
 
-        /// <summary>The first sentence of a longer explanation, so each row stays on one or two lines.</summary>
+        /// <summary>The first sentence of a longer explanation, so each card stays short.</summary>
         private static string FirstSentence(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -159,30 +158,22 @@ namespace CourtSim.Runtime.UI
             return end > 0 ? text.Substring(0, end + 1) : text;
         }
 
-        private void HeaderCell(RectTransform parent, string label, float width)
-        {
-            Text cell = _factory.CreateText(label, parent, label, TextStyle.Overline);
-            LayoutElement layout = UIFactory.GetOrAddLayoutElement(cell.gameObject);
-            layout.preferredWidth = width;
-            layout.minWidth = width;
-        }
-
-        private sealed class ScoreTile
+        private sealed class CountTile
         {
             private readonly string _label;
             private readonly Text _value;
             private readonly Text _meaning;
 
-            public ScoreTile(UIFactory factory, RectTransform parent, string label)
+            public CountTile(UIFactory factory, RectTransform parent, string label)
             {
                 UITheme theme = factory.Theme;
                 _label = label;
                 Image tile = factory.CreatePanel(label, parent, theme.SurfaceRaised);
-                UIFactory.AddVerticalLayout(tile.gameObject, new RectOffset(18, 18, 12, 12), 2f);
+                UIFactory.AddVerticalLayout(tile.gameObject, new RectOffset(18, 18, 10, 10), 2f);
                 UIFactory.GetOrAddLayoutElement(tile.gameObject).flexibleWidth = 1f;
                 factory.AddOutline(tile.rectTransform, theme.Border);
                 factory.CreateText("Label", tile.rectTransform, label, TextStyle.Overline);
-                _value = factory.CreateText("Value", tile.rectTransform, "-", TextStyle.Title);
+                _value = factory.CreateText("Value", tile.rectTransform, "-", TextStyle.Heading);
                 _meaning = factory.CreateText("Meaning", tile.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, theme.TextSecondary);
             }
 
@@ -193,84 +184,84 @@ namespace CourtSim.Runtime.UI
                 _meaning.text = meaning;
             }
 
-            public string Describe() => $"{_label} {_value.text}: {_meaning.text}";
+            public string Describe() => $"{_label}: {_value.text}. {_meaning.text}";
         }
 
-        private sealed class RulingRow
+        /// <summary>One phase: what you ruled, the best ruling (only if yours wasn't it), what the AI said, and why.</summary>
+        private sealed class PhaseCard
         {
             private readonly UITheme _theme;
-            private readonly Text _decision;
-            private readonly Text _yours;
-            private readonly Text _sound;
-            private readonly Text _ai;
+            private readonly Text _phase;
+            private readonly Text _title;
             private readonly Image _chip;
             private readonly Text _chipText;
-            private readonly Text _why;
+            private readonly Text _body;
 
-            public RulingRow(UIFactory factory, RectTransform parent)
+            public PhaseCard(UIFactory factory, RectTransform parent)
             {
                 _theme = factory.Theme;
-                Image card = factory.CreatePanel("Ruling", parent, _theme.SurfaceRaised);
+                Image card = factory.CreatePanel("Phase", parent, _theme.SurfaceRaised);
                 Root = card.rectTransform;
-                UIFactory.AddVerticalLayout(card.gameObject, new RectOffset(16, 16, 10, 10), 6f);
+                UIFactory.AddVerticalLayout(card.gameObject, new RectOffset(18, 18, 10, 12), 4f);
                 factory.AddOutline(card.rectTransform, _theme.Border);
 
-                RectTransform cells = factory.CreateRect("Cells", card.rectTransform);
-                UIFactory.AddHorizontalLayout(cells.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.MiddleLeft);
-                _decision = Cell(factory, cells, "Decision", DecisionWidth, TextStyle.Body, true);
-                _yours = Cell(factory, cells, "Yours", RulingWidth, TextStyle.Caption, false);
-                _sound = Cell(factory, cells, "Sound", RulingWidth, TextStyle.Caption, false);
-                _ai = Cell(factory, cells, "AI", RulingWidth, TextStyle.Caption, false);
-                RectTransform chipHolder = factory.CreateRect("Result", cells);
-                UIFactory.AddHorizontalLayout(chipHolder.gameObject, new RectOffset(0, 0, 0, 0), 0f, TextAnchor.MiddleLeft);
-                LayoutElement holder = UIFactory.GetOrAddLayoutElement(chipHolder.gameObject);
-                holder.preferredWidth = ResultWidth;
-                holder.minWidth = ResultWidth;
-                _chip = factory.CreateChip("Chip", chipHolder, string.Empty, _theme.Surface, _theme.TextPrimary, out _chipText).GetComponent<Image>();
+                RectTransform top = factory.CreateRect("Top", card.rectTransform);
+                UIFactory.AddHorizontalLayout(top.gameObject, new RectOffset(0, 0, 0, 0), 12f, TextAnchor.MiddleLeft);
+                RectTransform names = factory.CreateRect("Names", top);
+                UIFactory.AddVerticalLayout(names.gameObject, new RectOffset(0, 0, 0, 0), 0f);
+                UIFactory.GetOrAddLayoutElement(names.gameObject).flexibleWidth = 1f;
+                _phase = factory.CreateText("Phase", names, string.Empty, TextStyle.Overline);
+                _title = factory.CreateText("Title", names, string.Empty, TextStyle.Body);
+                _title.fontStyle = FontStyle.Bold;
+                _chip = factory.CreateChip("Result", top, string.Empty, _theme.Surface, _theme.TextPrimary, out _chipText).GetComponent<Image>();
 
-                _why = factory.CreateText("Why", card.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, _theme.TextSecondary);
-                _why.supportRichText = true;
+                _body = factory.CreateText("Body", card.rectTransform, string.Empty, TextStyle.Caption, TextAnchor.UpperLeft, _theme.TextPrimary);
+                _body.supportRichText = true;
             }
 
             public RectTransform Root { get; }
 
-            public void Set(DebriefItem item)
+            public void Set(string phase, DebriefItem item)
             {
-                _decision.text = item.Title;
-                _yours.text = item.RulingLabel;
-                _sound.text = item.Quality == OptionQuality.Sound ? "Same as yours" : (item.SoundLabel ?? "-");
-                _ai.text = item.AdviceLabel == null ? "No advice" : item.AdviceFlaw == FlawKind.None ? item.AdviceLabel : item.AdviceLabel + "  (flawed)";
+                _phase.text = phase;
+                _title.text = item.Title;
 
-                _chipText.text = Debrief.QualityLabel(item.Quality).ToUpperInvariant();
-                Color tone = item.Quality == OptionQuality.Sound ? _theme.Success : item.Quality == OptionQuality.Defensible ? _theme.Accent : _theme.Warning;
+                bool sound = item.Quality == OptionQuality.Sound;
+                _chipText.text = sound ? "CORRECT" : item.Quality == OptionQuality.Defensible ? "ACCEPTABLE" : "WRONG";
+                Color tone = sound ? _theme.Success : item.Quality == OptionQuality.Defensible ? _theme.Accent : _theme.Warning;
                 _chipText.color = tone;
                 tone.a = 0.16f;
                 _chip.color = tone;
 
-                // One short "why" line: the reason for the grade, plus the AI's flaw if it had one.
-                var why = new StringBuilder("<b>Why:</b> ").Append(UIFactory.Plain(FirstSentence(item.Feedback)));
-                if (item.AdviceFlaw != FlawKind.None)
+                var body = new StringBuilder();
+                body.Append("<b>You ruled:</b>  ").Append(UIFactory.Plain(item.RulingLabel));
+                if (!sound && !string.IsNullOrEmpty(item.SoundLabel))
                 {
-                    why.Append("   <b>AI flaw:</b> ").Append(UIFactory.Plain(FirstSentence(item.FlawExplanation)));
+                    body.Append("\n<b>Best ruling:</b>  ").Append(UIFactory.Plain(item.SoundLabel));
                 }
 
-                _why.text = why.ToString();
+                body.Append("\n<b>AI advice:</b>  ").Append(DescribeAdvice(item));
+                body.Append("\n<b>Why:</b>  ").Append(UIFactory.Plain(FirstSentence(item.Feedback)));
+                _body.text = body.ToString();
             }
 
-            public string Describe() => $"{_decision.text}: {_yours.text} | sound: {_sound.text} | AI: {_ai.text} | {_chipText.text}\n{_why.text}";
+            public string Describe() => $"{_phase.text} {_title.text} [{_chipText.text}]\n{_body.text}";
 
-            private static Text Cell(UIFactory factory, RectTransform parent, string name, float width, TextStyle style, bool bold)
+            private static string DescribeAdvice(DebriefItem item)
             {
-                Text cell = factory.CreateText(name, parent, string.Empty, style);
-                if (bold)
+                switch (item.Outcome)
                 {
-                    cell.fontStyle = FontStyle.Bold;
+                    case AdviceOutcome.TrustedSound:
+                        return "correct, and you followed it. Well done.";
+                    case AdviceOutcome.OverrodeSound:
+                        return "correct, but you did not follow it.";
+                    case AdviceOutcome.MisledByFlaw:
+                        return "<b>wrong</b>, and you followed it. " + UIFactory.Plain(FirstSentence(item.FlawExplanation));
+                    case AdviceOutcome.CaughtFlaw:
+                        return "wrong, and you caught it. Well done. " + UIFactory.Plain(FirstSentence(item.FlawExplanation));
+                    default:
+                        return "none was given for this ruling.";
                 }
-
-                LayoutElement layout = UIFactory.GetOrAddLayoutElement(cell.gameObject);
-                layout.preferredWidth = width;
-                layout.minWidth = width;
-                return cell;
             }
         }
     }

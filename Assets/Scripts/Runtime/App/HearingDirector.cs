@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CourtSim.Core.Cases;
+using CourtSim.Core.Decisions;
 using CourtSim.Core.Events;
 using CourtSim.Core.Sarvam;
 using CourtSim.Core.Sessions;
@@ -19,7 +20,11 @@ namespace CourtSim.Runtime.App
     /// the defence advocate stand and argue their submissions aloud, with subtitles, while the courtroom turns to
     /// watch. Only then does the decision dialog (with the AI assistant's advice) open.
     /// </summary>
-    /// <remarks>Each decision point is heard once per session; pressing E at the bench again opens the dialog at once.</remarks>
+    /// <remarks>
+    /// Each phase opens with a title card ("PHASE 1 OF 3 - BAIL HEARING"). Once seated, the judge stays on the bench:
+    /// after each ruling the next phase is heard automatically, and after the last one the final report opens.
+    /// Closing a dialog without ruling lets the judge rise and walk the courtroom again.
+    /// </remarks>
     [DisallowMultipleComponent]
     public sealed class HearingDirector : MonoBehaviour
     {
@@ -36,6 +41,20 @@ namespace CourtSim.Runtime.App
         private Camera _seatCamera;
         private Camera _playerCamera;
         private Quaternion _seatTarget;
+        private Transform _overlay;
+        private GameObject _phaseCard;
+        private CanvasGroup _phaseGroup;
+        private Text _phaseNumber;
+        private Text _phaseTitle;
+        private Text _phaseStage;
+        private bool _onBench;
+        private string _benchSessionId;
+        private int _benchIndex = -1;
+        private bool _reportShown;
+        private float _nextHearingAt = -1f;
+
+        /// <summary>True while the judge is seated on the bench (from the first hearing until they rise).</summary>
+        public bool IsOnBench => _onBench;
 
         /// <summary>True while a hearing is being played.</summary>
         public bool IsPlaying => _hearing != null;
@@ -97,6 +116,23 @@ namespace CourtSim.Runtime.App
                 _seatedForCaseId = caseId;
                 _cast.UseFemaleDefence(SarvamVoiceCast.For(caseId).Defence.IsFemale);
             }
+
+            if (!_onBench || _hearing != null || _ui == null)
+            {
+                return;
+            }
+
+            // "Replay this case" restarts the session with the dialog still open: close it so phase 1 is heard first.
+            if (session != null && session.SessionId != _benchSessionId && _ui.CurrentScreen == ScreenId.DecisionPoint
+                && !_heard.Contains(session.SessionId + "/" + session.CurrentIndex))
+            {
+                _ui.CloseAll();
+            }
+
+            if (_ui.CurrentScreen == ScreenId.None)
+            {
+                UpdateBench(session);
+            }
         }
 
         private IEnumerator PlayHearing(CaseSession session, CaseDecisionPoint point)
@@ -104,6 +140,8 @@ namespace CourtSim.Runtime.App
             EnsureSubtitleBar();
             GameServices.Events.Publish(new GameplayInputBlockChanged(true)); // the judge listens; no walking off mid-hearing
             UseSeatCamera(true);
+            AimSeatCamera(new Vector3(0f, 1.6f, 0f)); // look out over the courtroom while the phase title shows
+            yield return ShowPhaseTitle(session, point);
 
             bool evidence = point.ExhibitId != null;
             if (evidence)
@@ -128,10 +166,137 @@ namespace CourtSim.Runtime.App
             }
 
             _subtitleBar.SetActive(false);
-            UseSeatCamera(false);
-            GameServices.Events.Publish(new GameplayInputBlockChanged(false));
+
+            // The judge stays seated on the bench for the ruling, and for the hearings that follow.
+            _onBench = true;
+            _benchSessionId = session.SessionId;
+            _benchIndex = session.CurrentIndex;
+            _reportShown = false;
             _hearing = null;
             _ui.Open(ScreenId.DecisionPoint);
+        }
+
+        /// <summary>
+        /// While the judge is on the bench and no dialog is open: after a ruling, call the next phase's hearing;
+        /// after the last ruling, show the final report; when the judge closes a dialog without ruling (or closes
+        /// the report), the judge rises and can walk the courtroom again.
+        /// </summary>
+        private void UpdateBench(CaseSession session)
+        {
+            if (session == null)
+            {
+                LeaveBench();
+                return;
+            }
+
+            bool newSession = session.SessionId != _benchSessionId;
+            if (session.IsComplete && !newSession)
+            {
+                if (_reportShown)
+                {
+                    LeaveBench();
+                }
+                else
+                {
+                    _reportShown = true;
+                    _ui.Open(ScreenId.DecisionPoint); // shows the final report once every ruling is made
+                }
+
+                return;
+            }
+
+            bool ruled = newSession || session.CurrentIndex != _benchIndex;
+            if (!ruled)
+            {
+                LeaveBench();
+                return;
+            }
+
+            // A short pause after the ruling (the "ruling recorded" message shows), then the next hearing.
+            if (_nextHearingAt < 0f)
+            {
+                _nextHearingAt = Time.unscaledTime + 1.5f;
+            }
+            else if (Time.unscaledTime >= _nextHearingAt)
+            {
+                _nextHearingAt = -1f;
+                if (!TryStartHearing())
+                {
+                    _ui.Open(ScreenId.DecisionPoint);
+                }
+            }
+        }
+
+        private void LeaveBench()
+        {
+            _onBench = false;
+            _reportShown = false;
+            _nextHearingAt = -1f;
+            UseSeatCamera(false);
+            GameServices.Events.Publish(new GameplayInputBlockChanged(false));
+        }
+
+        /// <summary>
+        /// The title card before each hearing: "PHASE 1 OF 3", "BAIL HEARING" and one line on where the case stands.
+        /// </summary>
+        private IEnumerator ShowPhaseTitle(CaseSession session, CaseDecisionPoint point)
+        {
+            EnsurePhaseCard();
+            DecisionPointKind kind = point.Definition.Kind;
+            _phaseNumber.text = HearingPhase.Number(session.CurrentIndex, session.Case.DecisionPoints.Count);
+            _phaseTitle.text = HearingPhase.Title(kind);
+            _phaseStage.text = HearingPhase.Stage(kind);
+            _phaseCard.SetActive(true);
+            yield return Fade(0f, 1f, 0.45f);
+            yield return new WaitForSecondsRealtime(2.2f);
+            yield return Fade(1f, 0f, 0.45f);
+            _phaseCard.SetActive(false);
+        }
+
+        private IEnumerator Fade(float from, float to, float seconds)
+        {
+            for (float t = 0f; t < seconds; t += Time.unscaledDeltaTime)
+            {
+                _phaseGroup.alpha = Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / seconds));
+                yield return null;
+            }
+
+            _phaseGroup.alpha = to;
+        }
+
+        private void EnsurePhaseCard()
+        {
+            if (_phaseCard != null)
+            {
+                return;
+            }
+
+            // A dark band across the middle of the screen with the phase in gold and its name in large letters.
+            _phaseCard = new GameObject("PhaseTitle", typeof(RectTransform), typeof(Image), typeof(CanvasGroup), typeof(VerticalLayoutGroup));
+            _phaseCard.transform.SetParent(_overlay, false);
+            var band = (RectTransform)_phaseCard.transform;
+            band.anchorMin = new Vector2(0f, 0.5f);
+            band.anchorMax = new Vector2(1f, 0.5f);
+            band.pivot = new Vector2(0.5f, 0.5f);
+            band.sizeDelta = new Vector2(0f, 260f);
+            _phaseCard.GetComponent<Image>().color = new Color(0.03f, 0.05f, 0.11f, 0.88f);
+            _phaseGroup = _phaseCard.GetComponent<CanvasGroup>();
+            _phaseGroup.blocksRaycasts = false;
+            var layout = _phaseCard.GetComponent<VerticalLayoutGroup>();
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.spacing = 6f;
+            layout.childControlHeight = true;
+            layout.childForceExpandHeight = false;
+
+            _phaseNumber = CreateText(band, "Number", 24, new Color(0.83f, 0.68f, 0.31f), FontStyle.Bold);
+            _phaseTitle = CreateText(band, "Title", 72, new Color(0.97f, 0.95f, 0.9f), FontStyle.Bold);
+            _phaseStage = CreateText(band, "Stage", 28, new Color(0.8f, 0.82f, 0.88f), FontStyle.Normal);
+            foreach (Text text in new[] { _phaseNumber, _phaseTitle, _phaseStage })
+            {
+                text.alignment = TextAnchor.MiddleCenter;
+            }
+
+            _phaseCard.SetActive(false);
         }
 
         /// <summary>One speaker: stand (advocates), speak with subtitles while everyone looks, then sit again.</summary>
@@ -249,6 +414,7 @@ namespace CourtSim.Runtime.App
 
             var canvasObject = new GameObject("HearingSubtitles", typeof(Canvas), typeof(CanvasScaler));
             canvasObject.transform.SetParent(transform, false);
+            _overlay = canvasObject.transform;
             var canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 50;
