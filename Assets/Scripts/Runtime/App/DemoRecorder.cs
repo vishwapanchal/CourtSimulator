@@ -194,9 +194,30 @@ namespace CourtSim.Runtime.App
         private IEnumerator Perform()
         {
             _recording = true;
-            yield return Say("CourtSim: an adaptive courtroom simulator that trains judges to work with AI advice, on Indian criminal law.", 5f);
+            if (_record)
+            {
+                // The video opens with the dramatic titles, then settles on the home page.
+                _captionBar.SetActive(false);
+                UI.PlayIntro();
+                yield return Hold(1f);
+                while (UI.IsIntroPlaying)
+                {
+                    yield return null;
+                }
+
+                yield return Hold(3f);
+            }
+            else
+            {
+                UI.ShowMainMenu();
+                yield return Hold(1.5f);
+            }
+
+            yield return Say("CourtSim trains judges to work with AI advice on Indian criminal law. The judge picks one of 21 cases, sorted Easy, Medium and Hard.", 0f);
+            UI.Open(ScreenId.CaseSelect);
+            yield return Hold(5f);
+            UI.ChooseCase(DemoCaseId);
             yield return Say("The trainee judge enters the Sessions Court.", 0f);
-            UI.CloseAll();
             yield return TurnBy(-35f, 0f, 1.6f);
             yield return TurnBy(70f, 0f, 2.4f);
             yield return TurnBy(-35f, -8f, 1.6f);

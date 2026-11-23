@@ -509,6 +509,20 @@ namespace CourtSim.Runtime.UI
             SpeakNewAdvice();
         }
 
+        /// <summary>Shows the main menu and plays the opening titles over it (used by the demo recording).</summary>
+        public void PlayIntro()
+        {
+            EnsureBuilt();
+            ShowMainMenu();
+            if (IsIntroPlaying)
+            {
+                _intro.Skip();
+            }
+
+            _intro = IntroSequence.Play(_factory, transform, OnIntroFinished);
+            SoundEffects.StartDrone(SoundEffects.IntroDroneVolume);
+        }
+
         /// <summary>
         /// The titles are fading away: show the main menu again, which replays its entrance animation and gives the
         /// keyboard focus back to its first button (the intro had cleared it so Enter could not press a hidden button).
