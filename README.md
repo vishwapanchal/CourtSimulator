@@ -1,6 +1,32 @@
 # CourtSim
 
-An adaptive courtroom simulation for training legal decision-making with AI assistance.
+**Adaptive Virtual Reality Courtroom Simulation for AI-Assisted Legal Augmentation and Decision-Making Training**
+
+An adaptive courtroom simulation for training legal decision-making with AI assistance, set in an Indian
+(Karnataka) Sessions Court and built on current Indian criminal law (BNS, BNSS and BSA, in force from 1 July 2024).
+
+## What it does
+
+- **21 Indian-law training cases**, 7 Easy, 7 Medium and 7 Hard, chosen from a case-selection screen.
+- **Three phases per case**, each opened by a title card: *Bail hearing* (before trial), *Evidence hearing*
+  (during trial) and *Sentencing hearing* (after conviction). The judge stays seated on the bench throughout.
+- **Spoken hearings in Kannada-English**: the bench clerk, Public Prosecutor and defence advocate argue aloud
+  through Sarvam AI (translation to code-mixed Kannada-English plus Bulbul text-to-speech), with a different
+  voice cast for every case. All on-screen text, subtitles and verdicts stay in English. Without a Sarvam key,
+  the Windows English voice is used.
+- **An AI assistant that types and speaks its advice** and is sometimes deliberately wrong. The advice is
+  written by a local model (Ollama, `qwen3.5:9b` on the GPU), prepared for all three phases as soon as a case
+  starts, and cached on disk, so a case seen before loads instantly. If the model is slow, the case file's own
+  written advice is shown.
+- **A colourful final report**: a 3D scene (pillars per phase, golden scales of justice, an AI robot, confetti),
+  the score and grade, how often the judge caught wrong AI advice or ignored good advice, and one card per phase.
+- **A dramatic opening title, cinematic home page and procedural sound effects** (gavel, whooshes, ambient drone).
+- An Indian courtroom: the State Emblem and "ಸತ್ಯಮೇವ ಜಯತೇ", a bilingual Kannada/English court board, the
+  national flag, portraits, steel almirahs, red-tape case bundles, green-shuttered windows and a red-oxide floor.
+- Borderless full screen at the monitor's resolution.
+
+**Sarvam key:** put it in the environment variable `SARVAM_API_KEY`, or in the file
+`%USERPROFILE%\AppData\LocalLow\DefaultCompany\CourtSim\sarvam_api_key.txt`. It is never committed.
 The trainee presides as judge and makes three rulings (**bail**, **admissibility of evidence** and
 **sentencing**) while an AI assistant offers advice that is sometimes deliberately wrong. Every ruling is
 graded against the case file and logged, the difficulty adapts to how the trainee treats the advice, and
@@ -53,7 +79,7 @@ Close any Unity Editor that has the project open before building.
 
 **Guided demo inside the game:** press **Watch guided demo** on the main menu (or run `demo.bat guided`). A scripted judge walks into the Sessions Court, approaches the bench, hears the AI assistant type and speak its advice, challenges a flawed suggestion, examines the exhibit, rules three times and reaches the debrief, with captions explaining each step. Press Esc to stop; control returns to you at the end.
 
-**Recorded demo video:** `docs/demo/CourtSim-demo.mp4` (1080p, about 3 minutes, with the assistant's voice and typing sounds). Re-record with `Builds/Windows/CourtSim.exe -courtsimRecordDemo docs/demo/CourtSim-demo.mp4` (needs ffmpeg: `winget install Gyan.FFmpeg`).
+**Recorded demo video:** `docs/demo/CourtSim-demo.mp4` (1080p with sound: the opening titles, home page, case selection, the three phases with Kannada-English hearings, the AI assistant's typed and spoken advice, and the 3D final report). Re-record with `Builds/Windows/CourtSim.exe -courtsimRecordDemo docs/demo/CourtSim-demo.mp4` (needs ffmpeg: `winget install Gyan.FFmpeg`).
 
 ## Quick start
 
