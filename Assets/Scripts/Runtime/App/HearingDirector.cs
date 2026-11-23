@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CourtSim.Core.Cases;
 using CourtSim.Core.Decisions;
 using CourtSim.Core.Events;
+using CourtSim.Core.Presentation;
 using CourtSim.Core.Sarvam;
 using CourtSim.Core.Sessions;
 using CourtSim.Core.UI;
@@ -247,7 +248,9 @@ namespace CourtSim.Runtime.App
             _phaseTitle.text = HearingPhase.Title(kind);
             _phaseStage.text = HearingPhase.Stage(kind);
             _phaseCard.SetActive(true);
+            SoundEffects.Play(SoundCue.Whoosh, 0.7f);
             yield return Fade(0f, 1f, 0.45f);
+            SoundEffects.Play(SoundCue.Gavel); // the judge calls the court to order
             yield return new WaitForSecondsRealtime(2.2f);
             yield return Fade(1f, 0f, 0.45f);
             _phaseCard.SetActive(false);
