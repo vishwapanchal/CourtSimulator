@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using CourtSim.Core.Adaptive;
 using CourtSim.Core.Advising;
 using CourtSim.Core.Cases;
@@ -46,6 +47,12 @@ namespace CourtSim.Runtime.App
         [Tooltip("Use a language model for advice. Off: always use the authored offline advice.")]
         [SerializeField] private bool _useModel = true;
         [SerializeField] private AdvisorBackend _backend = AdvisorBackend.LocalModel;
+        [Tooltip("Seconds to wait for the model before showing the case file's own advice instead.")]
+        [SerializeField, Min(1f)] private float _modelWaitSeconds = 25f;
+        [Tooltip("Prepare advice for every decision point in the background when a session starts.")]
+        [SerializeField] private bool _prefetchAdvice = true;
+        [Tooltip("Save generated advice under persistentDataPath/advice-cache so cases seen before load instantly.")]
+        [SerializeField] private bool _cacheAdviceOnDisk = true;
 
         [Header("Local model (Ollama)")]
         [SerializeField] private string _localModel = OllamaClientOptions.DefaultModel;
@@ -75,6 +82,14 @@ namespace CourtSim.Runtime.App
         private int _caseCursor = -1;
         private AdaptiveController _adaptation;
         private IAdvisor _advisorOverride;
+
+        // Kept across sessions so advice generated (or being generated) for one session is reused by the next.
+        private CachingAdvisor _cachingAdvisor;
+        private CachingAdvisor _activeCache;
+        private string _cachingSettings;
+        private CancellationTokenSource _prefetchCancellation;
+        private OllamaClient _ollama;
+        private bool _gpuChecked;
 
         public CaseSession Session => _session;
 
@@ -198,7 +213,7 @@ namespace CourtSim.Runtime.App
                     if (session == _session && !session.IsComplete)
                     {
                         session.NoteAdvisorFallback(session.CurrentIndex, "AI model unavailable, used offline advice: " + error.Message);
-                        Debug.LogWarning("AI advice failed; using offline advice instead. " + error.Message);
+                        Debug.LogWarning("[advice] AI advice failed or was too slow; showing the case file's scripted advice instead. " + error.Message);
                     }
                 };
             }
@@ -212,6 +227,7 @@ namespace CourtSim.Runtime.App
             }
 
             _session.Start();
+            StartPrefetch(_session);
             if (_ui != null)
             {
                 _ui.AttachSession(_session);
@@ -280,6 +296,8 @@ namespace CourtSim.Runtime.App
         {
             SaveAdaptation();
             _session?.Cancel();
+            _prefetchCancellation?.Cancel();
+            _cachingAdvisor?.Dispose();
             if (_ui != null)
             {
                 _ui.RestartRequested -= OnRestartRequested;
@@ -330,9 +348,100 @@ namespace CourtSim.Runtime.App
             return _cases[_caseCursor];
         }
 
+        // Prepares advice for every decision point, one after another, so it is waiting when the judge rules.
+        // The session's own requests go through the same CachingAdvisor and pick up these replies.
+        private async void StartPrefetch(CaseSession session)
+        {
+            _prefetchCancellation?.Cancel();
+            _prefetchCancellation = null;
+            CachingAdvisor advisor = _activeCache;
+            if (!_prefetchAdvice || advisor == null || session == null)
+            {
+                return;
+            }
+
+            var cancellation = new CancellationTokenSource();
+            _prefetchCancellation = cancellation;
+            IReadOnlyList<AdviceRequest> requests = AdvicePrefetch.PlanRequests(session.Case, session.Plan, session.Adaptation, session.DetailAt);
+            DateTime started = DateTime.UtcNow;
+            try
+            {
+                int prepared = await AdvicePrefetch.RunAsync(
+                    advisor,
+                    requests,
+                    cancellation.Token,
+                    (request, error) => Debug.LogWarning($"[advice] Could not prepare advice for decision point {request.PointIndex + 1}: {error.Message}"));
+                if (!cancellation.IsCancellationRequested)
+                {
+                    Debug.Log($"[advice] Prepared {prepared} of {requests.Count} suggestions for '{session.Case.Id}' in {(DateTime.UtcNow - started).TotalSeconds:0.0} s.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // async void: an escaped exception would only reach the console, so report it plainly here.
+                Debug.LogWarning("[advice] Preparing advice stopped: " + ex.Message);
+            }
+        }
+
+        // One CachingAdvisor per model configuration, kept across sessions; changing model or server starts a fresh one.
+        private IAdvisor Cached(IAdvisor modelAdvisor, string model, string settings)
+        {
+            if (_cachingAdvisor == null || _cachingSettings != settings)
+            {
+                _prefetchCancellation?.Cancel();
+                _cachingAdvisor?.Dispose();
+
+                // Like the trainee file, the cache is only written when file logging is on, so tests leave no files.
+                IAdviceStore store = _cacheAdviceOnDisk && _writeLogFile ? new FileAdviceStore(FileAdviceStore.DefaultDirectory) : null;
+                _cachingAdvisor = new CachingAdvisor(modelAdvisor, model, store);
+                _cachingSettings = settings;
+                _cachingAdvisor.CacheHit += key => Debug.Log("[advice] Loaded from cache: " + key);
+                _cachingAdvisor.Generated += (key, advice) =>
+                {
+                    Debug.Log("[advice] Generated by the model and cached: " + key);
+                    CheckGpuOnce();
+                };
+            }
+
+            _activeCache = _cachingAdvisor;
+
+            // A slow or silent model must never leave the panel empty: after the wait, the scripted advice is shown.
+            return new TimeoutAdvisor(_cachingAdvisor, TimeSpan.FromSeconds(Mathf.Max(1f, _modelWaitSeconds)));
+        }
+
+        // Ollama sometimes loads the model into system memory instead of the GPU, which makes advice ten times
+        // slower. Once the model has answered (so it is loaded), ask Ollama where it put it.
+        private async void CheckGpuOnce()
+        {
+            if (_gpuChecked || _ollama == null)
+            {
+                return;
+            }
+
+            _gpuChecked = true;
+            try
+            {
+                OllamaModelStatus status = await _ollama.GetModelStatusAsync(CancellationToken.None);
+                if (status.Warning != null)
+                {
+                    Debug.LogWarning("[advice] " + status.Warning);
+                }
+                else if (status.Placement == ModelPlacement.Gpu)
+                {
+                    Debug.Log($"[advice] Ollama has {status.Name} on the GPU ({status.VramBytes / (1024 * 1024)} MB in GPU memory).");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("[advice] Could not check whether Ollama is using the GPU: " + ex.Message);
+            }
+        }
+
         private IAdvisor CreateAdvisor(out string label)
         {
             _fallbackAdvisor = null;
+            _ollama = null;
+            _activeCache = null;
             if (_advisorOverride != null)
             {
                 label = "custom";
@@ -355,7 +464,9 @@ namespace CourtSim.Runtime.App
                 };
 
                 // If Ollama isn't running, each request fails fast and the offline advice is shown instead.
-                _fallbackAdvisor = new FallbackAdvisor(new LocalModelAdvisor(new OllamaClient(local, new UnityWebRequestTransport())), scripted);
+                _ollama = new OllamaClient(local, new UnityWebRequestTransport());
+                IAdvisor localAdvisor = Cached(new LocalModelAdvisor(_ollama), local.Model, "ollama|" + local.BaseUrl + "|" + local.Model);
+                _fallbackAdvisor = new FallbackAdvisor(localAdvisor, scripted);
                 label = local.Model;
                 return _fallbackAdvisor;
             }
@@ -380,7 +491,8 @@ namespace CourtSim.Runtime.App
             }
 
             var claude = new ClaudeAdvisor(new ClaudeClient(options, new UnityWebRequestTransport()));
-            _fallbackAdvisor = new FallbackAdvisor(claude, scripted);
+            IAdvisor cachedClaude = Cached(claude, options.Model, "claude|" + options.BaseUrl + "|" + options.Model + "|" + options.Effort);
+            _fallbackAdvisor = new FallbackAdvisor(cachedClaude, scripted);
             label = options.Model;
             return _fallbackAdvisor;
         }

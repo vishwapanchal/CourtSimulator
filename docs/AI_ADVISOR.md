@@ -83,11 +83,15 @@ the reply with the same code (`AdviceReply.Parse`), so they obey identical rules
 
 1. An advisor set with `UseAdvisor(...)` (tests, custom backends). Logged as `"custom"`.
 2. **Use Model** off: `ScriptedAdvisor`. Logged as `"scripted"`.
-3. **Backend** `LocalModel` (the default): `FallbackAdvisor(LocalModelAdvisor, ScriptedAdvisor)`. Logged as
+3. **Backend** `LocalModel` (the default):
+   `FallbackAdvisor(TimeoutAdvisor(CachingAdvisor(LocalModelAdvisor)), ScriptedAdvisor)`. Logged as
    the model tag, e.g. `"qwen3.5:9b"`. If Ollama isn't running, each request fails fast and the offline
    advice is shown.
-4. **Backend** `Claude` and `ApiKeyLocator.Find()` returns a key: `FallbackAdvisor(ClaudeAdvisor, ScriptedAdvisor)`.
+4. **Backend** `Claude` and `ApiKeyLocator.Find()` returns a key: the same chain around `ClaudeAdvisor`.
    Logged as the model id, e.g. `"claude-opus-5-5"`.
+
+See [Speed: cache, prefetch, timeout and GPU check](#speed-cache-prefetch-timeout-and-gpu-check) for what
+the extra layers do.
 5. **Backend** `Claude` without a key: a Unity warning, then `ScriptedAdvisor`. Logged as `"scripted"`.
 
 The assistant card's footnote shows where the current advice came from: "Written by a local AI model for
@@ -125,7 +129,7 @@ Body, for the same bail point as the [Claude request](#claude-request) (long str
   ],
   "stream": false,
   "think": false,
-  "keep_alive": "15m",
+  "keep_alive": "60m",
   "options": { "temperature": 0.3, "num_ctx": 4096 },
   "format": { "type": "object", "properties": { "recommended_option_id": { "type": "string", "enum": ["bail.deny"] }, "...": "..." } }
 }
@@ -142,7 +146,7 @@ off the model's thinking mode, which only adds delay for short advice. The reply
 | Timeout | 180 s (the first request also loads the model) | `OllamaClientOptions.Timeout` |
 | `temperature` | 0.3 | `OllamaClientOptions.Temperature` |
 | `num_ctx` | 4096 tokens (brief plus reply stay under 2,000; 4k keeps the 9B model fully in 8 GB of VRAM) | `OllamaClientOptions.ContextTokens` |
-| `keep_alive` | `15m`, so later requests skip the model load | `OllamaClientOptions.KeepAlive` |
+| `keep_alive` | `60m`, so the model stays loaded for a whole presentation | `OllamaClientOptions.KeepAlive` |
 
 **Errors.** `OllamaClient` raises `OllamaException` (with `StatusCode` when there was a response). There
 are no retries; `FallbackAdvisor` serves the offline advice instead.
@@ -351,6 +355,36 @@ the session (`AI model unavailable, used offline advice: <message>`), which goes
 While advice is pending, the card says "I am reviewing the record for this ruling." The trainee can
 still rule; that ruling is logged with outcome `no_advice`.
 
+A reply that is empty or only whitespace counts as a failure too, so the panel is never left blank.
+
+## Speed: cache, prefetch, timeout and GPU check
+
+Slow or missing advice was traced to Ollama running the 9B model on the CPU (38 s for a tiny reply,
+against 1.5 s on the GPU). Four measures keep advice fast and always present:
+
+| Measure | Where | What it does |
+| --- | --- | --- |
+| **Disk cache** | `CachingAdvisor`, `AdviceCacheKey`, `AdviceCacheEntry` (Core); `FileAdviceStore` (Runtime) | Every model-written suggestion is saved as one JSON file in `<persistentDataPath>/advice-cache/`. A case seen before shows its advice instantly, even with Ollama off. A damaged or out-of-date file is ignored and the advice is generated again. Delete the folder to force fresh text. |
+| **Prefetch** | `AdvicePrefetch` (Core), `CaseSessionController.StartPrefetch` | When a session starts, advice for all three decision points is generated (or loaded from the cache) one after another in the background. With adaptation on, a flawed point's flaw kind is chosen only when the judge reaches it, so every authored flaw of that point is prepared, the likelier first. |
+| **No duplicates** | `CachingAdvisor` | The session's own request for a point joins a reply that is already being generated instead of sending a second request. |
+| **25 s fallback** | `TimeoutAdvisor` inside `FallbackAdvisor` | If the model hasn't answered after **Model Wait Seconds** (default 25), the case file's scripted advice for the same variant is shown and the reason is logged (`[advice] AI advice failed or was too slow ...` in the console, `adviceError` in the decision log). The model keeps writing in the background and its reply is cached for next time. |
+| **GPU check** | `OllamaModelStatus`, `OllamaClient.GetModelStatusAsync` | After the first generated reply, the game calls `GET /api/ps`. If the model's `size_vram` is 0, or under 90% of its `size`, it logs "Ollama is running the model on the CPU; restart Ollama to use the GPU". |
+
+**Cache key.** `v<PromptVersion>_<model>_<case id>_p<point>-<kind>_<flaw>_<detail>_<fingerprint>`, for example
+`v1_qwen3.5-9b_state-v-arif-mulla_p0-bail_none_standard_1a2b3c4d`. The fingerprint is an FNV-1a hash of the
+system prompt and the brief, so editing a case file or the prompt makes old entries stop matching. Bump
+`AdviceCacheKey.PromptVersion` when the schema or validation changes. Earlier rulings are left out of the
+key on purpose: they only colour the wording, while the ruling and the flaw come from the case file.
+Leaving them out is what lets advice be prepared before the hearing (and it means prefetched briefs have no
+`<earlier_rulings>` block). Only model-written advice is cached, never the scripted fallback. The disk cache
+is only used when **Write Log File** is on, so tests leave no files.
+
+Controller fields: **Model Wait Seconds**, **Prefetch Advice**, **Cache Advice On Disk**.
+
+**`demo.bat`** stops any running Ollama (`ollama.exe`, `ollama app.exe`), starts `ollama serve` fresh,
+preloads the model with a one-token request (`keep_alive` 60m), then prints `ollama ps` and a warning
+if the PROCESSOR column mentions the CPU.
+
 ## Cost and latency
 
 Prefetching applies to both backends. The local model is free; its latency is under
@@ -358,10 +392,9 @@ Prefetching applies to both backends. The local model is free; its latency is un
 
 - **One request per decision point**: three per session, plus any retries. Requests are not streamed or
   batched.
-- **Prefetched.** Advice for the first point is requested when the session starts. Advice for each later
-  point is requested as soon as the previous ruling is recorded; it can't start earlier because the brief
-  includes earlier rulings. The request normally completes while the trainee walks to the bench and
-  reads the submissions.
+- **Prefetched.** Advice for all three points is requested, one after another, when the session starts
+  (see [Speed](#speed-cache-prefetch-timeout-and-gpu-check)); briefs prepared this way have no earlier
+  rulings. Cached advice costs nothing: a case played before sends no requests at all.
 - **Input** is the system prompt plus the brief: about 4,400 characters for the Hale bail point, or
   roughly 1,000 to 1,500 tokens for the shipped cases. Measure actual usage with
   `ClaudeMessageResponse.InputTokens` and `OutputTokens` (`ClaudeAdvisor.LastResponse`).

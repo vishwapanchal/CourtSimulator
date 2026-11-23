@@ -29,8 +29,9 @@ namespace CourtSim.Core.Ollama
         /// <summary>Context window in tokens. The brief plus reply stay under 2,000 tokens; 4,096 keeps a 9B model fully in 8 GB of VRAM.</summary>
         public int ContextTokens { get; set; } = 4096;
 
-        /// <summary>How long Ollama keeps the model loaded between requests, so later advice is fast.</summary>
-        public string KeepAlive { get; set; } = "15m";
+        /// <summary>How long Ollama keeps the model loaded between requests, so later advice is fast. An hour
+        /// covers a whole presentation without the model being unloaded and reloaded mid-demo.</summary>
+        public string KeepAlive { get; set; } = "60m";
     }
 
     /// <summary>One chat reply from Ollama.</summary>
@@ -87,6 +88,30 @@ namespace CourtSim.Core.Ollama
         public OllamaClientOptions Options => _options;
 
         public string Endpoint => _options.BaseUrl.TrimEnd('/') + "/api/chat";
+
+        /// <summary>Lists the loaded models and where they sit (GPU or CPU memory).</summary>
+        public string StatusEndpoint => _options.BaseUrl.TrimEnd('/') + "/api/ps";
+
+        /// <summary>
+        /// Asks Ollama where the configured model is loaded, so the game can warn when it is running on the CPU.
+        /// Throws <see cref="OllamaException"/> if Ollama can't be reached.
+        /// </summary>
+        public async Task<OllamaModelStatus> GetModelStatusAsync(CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestData(StatusEndpoint, null, string.Empty, TimeSpan.FromSeconds(5), HttpRequestData.Get);
+            HttpResponseData response = await _transport.SendAsync(request, cancellationToken);
+            if (response.IsTransportError)
+            {
+                throw new OllamaException($"Could not reach Ollama at {_options.BaseUrl}. ({response.TransportError})");
+            }
+
+            if (response.StatusCode < 200 || response.StatusCode >= 300)
+            {
+                throw new OllamaException($"Ollama's status check returned HTTP {response.StatusCode}.", response.StatusCode);
+            }
+
+            return OllamaModelStatus.FromPsReply(response.Body, _options.Model);
+        }
 
         /// <summary>The JSON body sent to Ollama.</summary>
         public JsonValue BuildRequestBody(string systemPrompt, string userMessage, JsonValue schema)

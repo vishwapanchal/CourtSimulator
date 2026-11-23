@@ -5,16 +5,23 @@ using System.Threading.Tasks;
 
 namespace CourtSim.Core.Http
 {
-    /// <summary>An HTTP POST with a JSON body.</summary>
+    /// <summary>An HTTP request: a POST with a JSON body, or a GET (no body) for status checks.</summary>
     public sealed class HttpRequestData
     {
-        public HttpRequestData(string url, IReadOnlyList<KeyValuePair<string, string>> headers, string body, TimeSpan timeout)
+        public const string Post = "POST";
+        public const string Get = "GET";
+
+        public HttpRequestData(string url, IReadOnlyList<KeyValuePair<string, string>> headers, string body, TimeSpan timeout, string method = Post)
         {
             Url = url ?? throw new ArgumentNullException(nameof(url));
             Headers = headers ?? Array.Empty<KeyValuePair<string, string>>();
             Body = body ?? string.Empty;
             Timeout = timeout;
+            Method = string.IsNullOrEmpty(method) ? Post : method;
         }
+
+        /// <summary>"POST" (the default) or "GET".</summary>
+        public string Method { get; }
 
         public string Url { get; }
 

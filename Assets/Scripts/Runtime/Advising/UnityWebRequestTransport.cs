@@ -18,12 +18,18 @@ namespace CourtSim.Runtime.Advising
         {
             cancellationToken.ThrowIfCancellationRequested();
             var completion = new TaskCompletionSource<HttpResponseData>();
-            var web = new UnityWebRequest(request.Url, UnityWebRequest.kHttpVerbPOST)
+            bool isGet = string.Equals(request.Method, HttpRequestData.Get, StringComparison.OrdinalIgnoreCase);
+            var web = new UnityWebRequest(request.Url, isGet ? UnityWebRequest.kHttpVerbGET : UnityWebRequest.kHttpVerbPOST)
             {
-                uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(request.Body)),
                 downloadHandler = new DownloadHandlerBuffer(),
                 timeout = Math.Max(1, (int)Math.Ceiling(request.Timeout.TotalSeconds)),
             };
+
+            // A GET (such as Ollama's status check) has no body to upload.
+            if (!isGet)
+            {
+                web.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(request.Body));
+            }
 
             foreach (KeyValuePair<string, string> header in request.Headers)
             {

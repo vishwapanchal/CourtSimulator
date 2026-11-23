@@ -35,7 +35,7 @@ namespace CourtSim.Core.Tests
             Assert.That(options.Timeout, Is.EqualTo(TimeSpan.FromSeconds(180)));
             Assert.That(options.Temperature, Is.EqualTo(0.3));
             Assert.That(options.ContextTokens, Is.EqualTo(4096));
-            Assert.That(options.KeepAlive, Is.EqualTo("15m"));
+            Assert.That(options.KeepAlive, Is.EqualTo("60m"));
             Assert.That(Client().Options, Is.Not.Null);
         }
 

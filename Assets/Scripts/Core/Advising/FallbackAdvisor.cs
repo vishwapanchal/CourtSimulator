@@ -29,7 +29,15 @@ namespace CourtSim.Core.Advising
         {
             try
             {
-                return await _primary.GetAdviceAsync(request, cancellationToken);
+                Advice advice = await _primary.GetAdviceAsync(request, cancellationToken);
+
+                // A blank reply would leave the assistant panel empty, so it counts as a failure.
+                if (advice == null || string.IsNullOrWhiteSpace(advice.Rationale))
+                {
+                    throw new AdvisorException("The AI model returned empty advice.");
+                }
+
+                return advice;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
