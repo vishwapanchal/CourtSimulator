@@ -31,6 +31,16 @@ namespace CourtSim.EditorTools
                 material = new Material(Shader.Find("Standard")) { name = $"Courtroom_{kind}" };
                 CourtroomPalette.Configure(material, kind);
                 AssetDatabase.CreateAsset(material, path);
+
+                // A patterned surface (the floor tiles) keeps its texture inside the material asset.
+                Texture2D pattern = CourtroomPalette.CreatePattern(kind);
+                if (pattern != null)
+                {
+                    AssetDatabase.AddObjectToAsset(pattern, material);
+                    material.mainTexture = pattern;
+                    EditorUtility.SetDirty(material);
+                    AssetDatabase.SaveAssets();
+                }
             }
 
             _cache[kind] = material;

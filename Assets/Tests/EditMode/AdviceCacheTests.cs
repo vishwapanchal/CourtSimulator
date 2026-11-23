@@ -38,6 +38,24 @@ namespace CourtSim.Core.Tests
     {
         private const string Model = "qwen3.5:9b";
 
+        private SynchronizationContext _savedContext;
+
+        // Inside Unity the test thread has a context that runs "await" continuations on the main thread later.
+        // These tests wait for results synchronously on that same thread, which would deadlock, so they run
+        // without a context, exactly as they do in the plain .NET test run.
+        [SetUp]
+        public void ClearSynchronizationContext()
+        {
+            _savedContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(null);
+        }
+
+        [TearDown]
+        public void RestoreSynchronizationContext()
+        {
+            SynchronizationContext.SetSynchronizationContext(_savedContext);
+        }
+
         private static AdviceRequest Request(int point = 0, FlawKind flaw = FlawKind.None, ExplanationDetail detail = ExplanationDetail.Standard, CaseFile caseFile = null)
         {
             return new AdviceRequest(caseFile ?? TestCases.Load(), point, flaw, null, detail);

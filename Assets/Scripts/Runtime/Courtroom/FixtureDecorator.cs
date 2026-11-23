@@ -80,6 +80,26 @@ namespace CourtSim.Runtime.Courtroom
 
             FileStack(v, m, new Vector3(-1.6f, top + 0.01f, front - 0.45f), 5);
             FileStack(v, m, new Vector3(1.5f, top + 0.01f, front - 0.5f), 3);
+
+            // A steel water jug and tumbler at the judge's right hand and a brass calling bell at the left, kept low
+            // and near the chair so they never hide the advocates from the judge's seat.
+            float desk = top + 0.01f;
+            Material steel = m.Get(SurfaceKind.SteelGrey);
+            Material brass = m.Get(SurfaceKind.Brass);
+            Mesh cylinder = CourtroomBuilder.CylinderMesh;
+            CourtroomBuilder.AddMesh(v, "Jug", cylinder, new Vector3(-1f, desk + 0.11f, 0.7f), new Vector3(0.12f, 0.11f, 0.12f), Vector3.zero, steel);
+            CourtroomBuilder.AddMesh(v, "Jug_Neck", cylinder, new Vector3(-1f, desk + 0.24f, 0.7f), new Vector3(0.09f, 0.02f, 0.09f), Vector3.zero, steel);
+            CourtroomBuilder.AddBlock(v, "Jug_Handle", new Vector3(-1.07f, desk + 0.13f, 0.7f), new Vector3(0.02f, 0.12f, 0.025f), steel);
+            CourtroomBuilder.AddMesh(v, "Tumbler", cylinder, new Vector3(-0.82f, desk + 0.05f, 0.8f), new Vector3(0.065f, 0.05f, 0.065f), Vector3.zero, steel);
+            CourtroomBuilder.AddMesh(v, "Bell_Base", cylinder, new Vector3(0.95f, desk + 0.01f, 0.8f), new Vector3(0.11f, 0.01f, 0.11f), Vector3.zero, m.Get(SurfaceKind.DarkWood));
+            CourtroomBuilder.AddMesh(v, "Bell_Dome", CourtroomBuilder.SphereMesh, new Vector3(0.95f, desk + 0.03f, 0.8f), new Vector3(0.09f, 0.07f, 0.09f), Vector3.zero, brass);
+            CourtroomBuilder.AddMesh(v, "Bell_Knob", CourtroomBuilder.SphereMesh, new Vector3(0.95f, desk + 0.075f, 0.8f), new Vector3(0.02f, 0.02f, 0.02f), Vector3.zero, brass);
+
+            // Nameplate at the front edge of the desk, lettered towards the room.
+            CourtroomBuilder.AddBlock(v, "Nameplate_Block", new Vector3(0f, desk + 0.045f, front - 0.08f), new Vector3(0.75f, 0.09f, 0.05f), m.Get(SurfaceKind.DarkWood));
+            CourtroomBuilder.AddBlock(v, "Nameplate_Plate", new Vector3(0f, desk + 0.045f, front - 0.053f), new Vector3(0.71f, 0.07f, 0.004f), brass);
+            CourtroomBuilder.AddSign(v, "Nameplate_Text", new Vector3(0f, desk + 0.045f, front - 0.049f), 180f,
+                "Hon'ble Sessions Judge", "Hon'ble Sessions Judge", "Times New Roman", 0.055f, 0.66f, CourtroomDressing.SignInk, true);
         }
 
         // The reader / stenographer sits below the dais with the day's cause list and case files.
@@ -91,12 +111,29 @@ namespace CourtSim.Runtime.Courtroom
             CourtroomBuilder.AddBlock(v, "Baize", new Vector3(0f, top + 0.045f, 0f), new Vector3(s.x - 0.1f, 0.01f, s.z - 0.1f), m.Get(SurfaceKind.GreenBaize));
             CourtroomBuilder.AddBlock(v, "Monitor", new Vector3(0.7f, top + 0.27f, -0.15f), new Vector3(0.55f, 0.36f, 0.04f), m.Get(SurfaceKind.Screen));
             CourtroomBuilder.AddBlock(v, "Monitor_Stand", new Vector3(0.7f, top + 0.08f, -0.15f), new Vector3(0.08f, 0.1f, 0.08f), m.Get(SurfaceKind.Metal));
-            FileStack(v, m, new Vector3(-0.9f, top + 0.05f, 0f), 6);
-            FileStack(v, m, new Vector3(-0.4f, top + 0.05f, 0.1f), 4);
+            // The bench clerk sits behind local x = -1.1, so the bundles stand beside them rather than in front.
+            CaseBundle(v, m, new Vector3(-0.45f, top + 0.05f, 0.05f), new Vector3(0.42f, 0.15f, 0.3f));
+            CaseBundle(v, m, new Vector3(-0.42f, top + 0.2f, 0.03f), new Vector3(0.38f, 0.12f, 0.27f));
+            FileStack(v, m, new Vector3(0.1f, top + 0.05f, 0.1f), 4);
+        }
+
+        /// <summary>
+        /// A case bundle: files wrapped in red cloth and tied with white tape, crossed on the front and over the top,
+        /// as Indian court records are kept. <paramref name="bottom"/> is the centre of its base.
+        /// </summary>
+        internal static void CaseBundle(Transform v, IMaterialProvider m, Vector3 bottom, Vector3 size)
+        {
+            const float Tape = 0.022f;
+            const float Wrap = 0.006f; // the tape sits just proud of the cloth
+            Vector3 centre = bottom + new Vector3(0f, size.y * 0.5f, 0f);
+            Material tape = m.Get(SurfaceKind.WhiteCloth);
+            CourtroomBuilder.AddBlock(v, "Bundle", centre, size, m.Get(SurfaceKind.RedCloth));
+            CourtroomBuilder.AddBlock(v, "Bundle_TapeUpright", centre, new Vector3(Tape, size.y + Wrap, size.z + Wrap), tape);
+            CourtroomBuilder.AddBlock(v, "Bundle_TapeAround", centre, new Vector3(size.x + Wrap, Tape, size.z + Wrap), tape);
         }
 
         /// <summary>A pile of cloth-bound case files, each slightly offset so the stack looks hand-placed.</summary>
-        private static void FileStack(Transform v, IMaterialProvider m, Vector3 bottom, int count)
+        internal static void FileStack(Transform v, IMaterialProvider m, Vector3 bottom, int count)
         {
             const float Thickness = 0.045f;
             for (int i = 0; i < count; i++)

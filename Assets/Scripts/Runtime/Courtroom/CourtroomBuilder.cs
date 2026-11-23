@@ -21,6 +21,13 @@ namespace CourtSim.Runtime.Courtroom
 
         private const float WallThickness = 0.2f;
 
+        // Along both side walls, clear of the evidence display, the dock and the room's corners.
+        private static readonly float[] WindowRows = { -6.5f, -1f, 6.8f };
+        private static readonly float[] TubeLightRows = { -3.75f, 3f };
+
+        private static Mesh _cylinderMesh;
+        private static Mesh _sphereMesh;
+
         public static CourtroomRoot Build(CourtroomLayout layout, IMaterialProvider materials, Transform parent = null)
         {
             if (layout == null)
@@ -88,6 +95,75 @@ namespace CourtSim.Runtime.Courtroom
             return transform;
         }
 
+        /// <summary>Unity's built-in cylinder: 2 units tall along Y and 1 unit across.</summary>
+        internal static Mesh CylinderMesh
+        {
+            get
+            {
+                if (_cylinderMesh == null)
+                {
+                    _cylinderMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+                }
+
+                return _cylinderMesh;
+            }
+        }
+
+        /// <summary>Unity's built-in sphere, 1 unit across.</summary>
+        internal static Mesh SphereMesh
+        {
+            get
+            {
+                if (_sphereMesh == null)
+                {
+                    _sphereMesh = Resources.GetBuiltinResource<Mesh>("Sphere.fbx");
+                }
+
+                return _sphereMesh;
+            }
+        }
+
+        /// <summary>Like <see cref="AddBlock"/>, but with any built-in mesh and turned by <paramref name="euler"/> degrees.</summary>
+        internal static Transform AddMesh(Transform parent, string name, Mesh mesh, Vector3 localCenter, Vector3 scale, Vector3 euler, Material material)
+        {
+            Transform transform = AddBlock(parent, name, localCenter, scale, material);
+            transform.GetComponent<MeshFilter>().sharedMesh = mesh;
+            transform.localRotation = Quaternion.Euler(euler);
+            return transform;
+        }
+
+        /// <summary>A flat round disc facing along Z (a wheel, a clock face or a fan grille on a wall).</summary>
+        internal static Transform AddDisc(Transform parent, string name, Vector3 localCenter, float diameter, float thickness, Material material)
+        {
+            // The cylinder's axis is Y; tipping it 90 degrees about X points it along Z.
+            return AddMesh(parent, name, CylinderMesh, localCenter, new Vector3(diameter, thickness * 0.5f, diameter), new Vector3(90f, 0f, 0f), material);
+        }
+
+        /// <summary>
+        /// Adds a line of painted lettering, readable by someone looking along the parent's +Z after turning by
+        /// <paramref name="yawDegrees"/>. See <see cref="PaintedSign"/> for why the letters are drawn at play time.
+        /// </summary>
+        internal static PaintedSign AddSign(
+            Transform parent,
+            string name,
+            Vector3 localCenter,
+            float yawDegrees,
+            string text,
+            string fallbackText,
+            string fontFace,
+            float letterHeight,
+            float maxWidth,
+            Color ink,
+            bool bold = false)
+        {
+            Transform sign = UnityObjectUtil.CreateChild(name, parent);
+            sign.localPosition = localCenter;
+            sign.localRotation = Quaternion.Euler(0f, yawDegrees, 0f);
+            var painted = sign.gameObject.AddComponent<PaintedSign>();
+            painted.Configure(text, fallbackText, fontFace, letterHeight, maxWidth, ink, bold);
+            return painted;
+        }
+
         private static CourtroomFixture BuildFixture(FixtureSpec spec, Transform parent, IMaterialProvider materials)
         {
             var fixtureObject = new GameObject($"{spec.Kind}_{spec.Id}");
@@ -150,8 +226,8 @@ namespace CourtSim.Runtime.Courtroom
             AddBlock(shell, "Wall_Right", new Vector3((w + t) * 0.5f, h * 0.5f, 0f), new Vector3(t, h, d), wall, true);
             AddBlock(shell, "Wall_Left", new Vector3(-(w + t) * 0.5f, h * 0.5f, 0f), new Vector3(t, h, d), wall, true);
 
-            // Timber wainscot with a lighter cap rail on every wall.
-            const float PanelHeight = 1.1f;
+            // Dark teak dado with a lighter cap rail on every wall.
+            const float PanelHeight = 1.3f;
             const float PanelDepth = 0.04f;
             Material wainscot = materials.Get(SurfaceKind.Wainscot);
             Material cap = materials.Get(SurfaceKind.LightWood);
@@ -162,29 +238,24 @@ namespace CourtSim.Runtime.Courtroom
 
             BuildBenchBackdrop(shell, d, materials);
 
-            // High windows on the side walls with maroon curtains, and fluorescent tube lights between them,
-            // as in most Indian district court halls.
-            Material glow = materials.Get(SurfaceKind.WindowGlow);
-            Material curtain = materials.Get(SurfaceKind.Curtain);
+            // Tall arched windows with green wooden shutters along the side walls, and fluorescent tube lights
+            // between them, as in most older Karnataka court halls.
             Material tube = materials.Get(SurfaceKind.TubeLight);
-            for (int i = -1; i <= 1; i++)
+            foreach (float side in new[] { -1f, 1f })
             {
-                float z = i * (d * 0.25f);
-                foreach (float side in new[] { -1f, 1f })
+                string name = side > 0f ? "Right" : "Left";
+                for (int i = 0; i < WindowRows.Length; i++)
                 {
-                    string name = side > 0f ? "Right" : "Left";
-                    float x = side * ((w * 0.5f) - 0.01f);
-                    AddBlock(shell, $"Window_{name}_{i + 1}", new Vector3(x, 3.5f, z), new Vector3(0.02f, 1.6f, 1.3f), glow);
-                    float inner = side * ((w * 0.5f) - 0.06f);
-                    AddBlock(shell, $"Curtain_{name}_{i + 1}_A", new Vector3(inner, 3.45f, z - 0.8f), new Vector3(0.06f, 1.9f, 0.35f), curtain);
-                    AddBlock(shell, $"Curtain_{name}_{i + 1}_B", new Vector3(inner, 3.45f, z + 0.8f), new Vector3(0.06f, 1.9f, 0.35f), curtain);
-                    AddBlock(shell, $"CurtainRod_{name}_{i + 1}", new Vector3(inner, 4.42f, z), new Vector3(0.03f, 0.03f, 2.2f), materials.Get(SurfaceKind.Brass));
-                    if (i < 1)
-                    {
-                        AddBlock(shell, $"TubeLight_{name}_{i + 1}", new Vector3(side * ((w * 0.5f) - 0.05f), 3.1f, z + (d * 0.125f)), new Vector3(0.05f, 0.05f, 1.2f), tube);
-                    }
+                    CourtroomDressing.ArchedWindow(shell, $"Window_{name}_{i + 1}", new Vector3(side * w * 0.5f, 0f, WindowRows[i]), side, materials);
+                }
+
+                for (int i = 0; i < TubeLightRows.Length; i++)
+                {
+                    AddBlock(shell, $"TubeLight_{name}_{i + 1}", new Vector3(side * ((w * 0.5f) - 0.05f), 3.5f, TubeLightRows[i]), new Vector3(0.05f, 0.05f, 1.2f), tube);
                 }
             }
+
+            CourtroomDressing.Build(shell, room, materials);
 
             // Wall clock above the entrance on the back wall.
             AddBlock(shell, "Clock_Frame", new Vector3(0f, 3.6f, -(d * 0.5f) + 0.03f), new Vector3(0.6f, 0.6f, 0.05f), materials.Get(SurfaceKind.DarkWood));
@@ -194,43 +265,30 @@ namespace CourtSim.Runtime.Courtroom
         }
 
         /// <summary>
-        /// Panelled wall behind the judge with a scales-of-justice motif and a "SESSIONS COURT" nameplate.
-        /// The State Emblem and national flag are left out on purpose: their use is restricted by law.
+        /// Panelled wall behind the judge, as in a Karnataka district court: the court's name board in Kannada and
+        /// English along the top, and the State Emblem (the Ashoka Lion Capital) with "Satyameva Jayate" beneath it
+        /// above the judge's chair. Shown as the court itself would display them, for a realistic training setting.
         /// </summary>
         private static void BuildBenchBackdrop(Transform shell, float depth, IMaterialProvider materials)
         {
             float z = (depth * 0.5f) - 0.04f;
-            Material wood = materials.Get(SurfaceKind.DarkWood);
-            Material brass = materials.Get(SurfaceKind.Brass);
-            AddBlock(shell, "Backdrop_Panel", new Vector3(0f, 2.5f, z), new Vector3(6.4f, 3.2f, 0.06f), wood);
-            AddBlock(shell, "Backdrop_Cornice", new Vector3(0f, 4.15f, z - 0.03f), new Vector3(6.8f, 0.12f, 0.12f), materials.Get(SurfaceKind.LightWood));
+            float face = z - 0.03f; // the room-facing surface of the panel
+            AddBlock(shell, "Backdrop_Panel", new Vector3(0f, 2.6f, z), new Vector3(6.4f, 3.6f, 0.06f), materials.Get(SurfaceKind.DarkWood));
+            AddBlock(shell, "Backdrop_Cornice", new Vector3(0f, 4.47f, face), new Vector3(6.8f, 0.12f, 0.12f), materials.Get(SurfaceKind.LightWood));
 
-            // Scales of justice: a post, a beam and two hanging pans.
-            float sz = z - 0.05f;
-            AddBlock(shell, "Scales_Post", new Vector3(0f, 2.95f, sz), new Vector3(0.05f, 0.9f, 0.03f), brass);
-            AddBlock(shell, "Scales_Beam", new Vector3(0f, 3.38f, sz), new Vector3(0.9f, 0.04f, 0.03f), brass);
-            AddBlock(shell, "Scales_Base", new Vector3(0f, 2.5f, sz), new Vector3(0.35f, 0.05f, 0.03f), brass);
-            foreach (float side in new[] { -0.42f, 0.42f })
-            {
-                AddBlock(shell, $"Scales_Chain_{side}", new Vector3(side, 3.18f, sz), new Vector3(0.015f, 0.38f, 0.015f), brass);
-                AddBlock(shell, $"Scales_Pan_{side}", new Vector3(side, 2.98f, sz), new Vector3(0.28f, 0.03f, 0.03f), brass);
-            }
+            // Cream name board in a brass frame. The Kannada line comes first, as on Karnataka court boards.
+            AddBlock(shell, "NameBoard_Frame", new Vector3(0f, 4.02f, face - 0.015f), new Vector3(5.9f, 0.66f, 0.03f), materials.Get(SurfaceKind.Brass));
+            AddBlock(shell, "NameBoard", new Vector3(0f, 4.02f, face - 0.035f), new Vector3(5.76f, 0.56f, 0.01f), materials.Get(SurfaceKind.PaintedBoard));
+            AddSign(shell, "NameBoard_Kannada", new Vector3(0f, 4.14f, face - 0.045f), 0f,
+                "ಪ್ರಧಾನ ಜಿಲ್ಲಾ ಮತ್ತು ಸತ್ರ ನ್ಯಾಯಾಲಯ", string.Empty, "Nirmala UI", 0.3f, 5.5f, CourtroomDressing.SignRed, true);
+            AddSign(shell, "NameBoard_English", new Vector3(0f, 3.86f, face - 0.045f), 0f,
+                "PRINCIPAL DISTRICT AND SESSIONS COURT, KESARNAGAR", "PRINCIPAL DISTRICT AND SESSIONS COURT, KESARNAGAR",
+                "Arial", 0.17f, 5.5f, CourtroomDressing.SignInk, true);
 
-            // Nameplate board with 3D lettering.
-            AddBlock(shell, "Nameplate_Board", new Vector3(0f, 3.8f, sz), new Vector3(3.2f, 0.42f, 0.03f), brass);
-            var label = new GameObject("Nameplate_Text");
-            label.transform.SetParent(shell, false);
-            label.transform.localPosition = new Vector3(0f, 3.8f, sz - 0.03f); // readable from the room (camera looks +Z)
-            var text = label.AddComponent<TextMesh>();
-            text.text = "SESSIONS COURT";
-            text.font = BuiltinAssets.DefaultFont;
-            text.fontSize = 64;
-            text.characterSize = 0.045f;
-            text.anchor = TextAnchor.MiddleCenter;
-            text.alignment = TextAlignment.Center;
-            text.fontStyle = FontStyle.Bold;
-            text.color = new Color(0.16f, 0.1f, 0.06f);
-            label.GetComponent<MeshRenderer>().sharedMaterial = BuiltinAssets.DefaultFont.material;
+            // High enough that the top of the judge's chair doesn't hide the motto from the entrance.
+            CourtroomDressing.StateEmblem(shell, new Vector3(0f, 3.14f, face), materials);
+            AddSign(shell, "Emblem_Motto", new Vector3(0f, 2.83f, face - 0.01f), 0f,
+                "सत्यमेव जयते", "SATYAMEVA JAYATE", "Nirmala UI", 0.17f, 0.9f, CourtroomDressing.SignGold, true);
         }
 
         private static void AddWainscot(Transform parent, string side, Vector3 center, Vector3 span, float height, Material panel, Material cap)
